@@ -6,6 +6,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Drawing.Drawing2D;
+using System.Xml;
+using System.IO;
 
 namespace WingSuitJudge
 {
@@ -21,14 +24,36 @@ namespace WingSuitJudge
             RemoveLine
         }
 
-        private List<PointF> mAnchors = new List<PointF>();
-        private List<Delaunay.Triangle> mTriangles = null;
-        private int mSelected = -1;
+        private class DragLine
+        {
+            public int StartMarker;
+            public int EndMarker;
+            public PointF MousePosition;
+
+            public DragLine(int aMarker, PointF aMousePosition)
+            {
+                StartMarker = aMarker;
+                EndMarker = -1;
+                MousePosition = aMousePosition;
+            }
+        }
+
+        private const float version = 1.2f;
+        private string mProjectName;
+        private List<Marker> mMarkers = new List<Marker>();
+        private List<Line> mLines = new List<Line>();
+        private int mBaseMarker = 0;
+        private int mBaseLine = 0;
+
+        private int mSelectedMarker = -1;
+        private int mSelectedLine = -1;
+        private DragLine mDragLine;
         private EditMode mEditMode;
 
         public Form1()
         {
             InitializeComponent();
+            ProjectName = "";
             EditorMode = EditMode.AddMarker;
             mPictureBox.Origin = new PointF(mPictureBox.Width * 0.5f, mPictureBox.Height * 0.5f);
             mPictureBox.MouseWheel += new MouseEventHandler(OnPictureBoxMouseWheel);
@@ -40,12 +65,30 @@ namespace WingSuitJudge
             set
             {
                 mEditMode = value;
-                btnMoveImage.Checked = mEditMode == EditMode.MoveImage;
-                btnAddMarker.Checked = mEditMode == EditMode.AddMarker;
-                btnRemoveMarker.Checked = mEditMode == EditMode.RemoveMarker;
-                btnAddLine.Checked = mEditMode == EditMode.AddLine;
-                btnRemoveLine.Checked = mEditMode == EditMode.RemoveLine;
+                mBtnMoveImage.Checked = mEditMode == EditMode.MoveImage;
+                mBtnAddMarker.Checked = mEditMode == EditMode.AddMarker;
+                mBtnRemoveMarker.Checked = mEditMode == EditMode.RemoveMarker;
+                mBtnMoveMarker.Checked = mEditMode == EditMode.MoveMarker;
+                mBtnAddLine.Checked = mEditMode == EditMode.AddLine;
+                mBtnRemoveLine.Checked = mEditMode == EditMode.RemoveLine;
                 mPictureBox.MoveMode = mEditMode == EditMode.MoveImage;
+            }
+        }
+
+        private string ProjectName
+        {
+            get { return mProjectName; }
+            set
+            {
+                mProjectName = value;
+                if (string.IsNullOrEmpty(mProjectName))
+                {
+                    Text = string.Format("Wingsuit Flock Judging Tool v{0}", version);
+                }
+                else
+                {
+                    Text = string.Format("Wingsuit Flock Judging Tool v{0} - [{1}]", version, Path.GetFileName(mProjectName));
+                }
             }
         }
 
@@ -58,23 +101,109 @@ namespace WingSuitJudge
                 switch (EditorMode)
                 {
                     case EditMode.AddMarker:
-                        if (mSelected == -1)
+                        if (mSelectedMarker == -1)
                         {
-                            mAnchors.Add(new PointF(e.X, e.Y));
-                            mTriangles = Delaunay.Triangulate(mAnchors);
+                            mMarkers.Add(new Marker(e.X, e.Y));
                             mPictureBox.Invalidate();
                         }
                         break;
                     case EditMode.RemoveMarker:
-                        if (mSelected != -1)
+                        RemoveMarker(mSelectedMarker);
+                        break;
+                    case EditMode.AddLine:
+                        if (mSelectedMarker != -1)
                         {
-                            mAnchors.RemoveAt(mSelected);
-                            mTriangles = Delaunay.Triangulate(mAnchors);
-                            mPictureBox.Invalidate();
+                            if (mDragLine == null)
+                            {
+                                mDragLine = new DragLine(mSelectedMarker, new PointF(e.X, e.Y));
+                                mPictureBox.Invalidate();
+                            }
+                            else
+                            {
+                                AddLine(mDragLine.StartMarker, mDragLine.EndMarker);
+                                mDragLine = new DragLine(mSelectedMarker, new PointF(e.X, e.Y));
+                                mPictureBox.Invalidate();
+                            }
                         }
+                        break;
+                    case EditMode.RemoveLine:
+                        RemoveLine(mSelectedLine);
                         break;
                 }
             }
+            else if (e.Button == MouseButtons.Right)
+            {
+                if (mDragLine != null)
+                {
+                    mDragLine = null;
+                    mPictureBox.Invalidate();
+                }
+                if (mSelectedMarker != -1)
+                {
+                    ContextMenu menu = new ContextMenu();
+                    menu.MenuItems.Add(NewMenuItem("Mark as base", new EventHandler(OnMakeMarkerBase), mSelectedMarker));
+                    menu.MenuItems.Add(NewMenuItem("Remove", new EventHandler(OnRemoveMarker), mSelectedMarker));
+                    menu.MenuItems.Add("-");
+                    menu.MenuItems.Add(NewMenuItem("Properties", new EventHandler(OnMarkerProperties), mSelectedMarker));
+                    menu.Show(this, mPictureBox.ToScreen(new Point(e.X, e.Y)));
+                }
+                else if (mSelectedLine != -1)
+                {
+                    ContextMenu menu = new ContextMenu();
+                    menu.MenuItems.Add(NewMenuItem("Mark as base", new EventHandler(OnMakeLineBase), mSelectedLine));
+                    menu.MenuItems.Add("-");
+                    menu.MenuItems.Add(NewMenuItem("Remove", new EventHandler(OnRemoveLine), mSelectedLine));
+                    menu.Show(this, mPictureBox.ToScreen(new Point(e.X, e.Y)));
+                }
+            }
+        }
+
+        private void OnMarkerProperties(object sender, EventArgs e)
+        {
+            int marker = (int)((MenuItem)sender).Tag;
+            if (marker != -1)
+            {
+                MarkerProperties props = new MarkerProperties(mMarkers[marker]);
+                if (props.ShowDialog(this) == DialogResult.OK)
+                {
+                    mMarkers[marker].NameTag = props.NameTag;
+                    mMarkers[marker].Description = props.Description;
+                    mMarkers[marker].ShowArea = props.ShowArea;
+                    mPictureBox.Invalidate();
+                }
+            }
+        }
+
+        private void OnMakeMarkerBase(object sender, EventArgs e)
+        {
+            int marker = (int)((MenuItem)sender).Tag;
+            if (marker != mBaseMarker)
+            {
+                mBaseMarker = marker;
+                mPictureBox.Invalidate();
+            }
+        }
+
+        private void OnMakeLineBase(object sender, EventArgs e)
+        {
+            int line = (int)((MenuItem)sender).Tag;
+            if (line != mBaseLine)
+            {
+                mBaseLine = line;
+                mPictureBox.Invalidate();
+            }
+        }
+
+        private void OnRemoveMarker(object sender, EventArgs e)
+        {
+            int marker = (int)((MenuItem)sender).Tag;
+            RemoveMarker(marker);
+        }
+
+        private void OnRemoveLine(object sender, EventArgs e)
+        {
+            int line = (int)((MenuItem)sender).Tag;
+            RemoveLine(line);
         }
 
         private void OnPictureBoxMouseWheel(object sender, MouseEventArgs e)
@@ -92,62 +221,130 @@ namespace WingSuitJudge
         private void OnPictureBoxPaint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            if (mTriangles != null)
-            {
-                foreach (Delaunay.Triangle tri in mTriangles)
-                {
-                    PointF[] points = new PointF[] { mAnchors[tri.A], mAnchors[tri.B], mAnchors[tri.C] };
-                    e.Graphics.DrawPolygon(new Pen(Color.Black, 3), points);
-                }
-            }
-            
-            int num = mAnchors.Count;
-            for (int i = 0; i < num; i++)
-            {
-                Brush fillColor = Brushes.DarkRed;
-                if (i == 0)
-                {
-                    fillColor = Brushes.DarkGreen;
-                }
 
-                PointF pnt = mAnchors[i];
-                if (i == mSelected)
+            // get line base length.
+            float baseLength = 0;
+            float minLength = 0;
+            float maxLength = 1000;
+            bool hasTolerance = false;
+            if (mBaseLine >= 0 && mBaseLine < mLines.Count)
+            {
+                float dtol = (int)mDistanceTolerance.Value * 0.01f;
+                baseLength = mLines[mBaseLine].GetLength();
+                minLength = baseLength - (baseLength * dtol);
+                maxLength = baseLength + (baseLength * dtol);
+                hasTolerance = true;
+            }
+
+            // draw 'new' line.
+            if (mDragLine != null)
+            {
+                Pen pen = new Pen(Color.Black, 3);
+                pen.DashStyle = DashStyle.Dash;
+
+                Marker start = mMarkers[mDragLine.StartMarker];
+                if (mDragLine.EndMarker != -1)
                 {
-                    e.Graphics.FillEllipse(fillColor, pnt.X - 8, pnt.Y - 8, 16, 16);
-                    e.Graphics.DrawEllipse(new Pen(Color.Yellow, 3), pnt.X - 8, pnt.Y - 8, 16, 16);
+                    Marker end = mMarkers[mDragLine.EndMarker];
+                    e.Graphics.DrawLine(pen, start.Location, end.Location);
                 }
                 else
                 {
-                    e.Graphics.FillEllipse(fillColor, pnt.X - 8, pnt.Y - 8, 16, 16);
-                    e.Graphics.DrawEllipse(new Pen(Color.Black, 3), pnt.X - 8, pnt.Y - 8, 16, 16);
+                    e.Graphics.DrawLine(pen, start.Location, mDragLine.MousePosition);
                 }
             }
+
+            // draw lines.
+            int numLines = mLines.Count;
+            for (int i = 0; i < numLines; i++)
+            {
+                Line line = mLines[i];
+                float length = line.GetLength();
+                bool error = (length < minLength) || (length > maxLength);
+                line.Draw(e.Graphics, i == mSelectedLine, i == mBaseLine, error);
+            }
+
+            // draw tolerance areas.
+            if (hasTolerance)
+            {
+                foreach (Marker marker in mMarkers)
+                {
+                    if (marker.ShowArea)
+                    {
+                        float x = marker.Location.X;
+                        float y = marker.Location.Y;
+                        e.Graphics.DrawEllipse(Colors.ThinGrayPen, x - minLength, y - minLength, minLength * 2, minLength * 2);
+                        e.Graphics.DrawEllipse(Colors.ThinGrayPen, x - maxLength, y - maxLength, maxLength * 2, maxLength * 2);
+                    }
+                }
+            }
+
+            // draw markers.
+            int numMarkers = mMarkers.Count;
+            for (int i = 0; i < numMarkers; i++)
+            {
+                Marker marker = mMarkers[i];
+                marker.Draw(e.Graphics, i == mSelectedMarker, i == mBaseMarker);
+            }
+
+            // calculate accuracy.
+            mAccuracy.Text = string.Format("Accuracy: {0}%", (int)Math.Floor(CalculateAccuracy() * 100));
         }
 
         private void OnPictureBoxMouseMove(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && EditorMode == EditMode.MoveMarker && mSelected != -1)
+            if (e.Button == MouseButtons.Left && EditorMode == EditMode.MoveMarker && mSelectedMarker != -1)
             {
-                mAnchors[mSelected] = new PointF(e.X, e.Y);
-                mTriangles = Delaunay.Triangulate(mAnchors);
+                mMarkers[mSelectedMarker].Location = new PointF(e.X, e.Y);
                 mPictureBox.Invalidate();
             }
             else
             {
-                int num = mAnchors.Count;
+                // find marker selection.
+                int num = mMarkers.Count;
                 int selected = -1;
                 for (int i = 0; i < num; i++)
                 {
-                    float dx = e.X - mAnchors[i].X;
-                    float dy = e.Y - mAnchors[i].Y;
+                    float dx = e.X - mMarkers[i].Location.X;
+                    float dy = e.Y - mMarkers[i].Location.Y;
                     if (dx * dx + dy * dy < 16 * 16)
                     {
                         selected = i;
                     }
                 }
-                if (selected != mSelected)
+                if (selected != mSelectedMarker)
                 {
-                    mSelected = selected;
+                    mSelectedMarker = selected;
+                    mSelectedLine = -1;
+                    mPictureBox.Invalidate();
+                }
+
+                // find a line selection instead, but only if we are not dragging.
+                if (mSelectedMarker == -1 && mDragLine == null)
+                {
+                    num = mLines.Count;
+                    selected = -1;
+                    for (int i = 0; i < num; i++)
+                    {
+                        float d = mLines[i].GetDistance(e.X, e.Y);
+                        if (d < 3)
+                        {
+                            selected = i;
+                        }
+                    }
+
+                    if (selected != mSelectedLine)
+                    {
+                        mSelectedLine = selected;
+                        mPictureBox.Invalidate();
+                    }
+                }
+
+                // update dragline.
+                if (mDragLine != null)
+                {
+                    mDragLine.EndMarker = mSelectedMarker;
+                    mDragLine.MousePosition = new PointF(e.X, e.Y);
                     mPictureBox.Invalidate();
                 }
             }
@@ -157,7 +354,7 @@ namespace WingSuitJudge
 
         #region -- Form Events ------------------------------------------------
 
-        private void OnFileOpenClick(object sender, EventArgs e)
+        private void OnImportImageClick(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Title = "Open Image File";
@@ -217,7 +414,67 @@ namespace WingSuitJudge
             Close();
         }
 
+        private void OnAboutClick(object sender, EventArgs e)
+        {
+            AboutBox box = new AboutBox();
+            box.ShowDialog();
+        }
+
+        private void OnNewClick(object sender, EventArgs e)
+        {
+            ProjectName = null;
+            ResetProject();
+        }
+
+        private void OnSaveAsClick(object sender, EventArgs e)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Title = "Save project";
+            dialog.Filter = "Flock files (*.flock)|*.flock";
+            dialog.CheckPathExists = true;
+            dialog.AddExtension = true;
+            dialog.ShowHelp = true;
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                ProjectName = dialog.FileName;
+                SaveProject();
+            }
+        }
+
+        private void OnSaveClick(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(ProjectName))
+            {
+                OnSaveAsClick(sender, e);
+                return;
+            }
+            SaveProject();
+        }
+        
+        private void OnOpenClick(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Title = "Open project";
+            dialog.Filter = "Flock files (*.flock)|*.flock";
+            dialog.CheckFileExists = true;
+            dialog.CheckPathExists = true;
+            dialog.ShowHelp = true;
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                LoadProject(dialog.FileName);
+            }
+        }
+
         #endregion
+
+        private static MenuItem NewMenuItem(string name, EventHandler handler, object tag)
+        {
+            MenuItem item = new MenuItem(name, handler);
+            item.Tag = tag;
+            return item;
+        }
 
         private void SetZoom(int aZoom)
         {
@@ -225,10 +482,212 @@ namespace WingSuitJudge
             mZoomText.Text = string.Format("Zoom: {0}%", mPictureBox.Zoom);
         }
 
-        private void aboutToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void RemoveMarker(int aIndex)
         {
-            AboutBox box = new AboutBox();
-            box.ShowDialog();
+            if (aIndex != -1)
+            {
+                // delete lines that point to this marker.
+                Marker marker = mMarkers[aIndex];
+                int num = mLines.Count;
+                for (int i = num-1; i>=0; i--)
+                {
+                    Line line = mLines[i];
+                    if (object.ReferenceEquals(marker, line.Start) || object.ReferenceEquals(marker, line.End))
+                    {
+                        mLines.RemoveAt(i);
+                    }
+                }
+
+                // remove marker.
+                mMarkers.RemoveAt(aIndex);
+                mBaseMarker = Math.Max(0, Math.Min(mBaseMarker, mMarkers.Count - 1));
+                mPictureBox.Invalidate();
+            }
+        }
+
+        private void AddLine(int aStart, int aEnd)
+        {
+            // can only add unique lines.
+            Marker start = mMarkers[aStart];
+            Marker end = mMarkers[aEnd];
+            foreach (Line line in mLines)
+            {
+                if (object.ReferenceEquals(start, line.Start) && object.ReferenceEquals(end, line.End))
+                    return;
+                if (object.ReferenceEquals(start, line.End) && object.ReferenceEquals(end, line.Start))
+                    return;
+            }
+
+            // found no matching lines.
+            mLines.Add(new Line(start, end));
+            mPictureBox.Invalidate();
+        }
+
+        private void RemoveLine(int aIndex)
+        {
+            if (aIndex != -1)
+            {
+                mLines.RemoveAt(aIndex);
+                mBaseLine = Math.Max(0, Math.Min(mBaseLine, mLines.Count - 1));
+                mPictureBox.Invalidate();
+            }
+        }
+                
+        private void SaveProject()
+        {
+            FileStream fileStream = new FileStream(ProjectName, FileMode.Create);
+            using (BinaryWriter writer = new BinaryWriter(fileStream))
+            {
+                writer.Write((int)0x4b434c46);
+                writer.Write((int)1);
+                writer.Write(mBaseMarker);
+                writer.Write(mBaseLine);
+                writer.Write((int)mDistanceTolerance.Value);
+                writer.Write(mMarkers.Count);
+                foreach (Marker marker in mMarkers)
+                {
+                    writer.Write(marker.Location.X);
+                    writer.Write(marker.Location.Y);
+                    writer.Write(marker.ShowArea);
+                    
+                    if (string.IsNullOrEmpty(marker.NameTag))
+                    {
+                        writer.Write("");
+                    }
+                    else
+                    {
+                        writer.Write(marker.NameTag);
+                    }
+
+                    if (string.IsNullOrEmpty(marker.Description))
+                    {
+                        writer.Write("");
+                    }
+                    else
+                    {
+                        writer.Write(marker.Description);
+                    }
+                }
+
+                writer.Write(mLines.Count);
+                foreach (Line line in mLines)
+                {
+                    writer.Write(FindMarker(line.Start));
+                    writer.Write(FindMarker(line.End));
+                }
+            }
+        }
+
+        private void LoadProject(string aFilename)
+        {
+            FileStream fileStream = new FileStream(aFilename, FileMode.Open);
+            using (BinaryReader reader = new BinaryReader(fileStream))
+            {
+                uint id = reader.ReadUInt32();
+                if (id != 0x4b434c46)
+                {
+                    MessageBox.Show(this,
+                        string.Format("'{0}' is not a flock file", Path.GetFileName(aFilename)),
+                        "Error loading file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                int version = reader.ReadInt32();
+                if (version == 1)
+                {
+                    ResetProject();
+                    ProjectName = aFilename;
+
+                    mBaseMarker = reader.ReadInt32();
+                    mBaseLine = reader.ReadInt32();
+                    mDistanceTolerance.Value = reader.ReadInt32();
+
+                    int numMarkers = reader.ReadInt32();
+                    for (int i = 0; i < numMarkers; i++)
+                    {
+                        float x = reader.ReadSingle();
+                        float y = reader.ReadSingle();
+                        Marker marker = new Marker(x, y);
+                        marker.ShowArea = reader.ReadBoolean();
+                        marker.NameTag = reader.ReadString();
+                        marker.Description = reader.ReadString();
+                        mMarkers.Add(marker);
+                    }
+
+                    int numLines = reader.ReadInt32();
+                    for (int i = 0; i < numLines; i++)
+                    {
+                        int start = reader.ReadInt32();
+                        int end = reader.ReadInt32();
+                        mLines.Add(new Line(mMarkers[start], mMarkers[end]));
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(this,
+                        string.Format("'{0}' has an unsupported version number.", Path.GetFileName(aFilename)),
+                        "Error loading file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void ResetProject()
+        {
+            mMarkers.Clear();
+            mLines.Clear();
+            mBaseLine = 0;
+            mBaseMarker = 0;
+            mDistanceTolerance.Value = 25;
+            mPictureBox.ResetImage();
+        }
+
+        private int FindMarker(Marker a)
+        {
+            int num = mMarkers.Count;
+            for (int i = 0; i < num; i++)
+            {
+                if (object.ReferenceEquals(mMarkers[i], a))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        private float CalculateAccuracy()
+        {
+            // get line base length.
+            if (mBaseLine >= 0 && mBaseLine < mLines.Count)
+            {
+                float dtol = (int)mDistanceTolerance.Value * 0.01f;
+                float baseLength = mLines[mBaseLine].GetLength();
+                float minLength = baseLength - (baseLength * dtol);
+                float maxLength = baseLength + (baseLength * dtol);
+
+                float totalError = 0;
+                float totalLength = 0;
+                int numLines = mLines.Count;
+                for (int i = 0; i < numLines; i++)
+                {
+                    Line line = mLines[i];
+                    float length = line.GetLength();
+                    if (length < minLength)
+                    {
+                        totalError += (minLength - length);
+                    }
+                    if (length > maxLength)
+                    {
+                        totalError += (length - maxLength);
+                    }
+                    totalLength += length;
+                }
+
+                return 1.0f - (totalError / totalLength);
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }

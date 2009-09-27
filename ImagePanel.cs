@@ -38,6 +38,16 @@ namespace WingSuitJudge
             Invalidate();
         }
 
+        public void ResetImage()
+        {
+            if (mBitmap != null)
+            {
+                mBitmap.Dispose();
+                mBitmap = null;
+            }
+            Invalidate();
+        }
+
         public int Zoom
         {
             get { return mZoom; }
@@ -72,6 +82,22 @@ namespace WingSuitJudge
                 mMoveMode = value;
                 Cursor = mMoveMode ? Cursors.SizeAll : Cursors.Cross;
             }
+        }
+
+        public PointF ToScreen(PointF aPoint)
+        {
+            float dz = mZoom * 0.01f;
+            float x = (aPoint.X * dz + Origin.X);
+            float y = (aPoint.Y * dz + Origin.Y);
+            return new PointF(x, y);
+        }
+
+        public Point ToScreen(Point aPoint)
+        {
+            float dz = mZoom * 0.01f;
+            float x = (aPoint.X * dz + Origin.X);
+            float y = (aPoint.Y * dz + Origin.Y);
+            return new Point((int)x, (int)y);
         }
 
         protected override void OnPaint(PaintEventArgs e)
