@@ -38,7 +38,7 @@ namespace WingSuitJudge
             }
         }
 
-        private const float version = 1.3f;
+        private const float version = 1.4f;
         private Project mProject = new Project();
         private string mProjectName;
 
@@ -101,6 +101,12 @@ namespace WingSuitJudge
                         if (mSelectedMarker == -1)
                         {
                             mProject.AddMarker(new Marker(e.X, e.Y));
+                            mPictureBox.Invalidate();
+                        }
+                        else
+                        {
+                            Marker marker = mProject.GetMarker(mSelectedMarker);
+                            marker.ShowArea = !marker.ShowArea;
                             mPictureBox.Invalidate();
                         }
                         break;
@@ -527,6 +533,34 @@ namespace WingSuitJudge
             }
         }
 
+        private void mDistanceTolerance_ValueChanged(object sender, EventArgs e)
+        {
+            mProject.DistanceTolerance = (int)mDistanceTolerance.Value;
+            mPictureBox.Invalidate();
+        }
+
+        private void OnExportClick(object sender, EventArgs e)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Title = "Export photo...";
+            dialog.Filter = "Image Files (*.jpg;*.jpeg;*.png;*.bmp)|*.jpg;*.jpeg;*.png;*.bmp";
+            dialog.CheckPathExists = true;
+            dialog.AddExtension = true;
+            dialog.DefaultExt = "jpg";
+            dialog.ShowHelp = true;
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                Bitmap bitmap = mPictureBox.CloneBitmap();
+                using (Graphics gfx = Graphics.FromImage(bitmap))
+                {
+                    gfx.Transform = new Matrix(1, 0, 0, 1, bitmap.Width * 0.5f, bitmap.Height * 0.5f);
+                    mProject.Paint(gfx, -1, -1);
+                }
+                bitmap.Save(dialog.FileName);
+            }
+        }
+
         #endregion
 
         private static MenuItem NewMenuItem(string name, EventHandler handler, object tag)
@@ -548,12 +582,6 @@ namespace WingSuitJudge
             mProject = new Project();
             mPictureBox.ResetImage();
             mDistanceTolerance.Value = mProject.DistanceTolerance;
-        }
-
-        private void mDistanceTolerance_ValueChanged(object sender, EventArgs e)
-        {
-            mProject.DistanceTolerance = (int)mDistanceTolerance.Value;
-            mPictureBox.Invalidate();
         }
     }
 }

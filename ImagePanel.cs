@@ -48,6 +48,11 @@ namespace WingSuitJudge
             Invalidate();
         }
 
+        public Bitmap CloneBitmap()
+        {
+            return (Bitmap)mBitmap.Clone();
+        }
+
         public int Zoom
         {
             get { return mZoom; }
