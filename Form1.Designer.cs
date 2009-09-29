@@ -31,9 +31,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.mStatusBar = new System.Windows.Forms.StatusStrip();
             this.mZoomText = new System.Windows.Forms.ToolStripStatusLabel();
+            this.mAccuracy = new System.Windows.Forms.ToolStripStatusLabel();
             this.mMainMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importPhotoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFormationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -62,7 +64,7 @@
             this.mBtnZoomOut = new WingSuitJudge.CheckButton();
             this.mBtnZoomIn = new WingSuitJudge.CheckButton();
             this.mPictureBox = new WingSuitJudge.ImagePanel();
-            this.mAccuracy = new System.Windows.Forms.ToolStripStatusLabel();
+            this.mBtnCenterImage = new WingSuitJudge.CheckButton();
             this.mStatusBar.SuspendLayout();
             this.mMainMenu.SuspendLayout();
             this.mMenuPanel.SuspendLayout();
@@ -90,6 +92,13 @@
             this.mZoomText.Size = new System.Drawing.Size(100, 17);
             this.mZoomText.Text = "Zoom: 100%";
             // 
+            // mAccuracy
+            // 
+            this.mAccuracy.AutoSize = false;
+            this.mAccuracy.Name = "mAccuracy";
+            this.mAccuracy.Size = new System.Drawing.Size(100, 17);
+            this.mAccuracy.Text = "Accuracy: ??";
+            // 
             // mMainMenu
             // 
             this.mMainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -105,6 +114,7 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.importPhotoToolStripMenuItem,
+            this.toolStripMenuItem4,
             this.toolStripMenuItem1,
             this.newToolStripMenuItem,
             this.openFormationToolStripMenuItem,
@@ -120,57 +130,69 @@
             // importPhotoToolStripMenuItem
             // 
             this.importPhotoToolStripMenuItem.Name = "importPhotoToolStripMenuItem";
-            this.importPhotoToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
-            this.importPhotoToolStripMenuItem.Text = "Import photo";
+            this.importPhotoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
+            this.importPhotoToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.importPhotoToolStripMenuItem.Text = "Import photo...";
             this.importPhotoToolStripMenuItem.Click += new System.EventHandler(this.OnImportImageClick);
+            // 
+            // toolStripMenuItem4
+            // 
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(191, 22);
+            this.toolStripMenuItem4.Text = "Reset photo";
+            this.toolStripMenuItem4.Click += new System.EventHandler(this.OnResetPhotoClick);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(142, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(188, 6);
             // 
             // newToolStripMenuItem
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.newToolStripMenuItem.Text = "&New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.OnNewClick);
             // 
             // openFormationToolStripMenuItem
             // 
             this.openFormationToolStripMenuItem.Name = "openFormationToolStripMenuItem";
-            this.openFormationToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.openFormationToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.openFormationToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.openFormationToolStripMenuItem.Text = "&Open...";
             this.openFormationToolStripMenuItem.Click += new System.EventHandler(this.OnOpenClick);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(142, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(188, 6);
             // 
             // saveFormationToolStripMenuItem
             // 
             this.saveFormationToolStripMenuItem.Name = "saveFormationToolStripMenuItem";
-            this.saveFormationToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.saveFormationToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.saveFormationToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.saveFormationToolStripMenuItem.Text = "&Save...";
             this.saveFormationToolStripMenuItem.Click += new System.EventHandler(this.OnSaveClick);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.saveAsToolStripMenuItem.Text = "Save as...";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.OnSaveAsClick);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(142, 6);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(188, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.OnExitClick);
             // 
@@ -220,7 +242,7 @@
             this.mJudgingTools.Controls.Add(this.label1);
             this.mJudgingTools.Controls.Add(this.mDistanceTolerance);
             this.mJudgingTools.Dock = System.Windows.Forms.DockStyle.Top;
-            this.mJudgingTools.Location = new System.Drawing.Point(3, 162);
+            this.mJudgingTools.Location = new System.Drawing.Point(3, 196);
             this.mJudgingTools.Name = "mJudgingTools";
             this.mJudgingTools.Size = new System.Drawing.Size(110, 78);
             this.mJudgingTools.TabIndex = 8;
@@ -266,7 +288,7 @@
             this.mFormationTools.Controls.Add(this.mBtnRemoveMarker);
             this.mFormationTools.Controls.Add(this.mBtnAddMarker);
             this.mFormationTools.Dock = System.Windows.Forms.DockStyle.Top;
-            this.mFormationTools.Location = new System.Drawing.Point(3, 62);
+            this.mFormationTools.Location = new System.Drawing.Point(3, 96);
             this.mFormationTools.Name = "mFormationTools";
             this.mFormationTools.Size = new System.Drawing.Size(110, 100);
             this.mFormationTools.TabIndex = 7;
@@ -325,13 +347,14 @@
             // 
             // mImageTools
             // 
+            this.mImageTools.Controls.Add(this.mBtnCenterImage);
             this.mImageTools.Controls.Add(this.mBtnMoveImage);
             this.mImageTools.Controls.Add(this.mBtnZoomOut);
             this.mImageTools.Controls.Add(this.mBtnZoomIn);
             this.mImageTools.Dock = System.Windows.Forms.DockStyle.Top;
             this.mImageTools.Location = new System.Drawing.Point(3, 3);
             this.mImageTools.Name = "mImageTools";
-            this.mImageTools.Size = new System.Drawing.Size(110, 59);
+            this.mImageTools.Size = new System.Drawing.Size(110, 93);
             this.mImageTools.TabIndex = 6;
             this.mImageTools.TabStop = false;
             this.mImageTools.Text = "Image Tools";
@@ -371,7 +394,7 @@
             // mPictureBox
             // 
             this.mPictureBox.BackColor = System.Drawing.SystemColors.AppWorkspace;
-            this.mPictureBox.Cursor = System.Windows.Forms.Cursors.Cross;
+            this.mPictureBox.Cursor = System.Windows.Forms.Cursors.Default;
             this.mPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mPictureBox.Location = new System.Drawing.Point(116, 24);
             this.mPictureBox.MoveMode = false;
@@ -384,12 +407,15 @@
             this.mPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseMove);
             this.mPictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseClick);
             // 
-            // mAccuracy
+            // mBtnCenterImage
             // 
-            this.mAccuracy.AutoSize = false;
-            this.mAccuracy.Name = "mAccuracy";
-            this.mAccuracy.Size = new System.Drawing.Size(100, 17);
-            this.mAccuracy.Text = "Accuracy: ??";
+            this.mBtnCenterImage.Checked = false;
+            this.mBtnCenterImage.Image = global::WingSuitJudge.Properties.Resources.arrow_in;
+            this.mBtnCenterImage.Location = new System.Drawing.Point(40, 52);
+            this.mBtnCenterImage.Name = "mBtnCenterImage";
+            this.mBtnCenterImage.Size = new System.Drawing.Size(28, 27);
+            this.mBtnCenterImage.TabIndex = 6;
+            this.mBtnCenterImage.Click += new System.EventHandler(this.OnCenterImageClick);
             // 
             // Form1
             // 
@@ -453,6 +479,8 @@
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripStatusLabel mAccuracy;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
+        private CheckButton mBtnCenterImage;
     }
 }
 

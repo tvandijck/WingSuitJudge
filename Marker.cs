@@ -25,7 +25,7 @@ namespace WingSuitJudge
             mLocation.X = x;
             mLocation.Y = y;
             mNameTag = tag;
-        }
+        }  
 
         [Browsable(false)]
         public PointF Location

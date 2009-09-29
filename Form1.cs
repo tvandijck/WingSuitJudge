@@ -451,7 +451,7 @@ namespace WingSuitJudge
             }
             SaveProject();
         }
-        
+
         private void OnOpenClick(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
@@ -464,6 +464,56 @@ namespace WingSuitJudge
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 LoadProject(dialog.FileName);
+            }
+        }
+
+        private void OnResetPhotoClick(object sender, EventArgs e)
+        {
+            mPictureBox.ResetImage();
+        }
+
+        private void OnCenterImageClick(object sender, EventArgs e)
+        {
+            int num = mMarkers.Count;
+            if (num > 0)
+            {
+                float minX = mMarkers[0].Location.X;
+                float maxX = mMarkers[0].Location.X;
+                float minY = mMarkers[0].Location.Y;
+                float maxY = mMarkers[0].Location.Y;
+
+                for (int i = 1; i < num; i++)
+                {
+                    minX = Math.Min(minX, mMarkers[i].Location.X);
+                    maxX = Math.Max(maxX, mMarkers[i].Location.X);
+                    minY = Math.Min(minY, mMarkers[i].Location.Y);
+                    maxY = Math.Max(maxY, mMarkers[i].Location.Y);
+                }
+
+                // add border.
+                minX -= 10;
+                minY -= 10;
+                maxX += 10;
+                maxY += 10;
+
+                float width = maxX - minX;
+                float height = maxY - minY;
+
+                // calculate scale.
+                float scaleX = mPictureBox.Width / width;
+                float scaleY = mPictureBox.Height / height;
+                float scale = Math.Min(4, Math.Min(scaleX, scaleY));
+                SetZoom((int)(scale * 100));
+
+                // calculate center.
+                float x = (mPictureBox.Width * 0.5f) - ((minX + maxX) * scale * 0.5f);
+                float y = (mPictureBox.Height * 0.5f) - ((minY + maxY) * scale * 0.5f);
+                mPictureBox.Origin = new PointF(x, y);
+            }
+            else
+            {
+                mPictureBox.Origin = new PointF(mPictureBox.Width * 0.5f, mPictureBox.Height * 0.5f);
+                SetZoom(100);
             }
         }
 
@@ -489,7 +539,7 @@ namespace WingSuitJudge
                 // delete lines that point to this marker.
                 Marker marker = mMarkers[aIndex];
                 int num = mLines.Count;
-                for (int i = num-1; i>=0; i--)
+                for (int i = num - 1; i >= 0; i--)
                 {
                     Line line = mLines[i];
                     if (object.ReferenceEquals(marker, line.Start) || object.ReferenceEquals(marker, line.End))
@@ -532,7 +582,7 @@ namespace WingSuitJudge
                 mPictureBox.Invalidate();
             }
         }
-                
+
         private void SaveProject()
         {
             FileStream fileStream = new FileStream(ProjectName, FileMode.Create);
@@ -549,7 +599,7 @@ namespace WingSuitJudge
                     writer.Write(marker.Location.X);
                     writer.Write(marker.Location.Y);
                     writer.Write(marker.ShowArea);
-                    
+
                     if (string.IsNullOrEmpty(marker.NameTag))
                     {
                         writer.Write("");

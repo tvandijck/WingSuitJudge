@@ -80,7 +80,7 @@ namespace WingSuitJudge
             set 
             {
                 mMoveMode = value;
-                Cursor = mMoveMode ? Cursors.SizeAll : Cursors.Cross;
+                Cursor = mMoveMode ? Cursors.SizeAll : Cursors.Default;
             }
         }
 
