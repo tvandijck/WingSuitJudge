@@ -218,18 +218,18 @@
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.exportToolStripMenuItem.Text = "&Export";
             // 
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(133, 6);
             // 
             // propertiesToolStripMenuItem
             // 
             this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
-            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.propertiesToolStripMenuItem.Text = "Jump info...";
             this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.OnJumpInfoClick);
             // 
@@ -326,6 +326,7 @@
             0,
             0,
             0});
+            this.mDistanceTolerance.ValueChanged += new System.EventHandler(this.mDistanceTolerance_ValueChanged);
             // 
             // mFormationTools
             // 

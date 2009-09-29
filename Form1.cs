@@ -38,7 +38,7 @@ namespace WingSuitJudge
             }
         }
 
-        private const float version = 1.2f;
+        private const float version = 1.3f;
         private Project mProject = new Project();
         private string mProjectName;
 
@@ -50,10 +50,10 @@ namespace WingSuitJudge
         public Form1()
         {
             InitializeComponent();
-            ProjectName = "";
             EditorMode = EditMode.AddMarker;
             mPictureBox.Origin = new PointF(mPictureBox.Width * 0.5f, mPictureBox.Height * 0.5f);
             mPictureBox.MouseWheel += new MouseEventHandler(OnPictureBoxMouseWheel);
+            ResetProject();
         }
 
         private EditMode EditorMode
@@ -437,8 +437,9 @@ namespace WingSuitJudge
                 {
                     ProjectName = dialog.FileName;
                     mProject = new Project(dialog.FileName);
-                    mColorPicker.BackColor = mProject.BackColor;
-                    mPictureBox.BackColor = mProject.BackColor;
+                    mColorPicker.BackColor   = mProject.BackColor;
+                    mPictureBox.BackColor    = mProject.BackColor;
+                    mDistanceTolerance.Value = mProject.DistanceTolerance;
                 }
                 catch (Exception ex)
                 {
@@ -546,6 +547,13 @@ namespace WingSuitJudge
             ProjectName = null;
             mProject = new Project();
             mPictureBox.ResetImage();
+            mDistanceTolerance.Value = mProject.DistanceTolerance;
+        }
+
+        private void mDistanceTolerance_ValueChanged(object sender, EventArgs e)
+        {
+            mProject.DistanceTolerance = (int)mDistanceTolerance.Value;
+            mPictureBox.Invalidate();
         }
     }
 }

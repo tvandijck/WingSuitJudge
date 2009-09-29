@@ -55,7 +55,7 @@ namespace WingSuitJudge
         public void Draw(Graphics aGraphics, bool aSelected, bool aBase)
         {
             Pen penColor = aSelected ? Colors.SelectedPen : Colors.BlackPen;
-            Brush fillColor = aBase ? Brushes.DarkGreen : Brushes.DarkRed;
+            Brush fillColor = aBase ? Colors.MarkerBase : Colors.MarkerNormal;
 
             aGraphics.FillEllipse(fillColor, mLocation.X - 8, mLocation.Y - 8, 16, 16);
             aGraphics.DrawEllipse(penColor, mLocation.X - 8, mLocation.Y - 8, 16, 16);
