@@ -14,6 +14,8 @@ namespace WingSuitJudge
         private Image mImage;
         private bool mHighlite = false;
         private bool mChecked = false;
+        private string mTooltip;
+        private ToolTip mToopTipCtrl = new ToolTip();
 
         public CheckButton()
         {
@@ -38,6 +40,16 @@ namespace WingSuitJudge
             {
                 mChecked = value;
                 Invalidate();
+            }
+        }
+
+        public string Tooltip
+        {
+            get { return mTooltip; }
+            set 
+            { 
+                mTooltip = value;
+                mToopTipCtrl.SetToolTip(this, value);
             }
         }
 
@@ -74,6 +86,5 @@ namespace WingSuitJudge
             Invalidate();
             base.OnMouseLeave(e);
         }
-
     }
 }
