@@ -17,7 +17,7 @@ namespace WingSuitJudge
         {
         }
 
-        public override bool OnMouseClick(MouseEventArgs e)
+        public override bool OnMouseClick(ImagePanel aSender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
@@ -33,7 +33,8 @@ namespace WingSuitJudge
                         Project.AddLine(mDragLine.StartMarker, selected);
                         mDragLine = null;
                     }
-                    return true;
+                    aSender.Invalidate();
+                    return false;
                 }
             }
 
@@ -42,22 +43,23 @@ namespace WingSuitJudge
                 if (mDragLine != null)
                 {
                     mDragLine = null;
-                    return true;
+                    aSender.Invalidate();
+                    return false;
                 }
             }
 
-            return false;
+            return true;
         }
 
-        public override bool OnMouseMove(MouseEventArgs e)
+        public override bool OnMouseMove(ImagePanel aSender, MouseEventArgs e)
         {
             if (mDragLine != null)
             {
                 mDragLine.EndMarker = Project.FindMarker(e.X, e.Y);
                 mDragLine.MousePosition = new PointF(e.X, e.Y);
-                return true;
+                aSender.Invalidate();
             }
-            return false;
+            return true;
         }
 
         public override void OnPaint(Graphics aGraphics)

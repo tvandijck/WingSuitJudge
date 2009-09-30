@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace WingSuitJudge
 {
-    class ImagePanel : UserControl
+    public class ImagePanel : UserControl
     {
         private Bitmap mBitmap = null;
         private RectangleF mBitmapRect;
@@ -125,6 +125,26 @@ namespace WingSuitJudge
                 MouseEventArgs args = new MouseEventArgs(e.Button, e.Clicks, (int)x, (int)y, e.Delta);
                 base.OnMouseClick(args);
             }
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            float dz = mZoom * 0.01f;
+            float x = (e.X - Origin.X) / dz;
+            float y = (e.Y - Origin.Y) / dz;
+
+            MouseEventArgs args = new MouseEventArgs(e.Button, e.Clicks, (int)x, (int)y, e.Delta);
+            base.OnMouseDown(args);
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            float dz = mZoom * 0.01f;
+            float x = (e.X - Origin.X) / dz;
+            float y = (e.Y - Origin.Y) / dz;
+
+            MouseEventArgs args = new MouseEventArgs(e.Button, e.Clicks, (int)x, (int)y, e.Delta);
+            base.OnMouseUp(args);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)

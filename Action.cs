@@ -17,8 +17,28 @@ namespace WingSuitJudge
             get { return mProject; }
         }
 
-        public abstract bool OnMouseClick(MouseEventArgs e);
-        public abstract bool OnMouseMove(MouseEventArgs e);
-        public abstract void OnPaint(Graphics aGraphics);
+        public virtual bool OnMouseDown(ImagePanel aSender, MouseEventArgs e)
+        {
+            return true;
+        }
+
+        public virtual bool OnMouseUp(ImagePanel aSender, MouseEventArgs e)
+        {
+            return true;
+        }
+
+        public virtual bool OnMouseClick(ImagePanel aSender, MouseEventArgs e)
+        {
+            return true;
+        }
+
+        public virtual bool OnMouseMove(ImagePanel aSender, MouseEventArgs e)
+        {
+            return true;
+        }
+
+        public virtual void OnPaint(Graphics aGraphics)
+        {
+        }
     }
 }

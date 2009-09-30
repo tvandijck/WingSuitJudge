@@ -16,28 +16,33 @@ namespace WingSuitJudge
         {
         }
 
-        public override bool OnMouseClick(MouseEventArgs e)
-        {
-            return false;
-        }
-
-        public override bool OnMouseMove(MouseEventArgs e)
+        public override bool OnMouseDown(ImagePanel aSender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
-                Marker marker = Project.GetMarker(mSelected);
-                marker.Location = new PointF(e.X, e.Y);
-                return true;
-            }
-            else
-            {
                 mSelected = Project.FindMarker(e.X, e.Y);
+                return false;
             }
-            return false;
+            return true;
         }
 
-        public override void OnPaint(Graphics aGraphics)
+        public override bool OnMouseUp(ImagePanel aSender, MouseEventArgs e)
         {
+            mSelected = -1;
+            return true;
         }
+
+        public override bool OnMouseMove(ImagePanel aSender, MouseEventArgs e)
+        {
+            if (mSelected != -1 && e.Button == MouseButtons.Left)
+            {
+                Marker marker = Project.GetMarker(mSelected);
+                marker.Location = new PointF(e.X, e.Y);
+                aSender.Invalidate();
+                return false;
+            }
+            return true;
+        }
+
     }
 }

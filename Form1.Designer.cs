@@ -60,6 +60,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.mDistanceTolerance = new System.Windows.Forms.NumericUpDown();
             this.mFormationTools = new System.Windows.Forms.GroupBox();
+            this.mBtnFreeTransform = new WingSuitJudge.CheckButton();
             this.mHideFormation = new System.Windows.Forms.CheckBox();
             this.mBtnRemoveLine = new WingSuitJudge.CheckButton();
             this.mBtnAddLine = new WingSuitJudge.CheckButton();
@@ -113,7 +114,7 @@
             // mCopyright
             // 
             this.mCopyright.Name = "mCopyright";
-            this.mCopyright.Size = new System.Drawing.Size(870, 17);
+            this.mCopyright.Size = new System.Drawing.Size(901, 17);
             this.mCopyright.Spring = true;
             this.mCopyright.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -341,6 +342,7 @@
             // 
             // mFormationTools
             // 
+            this.mFormationTools.Controls.Add(this.mBtnFreeTransform);
             this.mFormationTools.Controls.Add(this.mHideFormation);
             this.mFormationTools.Controls.Add(this.mBtnRemoveLine);
             this.mFormationTools.Controls.Add(this.mBtnAddLine);
@@ -355,11 +357,22 @@
             this.mFormationTools.TabStop = false;
             this.mFormationTools.Text = "Formation Tools";
             // 
-            // mHideMarkers
+            // mBtnFreeTransform
+            // 
+            this.mBtnFreeTransform.Checked = false;
+            this.mBtnFreeTransform.Image = ((System.Drawing.Image)(resources.GetObject("mBtnFreeTransform.Image")));
+            this.mBtnFreeTransform.Location = new System.Drawing.Point(74, 53);
+            this.mBtnFreeTransform.Name = "mBtnFreeTransform";
+            this.mBtnFreeTransform.Size = new System.Drawing.Size(28, 27);
+            this.mBtnFreeTransform.TabIndex = 13;
+            this.mBtnFreeTransform.Tooltip = "Free transform formation";
+            this.mBtnFreeTransform.Click += new System.EventHandler(this.mFreeTransform_Click);
+            // 
+            // mHideFormation
             // 
             this.mHideFormation.AutoSize = true;
             this.mHideFormation.Location = new System.Drawing.Point(11, 86);
-            this.mHideFormation.Name = "mHideMarkers";
+            this.mHideFormation.Name = "mHideFormation";
             this.mHideFormation.Size = new System.Drawing.Size(94, 17);
             this.mHideFormation.TabIndex = 12;
             this.mHideFormation.Text = "Hide formation";
@@ -517,6 +530,8 @@
             this.mPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.OnPictureBoxPaint);
             this.mPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseMove);
             this.mPictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseClick);
+            this.mPictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseDown);
+            this.mPictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseUp);
             // 
             // Form1
             // 
@@ -594,6 +609,7 @@
         private System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel mCopyright;
         private System.Windows.Forms.CheckBox mHideFormation;
+        private CheckButton mBtnFreeTransform;
     }
 }
 

@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WingSuitJudge.Properties
-{
-
-
+namespace WingSuitJudge.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -88,6 +88,13 @@ namespace WingSuitJudge.Properties
             }
         }
         
+        internal static System.Drawing.Bitmap arrow_rotate_clockwise {
+            get {
+                object obj = ResourceManager.GetObject("arrow_rotate_clockwise", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap delete {
             get {
                 object obj = ResourceManager.GetObject("delete", resourceCulture);
@@ -112,6 +119,13 @@ namespace WingSuitJudge.Properties
         internal static System.Drawing.Bitmap vector_delete {
             get {
                 object obj = ResourceManager.GetObject("vector_delete", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap wingsuit_outline {
+            get {
+                object obj = ResourceManager.GetObject("wingsuit_outline", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

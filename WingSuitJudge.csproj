@@ -60,6 +60,7 @@
     <Compile Include="Actions\MoveMarkerAction.cs" />
     <Compile Include="Actions\RemoveLineAction.cs" />
     <Compile Include="Actions\RemoveMarkerAction.cs" />
+    <Compile Include="Actions\RotateAction.cs" />
     <Compile Include="CheckButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -159,7 +160,11 @@
     <None Include="Resources\mouse.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Resources\wingsuit_outline.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\arrow_rotate_clockwise.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

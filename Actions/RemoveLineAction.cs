@@ -14,7 +14,7 @@ namespace WingSuitJudge
         {
         }
 
-        public override bool OnMouseClick(MouseEventArgs e)
+        public override bool OnMouseClick(ImagePanel aSender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
@@ -22,19 +22,11 @@ namespace WingSuitJudge
                 if (selected != -1)
                 {
                     Project.RemoveLine(selected);
-                    return true;
+                    aSender.Invalidate();
+                    return false;
                 }
             }
-            return false;
-        }
-
-        public override bool OnMouseMove(MouseEventArgs e)
-        {
-            return false;
-        }
-
-        public override void OnPaint(Graphics aGraphics)
-        {
+            return true;
         }
     }
 }

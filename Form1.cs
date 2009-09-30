@@ -17,7 +17,8 @@ namespace WingSuitJudge
             RemoveMarker,
             MoveMarker,
             AddLine,
-            RemoveLine
+            RemoveLine,
+            FreeTransform
         }
 
         private Action mAction = null;
@@ -84,6 +85,7 @@ namespace WingSuitJudge
                 mBtnMoveMarker.Checked = mEditMode_ == EditMode.MoveMarker;
                 mBtnAddLine.Checked = mEditMode_ == EditMode.AddLine;
                 mBtnRemoveLine.Checked = mEditMode_ == EditMode.RemoveLine;
+                mBtnFreeTransform.Checked = mEditMode_ == EditMode.FreeTransform;
                 mPictureBox.MoveMode = mEditMode_ == EditMode.MoveImage;
 
                 switch (mEditMode_)
@@ -103,10 +105,15 @@ namespace WingSuitJudge
                     case EditMode.RemoveLine:
                         mAction = new RemoveLineAction(Project);
                         break;
+                    case EditMode.FreeTransform:
+                        mAction = new RotateAction(Project);
+                        break;
                     default:
                         mAction = null;
                         break;
                 }
+
+                mPictureBox.Invalidate();
             }
         }
 
@@ -148,7 +155,8 @@ namespace WingSuitJudge
                 FileVersionInfo info = FileVersionInfo.GetVersionInfo(assembly.Location);
                 if (info != null)
                 {
-                    return string.Format("{0}.{1}", info.ProductMajorPart, info.ProductMinorPart);
+                    return string.Format("{0}.{1}.{2}", info.ProductMajorPart, 
+                        info.ProductMinorPart, info.ProductBuildPart);
                 }
                 else
                 {
@@ -163,40 +171,48 @@ namespace WingSuitJudge
 
         private void OnPictureBoxMouseClick(object sender, MouseEventArgs e)
         {
-            if (mAction != null && mAction.OnMouseClick(e))
+            if (mAction == null || mAction.OnMouseClick(mPictureBox, e))
             {
-                mPictureBox.Invalidate();
+                if (e.Button == MouseButtons.Right)
+                {
+                    if (mSelectedMarker != -1)
+                    {
+                        ContextMenu menu = new ContextMenu();
+                        menu.MenuItems.Add(NewMenuItem("Mark as base", new EventHandler(OnMakeMarkerBase), mSelectedMarker));
+                        menu.MenuItems.Add(NewMenuItem("Remove", new EventHandler(OnRemoveMarker), mSelectedMarker));
+                        menu.MenuItems.Add("-");
+                        menu.MenuItems.Add(NewMenuItem("Properties", new EventHandler(OnMarkerProperties), mSelectedMarker));
+                        menu.Show(this, mPictureBox.ToScreen(new Point(e.X, e.Y)));
+                    }
+                    else if (mSelectedLine != -1)
+                    {
+                        ContextMenu menu = new ContextMenu();
+                        menu.MenuItems.Add(NewMenuItem("Mark as base", new EventHandler(OnMakeLineBase), mSelectedLine));
+                        menu.MenuItems.Add("-");
+                        menu.MenuItems.Add(NewMenuItem("Remove", new EventHandler(OnRemoveLine), mSelectedLine));
+                        menu.Show(this, mPictureBox.ToScreen(new Point(e.X, e.Y)));
+                    }
+                }
             }
-            else if (e.Button == MouseButtons.Right)
+        }
+
+        private void OnPictureBoxMouseDown(object sender, MouseEventArgs e)
+        {
+            if (mAction == null || mAction.OnMouseDown(mPictureBox, e))
             {
-                if (mSelectedMarker != -1)
-                {
-                    ContextMenu menu = new ContextMenu();
-                    menu.MenuItems.Add(NewMenuItem("Mark as base", new EventHandler(OnMakeMarkerBase), mSelectedMarker));
-                    menu.MenuItems.Add(NewMenuItem("Remove", new EventHandler(OnRemoveMarker), mSelectedMarker));
-                    menu.MenuItems.Add("-");
-                    menu.MenuItems.Add(NewMenuItem("Properties", new EventHandler(OnMarkerProperties), mSelectedMarker));
-                    menu.Show(this, mPictureBox.ToScreen(new Point(e.X, e.Y)));
-                }
-                else if (mSelectedLine != -1)
-                {
-                    ContextMenu menu = new ContextMenu();
-                    menu.MenuItems.Add(NewMenuItem("Mark as base", new EventHandler(OnMakeLineBase), mSelectedLine));
-                    menu.MenuItems.Add("-");
-                    menu.MenuItems.Add(NewMenuItem("Remove", new EventHandler(OnRemoveLine), mSelectedLine));
-                    menu.Show(this, mPictureBox.ToScreen(new Point(e.X, e.Y)));
-                }
+            }
+        }
+
+        private void OnPictureBoxMouseUp(object sender, MouseEventArgs e)
+        {
+            if (mAction == null || mAction.OnMouseUp(mPictureBox, e))
+            {
             }
         }
 
         private void OnPictureBoxMouseMove(object sender, MouseEventArgs e)
         {
-            if (mAction != null && mAction.OnMouseMove(e))
-            {
-                mPictureBox.Invalidate();
-            }
-
-            if (e.Button == MouseButtons.None)
+            if (mAction == null || mAction.OnMouseMove(mPictureBox, e))
             {
                 // find marker selection.
                 int selected = Project.FindMarker(e.X, e.Y);
@@ -217,6 +233,18 @@ namespace WingSuitJudge
                         mPictureBox.Invalidate();
                     }
                 }
+            }
+        }
+
+        private void OnPictureBoxMouseWheel(object sender, MouseEventArgs e)
+        {
+            if (e.Delta > 0)
+            {
+                Zoom += 5;
+            }
+            else
+            {
+                Zoom -= 5;
             }
         }
 
@@ -274,18 +302,6 @@ namespace WingSuitJudge
             {
                 Project.RemoveLine(line);
                 mPictureBox.Invalidate();
-            }
-        }
-
-        private void OnPictureBoxMouseWheel(object sender, MouseEventArgs e)
-        {
-            if (e.Delta > 0)
-            {
-                Zoom += 5;
-            }
-            else
-            {
-                Zoom -= 5;
             }
         }
 
@@ -364,6 +380,11 @@ namespace WingSuitJudge
         private void OnMoveImageClick(object sender, EventArgs e)
         {
             EditorMode = EditMode.MoveImage;
+        }
+
+        private void mFreeTransform_Click(object sender, EventArgs e)
+        {
+            EditorMode = EditMode.FreeTransform;
         }
 
         private void OnExitClick(object sender, EventArgs e)
