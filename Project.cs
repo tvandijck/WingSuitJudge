@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
-using System.Windows.Forms;
 
 namespace WingSuitJudge
 {
@@ -94,6 +91,33 @@ namespace WingSuitJudge
             set { mDistanceTolerance = value; }
         }
 
+        public int FindLine(Line aLine)
+        {
+            int num = mLines.Count;
+            for (int i = 0; i < num; i++)
+            {
+                if (object.ReferenceEquals(mLines[i], aLine))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        public int FindLine(float aX, float aY)
+        {
+            int num = mLines.Count;
+            for (int i = 0; i < num; i++)
+            {
+                float d = mLines[i].GetDistance(aX, aY);
+                if (d < 3)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
         #region -- Marker API -------------------------------------------------
 
         public void AddMarker(Marker marker)
@@ -133,12 +157,27 @@ namespace WingSuitJudge
             return mMarkers[aIndex];
         }
 
-        public int FindMarker(Marker a)
+        public int FindMarker(Marker aMarker)
         {
             int num = mMarkers.Count;
             for (int i = 0; i < num; i++)
             {
-                if (object.ReferenceEquals(mMarkers[i], a))
+                if (object.ReferenceEquals(mMarkers[i], aMarker))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        public int FindMarker(float aX, float aY)
+        {
+            int num = mMarkers.Count;
+            for (int i = 0; i < num; i++)
+            {
+                float dx = aX - mMarkers[i].Location.X;
+                float dy = aY - mMarkers[i].Location.Y;
+                if (dx * dx + dy * dy < 16 * 16)
                 {
                     return i;
                 }
@@ -240,39 +279,70 @@ namespace WingSuitJudge
             }
         }
 
-        public float CalculateAccuracy()
+        public float Accuracy
         {
-            // get line base length.
-            if (mBaseLine >= 0 && mBaseLine < mLines.Count)
+            get
             {
-                float dtol = mDistanceTolerance * 0.01f;
-                float baseLength = mLines[mBaseLine].GetLength();
-                float minLength = baseLength - (baseLength * dtol);
-                float maxLength = baseLength + (baseLength * dtol);
-
-                float totalError = 0;
-                float totalLength = 0;
-                int numLines = mLines.Count;
-                for (int i = 0; i < numLines; i++)
+                // get line base length.
+                if (mBaseLine >= 0 && mBaseLine < mLines.Count)
                 {
-                    Line line = mLines[i];
-                    float length = line.GetLength();
-                    if (length < minLength)
+                    float dtol = mDistanceTolerance * 0.01f;
+                    float baseLength = mLines[mBaseLine].GetLength();
+                    float minLength = baseLength - (baseLength * dtol);
+                    float maxLength = baseLength + (baseLength * dtol);
+
+                    float totalError = 0;
+                    float totalLength = 0;
+                    int numLines = mLines.Count;
+                    for (int i = 0; i < numLines; i++)
                     {
-                        totalError += (minLength - length);
+                        Line line = mLines[i];
+                        float length = line.GetLength();
+                        if (length < minLength)
+                        {
+                            totalError += (minLength - length);
+                        }
+                        if (length > maxLength)
+                        {
+                            totalError += (length - maxLength);
+                        }
+                        totalLength += length;
                     }
-                    if (length > maxLength)
-                    {
-                        totalError += (length - maxLength);
-                    }
-                    totalLength += length;
+
+                    return 1.0f - (totalError / totalLength);
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        public RectangleF BoundingRect
+        {
+            get
+            {
+                int num = mMarkers.Count;
+                if (num <= 0)
+                {
+                    return RectangleF.Empty;
                 }
 
-                return 1.0f - (totalError / totalLength);
-            }
-            else
-            {
-                return 0;
+                Marker marker = mMarkers[0];
+                float minX = marker.Location.X;
+                float maxX = marker.Location.X;
+                float minY = marker.Location.Y;
+                float maxY = marker.Location.Y;
+
+                for (int i = 1; i < num; i++)
+                {
+                    marker = mMarkers[i];
+                    minX = Math.Min(minX, marker.Location.X);
+                    maxX = Math.Max(maxX, marker.Location.X);
+                    minY = Math.Min(minY, marker.Location.Y);
+                    maxY = Math.Max(maxY, marker.Location.Y);
+                }
+                return new RectangleF(minX, minY, maxX - minX, maxY - minY);
             }
         }
 
@@ -306,7 +376,7 @@ namespace WingSuitJudge
                 writer.Write(mGlideRatio);
                 writer.Write(mJumpNumber);
                 writer.Write(mFallrate);
-                
+
                 writer.Write(mMarkers.Count);
                 foreach (Marker marker in mMarkers)
                 {

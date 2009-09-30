@@ -54,6 +54,12 @@
     <Compile Include="AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Action.cs" />
+    <Compile Include="Actions\AddLineAction.cs" />
+    <Compile Include="Actions\AddMarkerAction.cs" />
+    <Compile Include="Actions\MoveMarkerAction.cs" />
+    <Compile Include="Actions\RemoveLineAction.cs" />
+    <Compile Include="Actions\RemoveMarkerAction.cs" />
     <Compile Include="CheckButton.cs">
       <SubType>UserControl</SubType>
     </Compile>

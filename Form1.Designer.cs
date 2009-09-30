@@ -32,6 +32,7 @@
             this.mStatusBar = new System.Windows.Forms.StatusStrip();
             this.mZoomText = new System.Windows.Forms.ToolStripStatusLabel();
             this.mAccuracy = new System.Windows.Forms.ToolStripStatusLabel();
+            this.mCopyright = new System.Windows.Forms.ToolStripStatusLabel();
             this.mMainMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importPhotoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,20 +60,20 @@
             this.label1 = new System.Windows.Forms.Label();
             this.mDistanceTolerance = new System.Windows.Forms.NumericUpDown();
             this.mFormationTools = new System.Windows.Forms.GroupBox();
-            this.mImageTools = new System.Windows.Forms.GroupBox();
-            this.mColorPicker = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.mPictureBox = new WingSuitJudge.ImagePanel();
+            this.mHideFormation = new System.Windows.Forms.CheckBox();
             this.mBtnRemoveLine = new WingSuitJudge.CheckButton();
             this.mBtnAddLine = new WingSuitJudge.CheckButton();
             this.mBtnMoveMarker = new WingSuitJudge.CheckButton();
             this.mBtnRemoveMarker = new WingSuitJudge.CheckButton();
             this.mBtnAddMarker = new WingSuitJudge.CheckButton();
+            this.mImageTools = new System.Windows.Forms.GroupBox();
+            this.mColorPicker = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
             this.mBtnCenterImage = new WingSuitJudge.CheckButton();
             this.mBtnMoveImage = new WingSuitJudge.CheckButton();
             this.mBtnZoomOut = new WingSuitJudge.CheckButton();
             this.mBtnZoomIn = new WingSuitJudge.CheckButton();
+            this.mPictureBox = new WingSuitJudge.ImagePanel();
             this.mStatusBar.SuspendLayout();
             this.mMainMenu.SuspendLayout();
             this.mMenuPanel.SuspendLayout();
@@ -88,7 +89,7 @@
             this.mStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mZoomText,
             this.mAccuracy,
-            this.toolStripStatusLabel1});
+            this.mCopyright});
             this.mStatusBar.Location = new System.Drawing.Point(0, 829);
             this.mStatusBar.Name = "mStatusBar";
             this.mStatusBar.Size = new System.Drawing.Size(1116, 22);
@@ -108,6 +109,13 @@
             this.mAccuracy.Name = "mAccuracy";
             this.mAccuracy.Size = new System.Drawing.Size(100, 17);
             this.mAccuracy.Text = "Accuracy: ??";
+            // 
+            // mCopyright
+            // 
+            this.mCopyright.Name = "mCopyright";
+            this.mCopyright.Size = new System.Drawing.Size(870, 17);
+            this.mCopyright.Spring = true;
+            this.mCopyright.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // mMainMenu
             // 
@@ -220,19 +228,19 @@
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.exportToolStripMenuItem.Text = "&Export...";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.OnExportClick);
             // 
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(133, 6);
             // 
             // propertiesToolStripMenuItem
             // 
             this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
-            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.propertiesToolStripMenuItem.Text = "Jump info...";
             this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.OnJumpInfoClick);
             // 
@@ -292,7 +300,7 @@
             this.mJudgingTools.Controls.Add(this.label1);
             this.mJudgingTools.Controls.Add(this.mDistanceTolerance);
             this.mJudgingTools.Dock = System.Windows.Forms.DockStyle.Top;
-            this.mJudgingTools.Location = new System.Drawing.Point(3, 235);
+            this.mJudgingTools.Location = new System.Drawing.Point(3, 247);
             this.mJudgingTools.Name = "mJudgingTools";
             this.mJudgingTools.Size = new System.Drawing.Size(110, 78);
             this.mJudgingTools.TabIndex = 8;
@@ -329,10 +337,11 @@
             0,
             0,
             0});
-            this.mDistanceTolerance.ValueChanged += new System.EventHandler(this.mDistanceTolerance_ValueChanged);
+            this.mDistanceTolerance.ValueChanged += new System.EventHandler(this.OnDistanceToleranceValueChanged);
             // 
             // mFormationTools
             // 
+            this.mFormationTools.Controls.Add(this.mHideFormation);
             this.mFormationTools.Controls.Add(this.mBtnRemoveLine);
             this.mFormationTools.Controls.Add(this.mBtnAddLine);
             this.mFormationTools.Controls.Add(this.mBtnMoveMarker);
@@ -341,69 +350,21 @@
             this.mFormationTools.Dock = System.Windows.Forms.DockStyle.Top;
             this.mFormationTools.Location = new System.Drawing.Point(3, 135);
             this.mFormationTools.Name = "mFormationTools";
-            this.mFormationTools.Size = new System.Drawing.Size(110, 100);
+            this.mFormationTools.Size = new System.Drawing.Size(110, 112);
             this.mFormationTools.TabIndex = 7;
             this.mFormationTools.TabStop = false;
             this.mFormationTools.Text = "Formation Tools";
             // 
-            // mImageTools
+            // mHideMarkers
             // 
-            this.mImageTools.Controls.Add(this.mColorPicker);
-            this.mImageTools.Controls.Add(this.label2);
-            this.mImageTools.Controls.Add(this.mBtnCenterImage);
-            this.mImageTools.Controls.Add(this.mBtnMoveImage);
-            this.mImageTools.Controls.Add(this.mBtnZoomOut);
-            this.mImageTools.Controls.Add(this.mBtnZoomIn);
-            this.mImageTools.Dock = System.Windows.Forms.DockStyle.Top;
-            this.mImageTools.Location = new System.Drawing.Point(3, 3);
-            this.mImageTools.Name = "mImageTools";
-            this.mImageTools.Size = new System.Drawing.Size(110, 132);
-            this.mImageTools.TabIndex = 6;
-            this.mImageTools.TabStop = false;
-            this.mImageTools.Text = "Image Tools";
-            // 
-            // mColorPicker
-            // 
-            this.mColorPicker.BackColor = System.Drawing.SystemColors.AppWorkspace;
-            this.mColorPicker.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.mColorPicker.Location = new System.Drawing.Point(35, 101);
-            this.mColorPicker.Name = "mColorPicker";
-            this.mColorPicker.Size = new System.Drawing.Size(40, 23);
-            this.mColorPicker.TabIndex = 8;
-            this.mColorPicker.Click += new System.EventHandler(this.OnColorPickerClick);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(8, 86);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(94, 13);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "Background color:";
-            // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(901, 17);
-            this.toolStripStatusLabel1.Spring = true;
-            this.toolStripStatusLabel1.Text = "Copyright 2009 (c) FlyLikeBrick.com and Tom van Dijck";
-            this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // mPictureBox
-            // 
-            this.mPictureBox.BackColor = System.Drawing.SystemColors.AppWorkspace;
-            this.mPictureBox.Cursor = System.Windows.Forms.Cursors.Default;
-            this.mPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mPictureBox.Location = new System.Drawing.Point(116, 24);
-            this.mPictureBox.MoveMode = false;
-            this.mPictureBox.Name = "mPictureBox";
-            this.mPictureBox.Origin = ((System.Drawing.PointF)(resources.GetObject("mPictureBox.Origin")));
-            this.mPictureBox.Size = new System.Drawing.Size(1000, 805);
-            this.mPictureBox.TabIndex = 7;
-            this.mPictureBox.Zoom = 100;
-            this.mPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.OnPictureBoxPaint);
-            this.mPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseMove);
-            this.mPictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseClick);
+            this.mHideFormation.AutoSize = true;
+            this.mHideFormation.Location = new System.Drawing.Point(11, 86);
+            this.mHideFormation.Name = "mHideMarkers";
+            this.mHideFormation.Size = new System.Drawing.Size(94, 17);
+            this.mHideFormation.TabIndex = 12;
+            this.mHideFormation.Text = "Hide formation";
+            this.mHideFormation.UseVisualStyleBackColor = true;
+            this.mHideFormation.CheckedChanged += new System.EventHandler(this.OnHideFormationCheckedChanged);
             // 
             // mBtnRemoveLine
             // 
@@ -460,6 +421,41 @@
             this.mBtnAddMarker.Tooltip = "Add marker";
             this.mBtnAddMarker.Click += new System.EventHandler(this.OnAddMarkerClick);
             // 
+            // mImageTools
+            // 
+            this.mImageTools.Controls.Add(this.mColorPicker);
+            this.mImageTools.Controls.Add(this.label2);
+            this.mImageTools.Controls.Add(this.mBtnCenterImage);
+            this.mImageTools.Controls.Add(this.mBtnMoveImage);
+            this.mImageTools.Controls.Add(this.mBtnZoomOut);
+            this.mImageTools.Controls.Add(this.mBtnZoomIn);
+            this.mImageTools.Dock = System.Windows.Forms.DockStyle.Top;
+            this.mImageTools.Location = new System.Drawing.Point(3, 3);
+            this.mImageTools.Name = "mImageTools";
+            this.mImageTools.Size = new System.Drawing.Size(110, 132);
+            this.mImageTools.TabIndex = 6;
+            this.mImageTools.TabStop = false;
+            this.mImageTools.Text = "Image Tools";
+            // 
+            // mColorPicker
+            // 
+            this.mColorPicker.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.mColorPicker.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.mColorPicker.Location = new System.Drawing.Point(35, 101);
+            this.mColorPicker.Name = "mColorPicker";
+            this.mColorPicker.Size = new System.Drawing.Size(40, 23);
+            this.mColorPicker.TabIndex = 8;
+            this.mColorPicker.Click += new System.EventHandler(this.OnColorPickerClick);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(8, 86);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(94, 13);
+            this.label2.TabIndex = 7;
+            this.label2.Text = "Background color:";
+            // 
             // mBtnCenterImage
             // 
             this.mBtnCenterImage.Checked = false;
@@ -506,6 +502,22 @@
             this.mBtnZoomIn.DoubleClick += new System.EventHandler(this.OnZoomInClick);
             this.mBtnZoomIn.Click += new System.EventHandler(this.OnZoomInClick);
             // 
+            // mPictureBox
+            // 
+            this.mPictureBox.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.mPictureBox.Cursor = System.Windows.Forms.Cursors.Default;
+            this.mPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mPictureBox.Location = new System.Drawing.Point(116, 24);
+            this.mPictureBox.MoveMode = false;
+            this.mPictureBox.Name = "mPictureBox";
+            this.mPictureBox.Origin = ((System.Drawing.PointF)(resources.GetObject("mPictureBox.Origin")));
+            this.mPictureBox.Size = new System.Drawing.Size(1000, 805);
+            this.mPictureBox.TabIndex = 7;
+            this.mPictureBox.Zoom = 100;
+            this.mPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.OnPictureBoxPaint);
+            this.mPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseMove);
+            this.mPictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseClick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -527,6 +539,7 @@
             this.mJudgingTools.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mDistanceTolerance)).EndInit();
             this.mFormationTools.ResumeLayout(false);
+            this.mFormationTools.PerformLayout();
             this.mImageTools.ResumeLayout(false);
             this.mImageTools.PerformLayout();
             this.ResumeLayout(false);
@@ -579,7 +592,8 @@
         private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
         private System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripStatusLabel mCopyright;
+        private System.Windows.Forms.CheckBox mHideFormation;
     }
 }
 
