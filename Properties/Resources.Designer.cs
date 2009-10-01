@@ -116,6 +116,13 @@ namespace WingSuitJudge.Properties {
             }
         }
         
+        internal static byte[] rotate_cursor {
+            get {
+                object obj = ResourceManager.GetObject("rotate_cursor", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap vector_add {
             get {
                 object obj = ResourceManager.GetObject("vector_add", resourceCulture);

@@ -61,6 +61,7 @@
     <Compile Include="Actions\RemoveLineAction.cs" />
     <Compile Include="Actions\RemoveMarkerAction.cs" />
     <Compile Include="Actions\RotateAction.cs" />
+    <Compile Include="Bound.cs" />
     <Compile Include="CheckButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -167,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\arrow_rotate_clockwise.png" />
+    <None Include="Resources\cur203.cur" />
     <None Include="Resources\film.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

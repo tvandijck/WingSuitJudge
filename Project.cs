@@ -475,5 +475,31 @@ namespace WingSuitJudge
                 }
             }
         }
+
+        public void Offset(float dx, float dy)
+        {
+            int numMarkers = mMarkers.Count;
+            for (int i = 0; i < numMarkers; i++)
+            {
+                Marker marker = mMarkers[i];
+                marker.Location = new PointF(marker.Location.X + dx, marker.Location.Y + dy);
+            }
+        }
+
+        public void Rotate(float cx, float cy, float angle)
+        {
+            float c = (float)Math.Cos(angle);
+            float s = (float)Math.Sin(angle);
+
+            int numMarkers = mMarkers.Count;
+            for (int i = 0; i < numMarkers; i++)
+            {
+                Marker marker = mMarkers[i];
+
+                float x = marker.Location.X - cx;
+                float y = marker.Location.Y - cy;
+                marker.Location = new PointF(x * c + y * s + cx, x * -s + y * c + cy);
+            }
+        }
     }
 }
