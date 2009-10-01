@@ -68,6 +68,7 @@
       <DependentUpon>CheckButton.cs</DependentUpon>
     </Compile>
     <Compile Include="Colors.cs" />
+    <Compile Include="ImageColorCache.cs" />
     <Compile Include="ImagePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -91,6 +92,7 @@
     <Compile Include="MarkerProperties.Designer.cs">
       <DependentUpon>MarkerProperties.cs</DependentUpon>
     </Compile>
+    <Compile Include="Math.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -165,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\arrow_rotate_clockwise.png" />
+    <None Include="Resources\film.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

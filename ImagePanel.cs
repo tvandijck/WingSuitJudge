@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using System.Drawing.Imaging;
 
 namespace WingSuitJudge
 {
@@ -40,8 +41,37 @@ namespace WingSuitJudge
             {
                 mBitmap.Dispose();
                 mBitmap = null;
+                Invalidate();
             }
-            Invalidate();
+        }
+
+        public void InvertImage()
+        {
+            if (mBitmap != null)
+            {
+                Bitmap dest = new Bitmap(mBitmap.Width, mBitmap.Height, mBitmap.PixelFormat);
+                using (Graphics gfx = Graphics.FromImage(dest))
+                {
+                    float[][] colorMatrixElements = 
+                        { 
+                            new float[] {-1,   0,   0,  0,  0},
+                            new float[] { 0,  -1,   0,  0,  0},
+                            new float[] { 0,   0,  -1,  0,  0},
+                            new float[] { 0,   0,   0,  1,  0},
+                            new float[] { 1,   1,   1,  0,  1}
+                        };
+
+                    ColorMatrix colorMatrix = new ColorMatrix(colorMatrixElements);
+                    ImageAttributes imageAttributes = new ImageAttributes();
+                    imageAttributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+
+                    gfx.DrawImage(mBitmap, new Rectangle(0, 0, mBitmap.Width, mBitmap.Height),
+                        0, 0, mBitmap.Width, mBitmap.Height, GraphicsUnit.Pixel, imageAttributes);
+                }
+                mBitmap.Dispose();
+                mBitmap = dest;
+                Invalidate();
+            }
         }
 
         public Bitmap CloneBitmap()

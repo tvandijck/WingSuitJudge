@@ -5,8 +5,11 @@ namespace WingSuitJudge
 {
     public class Line
     {
+        private static Pen LinePen = new Pen(Color.Black, 3);
+
         public Marker Start;
         public Marker End;
+        public Color Color = Color.Black;
 
         public Line(Marker start, Marker end)
         {
@@ -16,7 +19,7 @@ namespace WingSuitJudge
 
         public void Draw(Graphics aGraphics, bool aSelected, bool aBase, bool aError)
         {
-            Pen pen = Colors.BlackPen;
+            Pen pen;
             if (aSelected)
             {
                 pen = Colors.SelectedPen;
@@ -27,11 +30,15 @@ namespace WingSuitJudge
                 {
                     pen = Colors.ErrorPen;
                 }
+                else if (aBase)
+                {
+                    pen = Colors.BasePen;
+                }
                 else
-                    if (aBase)
-                    {
-                        pen = Colors.BasePen;
-                    }
+                {
+                    pen = LinePen;
+                    pen.Color = Color;
+                }
             }
             aGraphics.DrawLine(pen, Start.Location, End.Location);
         }
@@ -59,18 +66,13 @@ namespace WingSuitJudge
             {
                 float xx = Start.Location.X + param * C;
                 float yy = Start.Location.Y + param * D;
-                return d(aX, aY, xx, yy);
+                return Math2.Distance(aX, aY, xx, yy);
             }
         }
 
         public float GetLength()
         {
-            return d(Start.Location.X, Start.Location.Y, End.Location.X, End.Location.Y);
-        }
-
-        static float d(float x1, float y1, float x2, float y2)
-        {
-            return (float)Math.Sqrt(((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2)));
+            return Math2.Distance(Start.Location.X, Start.Location.Y, End.Location.X, End.Location.Y);
         }
     }
 }

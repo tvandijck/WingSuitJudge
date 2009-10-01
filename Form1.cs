@@ -177,19 +177,27 @@ namespace WingSuitJudge
                 {
                     if (mSelectedMarker != -1)
                     {
+                        Marker marker = Project.GetMarker(mSelectedMarker);
+
                         ContextMenu menu = new ContextMenu();
-                        menu.MenuItems.Add(NewMenuItem("Mark as base", new EventHandler(OnMakeMarkerBase), mSelectedMarker));
-                        menu.MenuItems.Add(NewMenuItem("Remove", new EventHandler(OnRemoveMarker), mSelectedMarker));
+                        menu.MenuItems.Add(NewMenuItem("Mark as base", new EventHandler(OnMakeMarkerBase), mSelectedMarker, false));
+                        menu.MenuItems.Add(NewMenuItem("Toggle area circles", new EventHandler(OnMarkerToggleAreaCircle), mSelectedMarker, marker.ShowArea));
                         menu.MenuItems.Add("-");
-                        menu.MenuItems.Add(NewMenuItem("Properties", new EventHandler(OnMarkerProperties), mSelectedMarker));
+                        menu.MenuItems.Add(NewMenuItem("Toggle silhouette", new EventHandler(OnMarkerToggleSilhouette), mSelectedMarker, marker.ShowSilhouette));
+                        menu.MenuItems.Add(NewMenuItem("Change color", new EventHandler(OnChangeSilhouetteColor), mSelectedMarker, false));
+                        menu.MenuItems.Add("-");
+                        menu.MenuItems.Add(NewMenuItem("Remove", new EventHandler(OnRemoveMarker), mSelectedMarker, false));
+                        menu.MenuItems.Add("-");
+                        menu.MenuItems.Add(NewMenuItem("Properties", new EventHandler(OnMarkerProperties), mSelectedMarker, false));
                         menu.Show(this, mPictureBox.ToScreen(new Point(e.X, e.Y)));
                     }
                     else if (mSelectedLine != -1)
                     {
                         ContextMenu menu = new ContextMenu();
-                        menu.MenuItems.Add(NewMenuItem("Mark as base", new EventHandler(OnMakeLineBase), mSelectedLine));
+                        menu.MenuItems.Add(NewMenuItem("Mark as base", new EventHandler(OnMakeLineBase), mSelectedLine, false));
+                        menu.MenuItems.Add(NewMenuItem("Change color", new EventHandler(OnChangeLineColor), mSelectedLine, false));
                         menu.MenuItems.Add("-");
-                        menu.MenuItems.Add(NewMenuItem("Remove", new EventHandler(OnRemoveLine), mSelectedLine));
+                        menu.MenuItems.Add(NewMenuItem("Remove", new EventHandler(OnRemoveLine), mSelectedLine, false));
                         menu.Show(this, mPictureBox.ToScreen(new Point(e.X, e.Y)));
                     }
                 }
@@ -275,6 +283,45 @@ namespace WingSuitJudge
             }
         }
 
+        private void OnMarkerToggleAreaCircle(object sender, EventArgs e)
+        {
+            int index = (int)((MenuItem)sender).Tag;
+            if (index != -1)
+            {
+                Marker marker = Project.GetMarker(index);
+                marker.ShowArea = !marker.ShowArea;
+                mPictureBox.Invalidate();
+            }
+        }
+
+        private void OnMarkerToggleSilhouette(object sender, EventArgs e)
+        {
+            int index = (int)((MenuItem)sender).Tag;
+            if (index != -1)
+            {
+                Marker marker = Project.GetMarker(index);
+                marker.ShowSilhouette = !marker.ShowSilhouette;
+                mPictureBox.Invalidate();
+            }
+        }
+
+        private void OnChangeSilhouetteColor(object sender, EventArgs e)
+        {
+            int index = (int)((MenuItem)sender).Tag;
+            if (index != -1)
+            {
+                Marker marker = Project.GetMarker(index);
+
+                ColorDialog dialog = new ColorDialog();
+                dialog.Color = marker.SilhoutteColor;
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    marker.SilhoutteColor = dialog.Color;
+                    mPictureBox.Invalidate();
+                }
+            }
+        }
+
         private void OnMakeLineBase(object sender, EventArgs e)
         {
             int line = (int)((MenuItem)sender).Tag;
@@ -282,6 +329,23 @@ namespace WingSuitJudge
             {
                 Project.BaseLine = line;
                 mPictureBox.Invalidate();
+            }
+        }
+
+        private void OnChangeLineColor(object sender, EventArgs e)
+        {
+            int index = (int)((MenuItem)sender).Tag;
+            if (index != -1)
+            {
+                Line line = Project.GetLine(index);
+
+                ColorDialog dialog = new ColorDialog();
+                dialog.Color = line.Color;
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    line.Color = dialog.Color;
+                    mPictureBox.Invalidate();
+                }
             }
         }
 
@@ -308,11 +372,17 @@ namespace WingSuitJudge
         private void OnPictureBoxPaint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+            // draw silhouette.
+            Project.PaintSilhouette(e.Graphics);
+            
+            // draw formation.
             if (!mHideFormation.Checked)
             {
                 Project.Paint(e.Graphics, mSelectedLine, mSelectedMarker);
             }
 
+            // draw action.
             if (mAction != null)
             {
                 mAction.OnPaint(e.Graphics);
@@ -468,6 +538,7 @@ namespace WingSuitJudge
             {
                 RectangleF rect = Project.BoundingRect;
                 rect.Inflate(10, 10);
+                rect.Height += 120;
 
                 float width = rect.Width;
                 float height = rect.Height;
@@ -553,10 +624,11 @@ namespace WingSuitJudge
 
         #endregion
 
-        private static MenuItem NewMenuItem(string name, EventHandler handler, object tag)
+        private static MenuItem NewMenuItem(string aName, EventHandler aHandler, object aTag, bool aChecked)
         {
-            MenuItem item = new MenuItem(name, handler);
-            item.Tag = tag;
+            MenuItem item = new MenuItem(aName, aHandler);
+            item.Tag = aTag;
+            item.Checked = aChecked;
             return item;
         }
 
@@ -565,6 +637,11 @@ namespace WingSuitJudge
             Project = new Project();
             ProjectName = null;
             mPictureBox.ResetImage();
+        }
+
+        private void mBtnInvertPhoto_Click(object sender, EventArgs e)
+        {
+            mPictureBox.InvertImage();
         }
     }
 }

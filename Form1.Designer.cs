@@ -68,6 +68,7 @@
             this.mBtnRemoveMarker = new WingSuitJudge.CheckButton();
             this.mBtnAddMarker = new WingSuitJudge.CheckButton();
             this.mImageTools = new System.Windows.Forms.GroupBox();
+            this.mBtnInvertPhoto = new WingSuitJudge.CheckButton();
             this.mColorPicker = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.mBtnCenterImage = new WingSuitJudge.CheckButton();
@@ -436,6 +437,7 @@
             // 
             // mImageTools
             // 
+            this.mImageTools.Controls.Add(this.mBtnInvertPhoto);
             this.mImageTools.Controls.Add(this.mColorPicker);
             this.mImageTools.Controls.Add(this.label2);
             this.mImageTools.Controls.Add(this.mBtnCenterImage);
@@ -449,6 +451,17 @@
             this.mImageTools.TabIndex = 6;
             this.mImageTools.TabStop = false;
             this.mImageTools.Text = "Image Tools";
+            // 
+            // mBtnInvertPhoto
+            // 
+            this.mBtnInvertPhoto.Checked = false;
+            this.mBtnInvertPhoto.Image = global::WingSuitJudge.Properties.Resources.film;
+            this.mBtnInvertPhoto.Location = new System.Drawing.Point(40, 52);
+            this.mBtnInvertPhoto.Name = "mBtnInvertPhoto";
+            this.mBtnInvertPhoto.Size = new System.Drawing.Size(28, 27);
+            this.mBtnInvertPhoto.TabIndex = 9;
+            this.mBtnInvertPhoto.Tooltip = "Invert photo";
+            this.mBtnInvertPhoto.Click += new System.EventHandler(this.mBtnInvertPhoto_Click);
             // 
             // mColorPicker
             // 
@@ -473,7 +486,7 @@
             // 
             this.mBtnCenterImage.Checked = false;
             this.mBtnCenterImage.Image = global::WingSuitJudge.Properties.Resources.arrow_in;
-            this.mBtnCenterImage.Location = new System.Drawing.Point(40, 52);
+            this.mBtnCenterImage.Location = new System.Drawing.Point(6, 52);
             this.mBtnCenterImage.Name = "mBtnCenterImage";
             this.mBtnCenterImage.Size = new System.Drawing.Size(28, 27);
             this.mBtnCenterImage.TabIndex = 6;
@@ -610,6 +623,7 @@
         private System.Windows.Forms.ToolStripStatusLabel mCopyright;
         private System.Windows.Forms.CheckBox mHideFormation;
         private CheckButton mBtnFreeTransform;
+        private CheckButton mBtnInvertPhoto;
     }
 }
 

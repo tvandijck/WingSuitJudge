@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace WingSuitJudge
 {
@@ -9,6 +10,9 @@ namespace WingSuitJudge
         private string mNameTag;
         private string mDescription;
         private bool mShowArea;
+        private bool mShowSilhouette;
+        private Color mSilhoutteColor = Color.White;
+        private Image mSilhoutte = null;
 
         public Marker(float x, float y)
         {
@@ -46,6 +50,51 @@ namespace WingSuitJudge
         {
             get { return mShowArea; }
             set { mShowArea = value; }
+        }
+
+        public bool ShowSilhouette
+        {
+            get { return mShowSilhouette; }
+            set 
+            {
+                if (mShowSilhouette != value)
+                {
+                    mShowSilhouette = value;
+                    if (mShowSilhouette)
+                    {
+                        mSilhoutte = ImageColorCache.GetSilhouetteImage(mSilhoutteColor);
+                    }
+                    else
+                    {
+                        mSilhoutte = null;
+                    }
+                }
+            }
+        }
+
+        public Color SilhoutteColor
+        {
+            get { return mSilhoutteColor; }
+            set 
+            {
+                if (mSilhoutteColor != value)
+                {
+                    mSilhoutteColor = value;
+                    if (mShowSilhouette)
+                    {
+                        mSilhoutte = ImageColorCache.GetSilhouetteImage(mSilhoutteColor);
+                    }
+                }
+            }
+        }
+
+        public void DrawSilhouette(Graphics aGraphics)
+        {
+            if (mShowSilhouette)
+            {
+                aGraphics.InterpolationMode = InterpolationMode.High;
+                aGraphics.DrawImage(mSilhoutte, mLocation.X - 62, mLocation.Y - 8, mSilhoutte.Width * 0.5f, mSilhoutte.Height * 0.5f);
+            }
         }
 
         public void Draw(Graphics aGraphics, bool aSelected, bool aBase)

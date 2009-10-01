@@ -227,10 +227,18 @@ namespace WingSuitJudge
 
         #endregion
 
+        public void PaintSilhouette(Graphics aGraphics)
+        {
+            int numMarkers = mMarkers.Count;
+            for (int i = 0; i < numMarkers; i++)
+            {
+                Marker marker = mMarkers[i];
+                marker.DrawSilhouette(aGraphics);
+            }
+        }
+
         public void Paint(Graphics aGraphics, int aSelectedLine, int aSelectedMarker)
         {
-            aGraphics.SmoothingMode = SmoothingMode.AntiAlias;
-
             // get line base length.
             float baseLength = 0;
             float minLength = 0;
@@ -364,7 +372,7 @@ namespace WingSuitJudge
             using (BinaryWriter writer = new BinaryWriter(fileStream))
             {
                 writer.Write((int)0x4b434c46);
-                writer.Write((int)2);
+                writer.Write((int)3);
                 writer.Write(mBaseMarker);
                 writer.Write(mBaseLine);
                 writer.Write(mDistanceTolerance);
@@ -383,6 +391,8 @@ namespace WingSuitJudge
                     writer.Write(marker.Location.X);
                     writer.Write(marker.Location.Y);
                     writer.Write(marker.ShowArea);
+                    writer.Write(marker.ShowSilhouette);
+                    writer.Write(marker.SilhoutteColor.ToArgb());
 
                     WriteString(writer, marker.NameTag);
                     WriteString(writer, marker.Description);
@@ -393,6 +403,7 @@ namespace WingSuitJudge
                 {
                     writer.Write(FindMarker(line.Start));
                     writer.Write(FindMarker(line.End));
+                    writer.Write(line.Color.ToArgb());
                 }
             }
         }
@@ -409,7 +420,7 @@ namespace WingSuitJudge
                 }
 
                 int version = reader.ReadInt32();
-                if (version == 1 || version == 2)
+                if (version == 1 || version == 2 || version == 3)
                 {
                     mBaseMarker = reader.ReadInt32();
                     mBaseLine = reader.ReadInt32();
@@ -434,6 +445,12 @@ namespace WingSuitJudge
                         float y = reader.ReadSingle();
                         Marker marker = new Marker(x, y);
                         marker.ShowArea = reader.ReadBoolean();
+                        if (version >= 3)
+                        {
+                            marker.ShowSilhouette = reader.ReadBoolean();
+                            marker.SilhoutteColor = Color.FromArgb(reader.ReadInt32());
+                        }
+
                         marker.NameTag = reader.ReadString();
                         marker.Description = reader.ReadString();
                         mMarkers.Add(marker);
@@ -444,7 +461,12 @@ namespace WingSuitJudge
                     {
                         int start = reader.ReadInt32();
                         int end = reader.ReadInt32();
-                        mLines.Add(new Line(mMarkers[start], mMarkers[end]));
+                        Line line = new Line(mMarkers[start], mMarkers[end]);
+                        if (version >= 3)
+                        {
+                            line.Color = Color.FromArgb(reader.ReadInt32());
+                        }
+                        mLines.Add(line);
                     }
                 }
                 else
