@@ -133,16 +133,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\add.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\arrow_in.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\arrow_out.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\delete.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\zoom_in.png" />
@@ -151,25 +145,21 @@
     <None Include="Resources\zoom_out.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\vector_add.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\vector_delete.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\01_an72_exit_02.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\mouse.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="Resources\wingsuit_outline.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\arrow_rotate_clockwise.png" />
+    <None Include="Resources\add_marker.png" />
+    <None Include="Resources\add_line.png" />
+    <None Include="Resources\remove_line.png" />
+    <None Include="Resources\move_marker.png" />
+    <None Include="Resources\move_formation.png" />
+    <None Include="Resources\invert_photo.png" />
+    <None Include="Resources\remove_marker.png" />
     <None Include="Resources\cur203.cur" />
-    <None Include="Resources\film.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

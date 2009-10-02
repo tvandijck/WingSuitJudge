@@ -10,9 +10,8 @@ namespace WingSuitJudge
         private string mNameTag;
         private string mDescription;
         private bool mShowArea;
-        private bool mShowSilhouette;
         private Color mSilhoutteColor = Color.White;
-        private Image mSilhoutte = null;
+        private Image mSilhoutte = ImageColorCache.GetSilhouetteImage(Color.White);
 
         public Marker(float x, float y)
         {
@@ -52,26 +51,6 @@ namespace WingSuitJudge
             set { mShowArea = value; }
         }
 
-        public bool ShowSilhouette
-        {
-            get { return mShowSilhouette; }
-            set 
-            {
-                if (mShowSilhouette != value)
-                {
-                    mShowSilhouette = value;
-                    if (mShowSilhouette)
-                    {
-                        mSilhoutte = ImageColorCache.GetSilhouetteImage(mSilhoutteColor);
-                    }
-                    else
-                    {
-                        mSilhoutte = null;
-                    }
-                }
-            }
-        }
-
         public Color SilhoutteColor
         {
             get { return mSilhoutteColor; }
@@ -80,21 +59,15 @@ namespace WingSuitJudge
                 if (mSilhoutteColor != value)
                 {
                     mSilhoutteColor = value;
-                    if (mShowSilhouette)
-                    {
-                        mSilhoutte = ImageColorCache.GetSilhouetteImage(mSilhoutteColor);
-                    }
+                    mSilhoutte = ImageColorCache.GetSilhouetteImage(mSilhoutteColor);
                 }
             }
         }
 
         public void DrawSilhouette(Graphics aGraphics)
         {
-            if (mShowSilhouette)
-            {
-                aGraphics.InterpolationMode = InterpolationMode.High;
-                aGraphics.DrawImage(mSilhoutte, mLocation.X - 62, mLocation.Y - 8, mSilhoutte.Width * 0.5f, mSilhoutte.Height * 0.5f);
-            }
+            aGraphics.InterpolationMode = InterpolationMode.High;
+            aGraphics.DrawImage(mSilhoutte, mLocation.X - 62, mLocation.Y - 8, mSilhoutte.Width * 0.5f, mSilhoutte.Height * 0.5f);
         }
 
         public void Draw(Graphics aGraphics, bool aSelected, bool aBase)

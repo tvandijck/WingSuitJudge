@@ -46,10 +46,8 @@ namespace WingSuitJudge
                 {
                     mProject_ = value;
                     mDistanceTolerance.Value = mProject_.DistanceTolerance;
-                    mColorPicker.BackColor = mProject_.BackColor;
                     mPictureBox.BackColor = mProject_.BackColor;
                     EditorMode = EditMode.AddMarker;
-
                 }
             }
         }
@@ -183,11 +181,9 @@ namespace WingSuitJudge
                         menu.MenuItems.Add(NewMenuItem("Mark as base", new EventHandler(OnMakeMarkerBase), mSelectedMarker, false));
                         menu.MenuItems.Add(NewMenuItem("Toggle area circles", new EventHandler(OnMarkerToggleAreaCircle), mSelectedMarker, marker.ShowArea));
                         menu.MenuItems.Add("-");
-                        menu.MenuItems.Add(NewMenuItem("Toggle silhouette", new EventHandler(OnMarkerToggleSilhouette), mSelectedMarker, marker.ShowSilhouette));
-                        menu.MenuItems.Add(NewMenuItem("Change color", new EventHandler(OnChangeSilhouetteColor), mSelectedMarker, false));
+                        menu.MenuItems.Add(NewMenuItem("Change wingsuit color", new EventHandler(OnChangeSilhouetteColor), mSelectedMarker, false));
                         menu.MenuItems.Add("-");
                         menu.MenuItems.Add(NewMenuItem("Remove", new EventHandler(OnRemoveMarker), mSelectedMarker, false));
-                        menu.MenuItems.Add("-");
                         menu.MenuItems.Add(NewMenuItem("Properties", new EventHandler(OnMarkerProperties), mSelectedMarker, false));
                         menu.Show(this, mPictureBox.ToScreen(new Point(e.X, e.Y)));
                     }
@@ -294,17 +290,6 @@ namespace WingSuitJudge
             }
         }
 
-        private void OnMarkerToggleSilhouette(object sender, EventArgs e)
-        {
-            int index = (int)((MenuItem)sender).Tag;
-            if (index != -1)
-            {
-                Marker marker = Project.GetMarker(index);
-                marker.ShowSilhouette = !marker.ShowSilhouette;
-                mPictureBox.Invalidate();
-            }
-        }
-
         private void OnChangeSilhouetteColor(object sender, EventArgs e)
         {
             int index = (int)((MenuItem)sender).Tag;
@@ -373,16 +358,22 @@ namespace WingSuitJudge
         {
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            // draw silhouette.
-            Project.PaintSilhouette(e.Graphics);
-            
-            // draw formation.
-            if (!mHideFormation.Checked)
+            if (mShowWingsuits.Checked)
             {
-                Project.Paint(e.Graphics, mSelectedLine, mSelectedMarker);
+                Project.PaintSilhouette(e.Graphics);
             }
-
-            // draw action.
+            if (mShowLines.Checked)
+            {
+                Project.PaintLines(e.Graphics, mSelectedLine);
+            }
+            if (mShowAreaCircles.Checked)
+            {
+                Project.PaintAreaCircles(e.Graphics);
+            }            
+            if (mShowMarkers.Checked)
+            {
+                Project.PaintMarkers(e.Graphics, mSelectedMarker);
+            }
             if (mAction != null)
             {
                 mAction.OnPaint(e.Graphics);
@@ -566,11 +557,10 @@ namespace WingSuitJudge
         private void OnColorPickerClick(object sender, EventArgs e)
         {
             ColorDialog dialog = new ColorDialog();
-            dialog.Color = mColorPicker.BackColor;
+            dialog.Color = Project.BackColor;
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 Project.BackColor = dialog.Color;
-                mColorPicker.BackColor = dialog.Color;
                 mPictureBox.BackColor = dialog.Color;
             }
         }
@@ -611,15 +601,21 @@ namespace WingSuitJudge
                 using (Graphics gfx = Graphics.FromImage(bitmap))
                 {
                     gfx.Transform = new Matrix(1, 0, 0, 1, bitmap.Width * 0.5f, bitmap.Height * 0.5f);
-                    Project.Paint(gfx, -1, -1);
+                    Project.PaintLines(gfx, -1);
+                    Project.PaintMarkers(gfx, -1);
                 }
                 bitmap.Save(dialog.FileName);
             }
         }
 
-        private void OnHideFormationCheckedChanged(object sender, EventArgs e)
+        private void OnRepaintEvent(object sender, EventArgs e)
         {
             mPictureBox.Invalidate();
+        }
+
+        private void OnInvertPhotoClick(object sender, EventArgs e)
+        {
+            mPictureBox.InvertImage();
         }
 
         #endregion
@@ -637,11 +633,11 @@ namespace WingSuitJudge
             Project = new Project();
             ProjectName = null;
             mPictureBox.ResetImage();
-        }
-
-        private void mBtnInvertPhoto_Click(object sender, EventArgs e)
-        {
-            mPictureBox.InvertImage();
+            mShowLines.Checked = true;
+            mShowMarkers.Checked = true;
+            mShowWingsuits.Checked = false;
+            mShowPhoto.Checked = true;
+            mShowAreaCircles.Checked = true;
         }
     }
 }

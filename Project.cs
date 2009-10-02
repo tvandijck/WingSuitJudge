@@ -237,20 +237,18 @@ namespace WingSuitJudge
             }
         }
 
-        public void Paint(Graphics aGraphics, int aSelectedLine, int aSelectedMarker)
+        public void PaintLines(Graphics aGraphics, int aSelectedLine)
         {
             // get line base length.
             float baseLength = 0;
             float minLength = 0;
             float maxLength = 1000;
-            bool hasTolerance = false;
             if (mBaseLine >= 0 && mBaseLine < mLines.Count)
             {
                 float dtol = mDistanceTolerance * 0.01f;
                 baseLength = mLines[mBaseLine].GetLength();
                 minLength = baseLength - (baseLength * dtol);
                 maxLength = baseLength + (baseLength * dtol);
-                hasTolerance = true;
             }
 
             // draw lines.
@@ -262,10 +260,17 @@ namespace WingSuitJudge
                 bool error = (length < minLength) || (length > maxLength);
                 line.Draw(aGraphics, i == aSelectedLine, i == mBaseLine, error);
             }
+        }
 
-            // draw tolerance areas.
-            if (hasTolerance)
+        public void PaintAreaCircles(Graphics aGraphics)
+        {
+            if (mBaseLine >= 0 && mBaseLine < mLines.Count)
             {
+                float dtol = mDistanceTolerance * 0.01f;
+                float baseLength = mLines[mBaseLine].GetLength();
+                float minLength = baseLength - (baseLength * dtol);
+                float maxLength = baseLength + (baseLength * dtol);
+
                 foreach (Marker marker in mMarkers)
                 {
                     if (marker.ShowArea)
@@ -277,8 +282,10 @@ namespace WingSuitJudge
                     }
                 }
             }
+        }
 
-            // draw markers.
+        public void PaintMarkers(Graphics aGraphics, int aSelectedMarker)
+        {
             int numMarkers = mMarkers.Count;
             for (int i = 0; i < numMarkers; i++)
             {
@@ -286,6 +293,7 @@ namespace WingSuitJudge
                 marker.Draw(aGraphics, i == aSelectedMarker, i == mBaseMarker);
             }
         }
+
 
         public float Accuracy
         {
@@ -372,7 +380,7 @@ namespace WingSuitJudge
             using (BinaryWriter writer = new BinaryWriter(fileStream))
             {
                 writer.Write((int)0x4b434c46);
-                writer.Write((int)3);
+                writer.Write((int)4);
                 writer.Write(mBaseMarker);
                 writer.Write(mBaseLine);
                 writer.Write(mDistanceTolerance);
@@ -391,7 +399,6 @@ namespace WingSuitJudge
                     writer.Write(marker.Location.X);
                     writer.Write(marker.Location.Y);
                     writer.Write(marker.ShowArea);
-                    writer.Write(marker.ShowSilhouette);
                     writer.Write(marker.SilhoutteColor.ToArgb());
 
                     WriteString(writer, marker.NameTag);
@@ -420,7 +427,7 @@ namespace WingSuitJudge
                 }
 
                 int version = reader.ReadInt32();
-                if (version == 1 || version == 2 || version == 3)
+                if (version == 1 || version == 2 || version == 3 || version == 4)
                 {
                     mBaseMarker = reader.ReadInt32();
                     mBaseLine = reader.ReadInt32();
@@ -447,7 +454,10 @@ namespace WingSuitJudge
                         marker.ShowArea = reader.ReadBoolean();
                         if (version >= 3)
                         {
-                            marker.ShowSilhouette = reader.ReadBoolean();
+                            if (version == 3)
+                            {
+                                reader.ReadBoolean();
+                            }
                             marker.SilhoutteColor = Color.FromArgb(reader.ReadInt32());
                         }
 

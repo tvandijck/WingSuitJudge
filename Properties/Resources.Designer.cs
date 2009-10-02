@@ -67,9 +67,16 @@ namespace WingSuitJudge.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap add {
+        internal static System.Drawing.Bitmap add_line {
             get {
-                object obj = ResourceManager.GetObject("add", resourceCulture);
+                object obj = ResourceManager.GetObject("add_line", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap add_marker {
+            get {
+                object obj = ResourceManager.GetObject("add_marker", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -88,30 +95,37 @@ namespace WingSuitJudge.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap arrow_rotate_clockwise {
+        internal static System.Drawing.Bitmap invert_photo {
             get {
-                object obj = ResourceManager.GetObject("arrow_rotate_clockwise", resourceCulture);
+                object obj = ResourceManager.GetObject("invert_photo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap delete {
+        internal static System.Drawing.Bitmap move_formation {
             get {
-                object obj = ResourceManager.GetObject("delete", resourceCulture);
+                object obj = ResourceManager.GetObject("move_formation", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap film {
+        internal static System.Drawing.Bitmap move_marker {
             get {
-                object obj = ResourceManager.GetObject("film", resourceCulture);
+                object obj = ResourceManager.GetObject("move_marker", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap mouse {
+        internal static System.Drawing.Bitmap remove_line {
             get {
-                object obj = ResourceManager.GetObject("mouse", resourceCulture);
+                object obj = ResourceManager.GetObject("remove_line", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap remove_marker {
+            get {
+                object obj = ResourceManager.GetObject("remove_marker", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -120,20 +134,6 @@ namespace WingSuitJudge.Properties {
             get {
                 object obj = ResourceManager.GetObject("rotate_cursor", resourceCulture);
                 return ((byte[])(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap vector_add {
-            get {
-                object obj = ResourceManager.GetObject("vector_add", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap vector_delete {
-            get {
-                object obj = ResourceManager.GetObject("vector_delete", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

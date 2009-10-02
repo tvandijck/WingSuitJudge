@@ -22,20 +22,23 @@ namespace WingSuitJudge
             if (e.Button == MouseButtons.Left)
             {
                 int selected = Project.FindMarker(e.X, e.Y);
-                if (selected != -1)
+                if (selected == -1)
                 {
-                    if (mDragLine == null)
-                    {
-                        mDragLine = new DragLine(selected, new PointF(e.X, e.Y));
-                    }
-                    else
-                    {
-                        Project.AddLine(mDragLine.StartMarker, selected);
-                        mDragLine = null;
-                    }
-                    aSender.Invalidate();
-                    return false;
+                    Project.AddMarker(new Marker(e.X, e.Y));
+                    selected = Project.FindMarker(e.X, e.Y);
                 }
+
+                if (mDragLine == null)
+                {
+                    mDragLine = new DragLine(selected, new PointF(e.X, e.Y));
+                }
+                else
+                {
+                    Project.AddLine(mDragLine.StartMarker, selected);
+                    mDragLine = null;
+                }
+                aSender.Invalidate();
+                return false;
             }
 
             if (e.Button == MouseButtons.Right)

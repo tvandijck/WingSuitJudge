@@ -50,7 +50,7 @@ namespace WingSuitJudge
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (mHighlite)
+            if (mHighlite || this.DesignMode)
             {
                 Rectangle rect = new Rectangle(0, 0, Width - 1, Height - 1);
                 e.Graphics.DrawRectangle(Pens.Gray, rect);
@@ -64,7 +64,10 @@ namespace WingSuitJudge
             {
                 float x = (Width - mImage.Width) * 0.5f;
                 float y = (Height - mImage.Height) * 0.5f;
-                e.Graphics.DrawImage(mImage, x, y);
+
+                RectangleF srcRect = new RectangleF(0, 0, mImage.Width, mImage.Height);
+                RectangleF destRect = new RectangleF(x, y, mImage.Width, mImage.Height);
+                e.Graphics.DrawImage(mImage, destRect, srcRect, GraphicsUnit.Pixel);
             }
         }
 
