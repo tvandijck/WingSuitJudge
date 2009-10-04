@@ -7,17 +7,17 @@ namespace WingSuitJudge
 {
     internal static class ImageColorCache
     {
-        private static Bitmap mSilhouette = Properties.Resources.wingsuit_outline;
+        private static Bitmap mWingsuit = Properties.Resources.wingsuit_outline;
 
-        private static Dictionary<Color, Image> mSilhouetteCache = new Dictionary<Color, Image>();
+        private static Dictionary<Color, Image> mWingsuitCache = new Dictionary<Color, Image>();
 
-        public static Image GetSilhouetteImage(Color aColor)
+        public static Image GetWingsuitImage(Color aColor)
         {
             Image result;
-            if (!mSilhouetteCache.TryGetValue(aColor, out result))
+            if (!mWingsuitCache.TryGetValue(aColor, out result))
             {
-                result = Multiply(mSilhouette, aColor);
-                mSilhouetteCache.Add(aColor, result);
+                result = Multiply(mWingsuit, aColor);
+                mWingsuitCache.Add(aColor, result);
             }
             return result;
         }

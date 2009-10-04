@@ -66,6 +66,9 @@
             this.mMenuPanel = new System.Windows.Forms.Panel();
             this.mAdvert = new System.Windows.Forms.PictureBox();
             this.mJudgingTools = new System.Windows.Forms.GroupBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.mAngleTolerance = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.mDistanceTolerance = new System.Windows.Forms.NumericUpDown();
@@ -88,6 +91,7 @@
             this.mMenuPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mAdvert)).BeginInit();
             this.mJudgingTools.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.mAngleTolerance)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mDistanceTolerance)).BeginInit();
             this.mFormationTools.SuspendLayout();
             this.mImageTools.SuspendLayout();
@@ -335,12 +339,14 @@
             this.mLineColorMenuItem.Name = "mLineColorMenuItem";
             this.mLineColorMenuItem.Size = new System.Drawing.Size(212, 22);
             this.mLineColorMenuItem.Text = "Change line colors";
+            this.mLineColorMenuItem.Click += new System.EventHandler(this.OnLineColorClick);
             // 
             // mWingsuitColorsToolStripMenuItem
             // 
             this.mWingsuitColorsToolStripMenuItem.Name = "mWingsuitColorsToolStripMenuItem";
             this.mWingsuitColorsToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.mWingsuitColorsToolStripMenuItem.Text = "Change wingsuit colors";
+            this.mWingsuitColorsToolStripMenuItem.Click += new System.EventHandler(this.OnWingsuitColorsClick);
             // 
             // helpToolStripMenuItem
             // 
@@ -394,16 +400,61 @@
             // 
             // mJudgingTools
             // 
+            this.mJudgingTools.Controls.Add(this.label4);
+            this.mJudgingTools.Controls.Add(this.label2);
+            this.mJudgingTools.Controls.Add(this.mAngleTolerance);
             this.mJudgingTools.Controls.Add(this.label3);
             this.mJudgingTools.Controls.Add(this.label1);
             this.mJudgingTools.Controls.Add(this.mDistanceTolerance);
             this.mJudgingTools.Dock = System.Windows.Forms.DockStyle.Top;
             this.mJudgingTools.Location = new System.Drawing.Point(3, 191);
             this.mJudgingTools.Name = "mJudgingTools";
-            this.mJudgingTools.Size = new System.Drawing.Size(110, 78);
+            this.mJudgingTools.Size = new System.Drawing.Size(110, 115);
             this.mJudgingTools.TabIndex = 8;
             this.mJudgingTools.TabStop = false;
             this.mJudgingTools.Text = "Judging Tools";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(87, 86);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(11, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "°";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 67);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(84, 13);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "Angle tolerance:";
+            // 
+            // mAngleTolerance
+            // 
+            this.mAngleTolerance.Location = new System.Drawing.Point(6, 83);
+            this.mAngleTolerance.Maximum = new decimal(new int[] {
+            22,
+            0,
+            0,
+            0});
+            this.mAngleTolerance.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.mAngleTolerance.Name = "mAngleTolerance";
+            this.mAngleTolerance.Size = new System.Drawing.Size(81, 20);
+            this.mAngleTolerance.TabIndex = 5;
+            this.mAngleTolerance.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.mAngleTolerance.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.mAngleTolerance.ValueChanged += new System.EventHandler(this.mAngleTolerance_ValueChanged);
             // 
             // label3
             // 
@@ -628,6 +679,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.mAdvert)).EndInit();
             this.mJudgingTools.ResumeLayout(false);
             this.mJudgingTools.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.mAngleTolerance)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.mDistanceTolerance)).EndInit();
             this.mFormationTools.ResumeLayout(false);
             this.mImageTools.ResumeLayout(false);
@@ -692,6 +744,9 @@
         private System.Windows.Forms.ToolStripMenuItem mBackgroundColorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mLineColorMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mWingsuitColorsToolStripMenuItem;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.NumericUpDown mAngleTolerance;
+        private System.Windows.Forms.Label label4;
     }
 }
 

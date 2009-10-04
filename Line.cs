@@ -74,5 +74,10 @@ namespace WingSuitJudge
         {
             return Math2.Distance(Start.Location.X, Start.Location.Y, End.Location.X, End.Location.Y);
         }
+
+        public float GetAngle()
+        {
+            return (float)(Math.Atan2(End.Location.Y - Start.Location.Y, End.Location.X - Start.Location.X) * 180 / Math.PI);
+        }
     }
 }

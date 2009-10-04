@@ -11,5 +11,14 @@ namespace WingSuitJudge
         {
             return (float)Math.Sqrt(((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2)));
         }
+
+        public static float NormalizeAngle(float angle)
+        {
+            while (angle < -180)
+                angle += 360.0f;
+            while (angle > 180.0f)
+                angle -= 360.0f;
+            return angle;
+        }
     }
 }

@@ -181,7 +181,7 @@ namespace WingSuitJudge
                         menu.MenuItems.Add(NewMenuItem("Mark as base", new EventHandler(OnMakeMarkerBase), mSelectedMarker, false));
                         menu.MenuItems.Add(NewMenuItem("Toggle area circles", new EventHandler(OnMarkerToggleAreaCircle), mSelectedMarker, marker.ShowArea));
                         menu.MenuItems.Add("-");
-                        menu.MenuItems.Add(NewMenuItem("Change wingsuit color", new EventHandler(OnChangeSilhouetteColor), mSelectedMarker, false));
+                        menu.MenuItems.Add(NewMenuItem("Change wingsuit color", new EventHandler(OnChangeWingsuitColor), mSelectedMarker, false));
                         menu.MenuItems.Add("-");
                         menu.MenuItems.Add(NewMenuItem("Remove", new EventHandler(OnRemoveMarker), mSelectedMarker, false));
                         menu.MenuItems.Add(NewMenuItem("Properties", new EventHandler(OnMarkerProperties), mSelectedMarker, false));
@@ -190,7 +190,6 @@ namespace WingSuitJudge
                     else if (mSelectedLine != -1)
                     {
                         ContextMenu menu = new ContextMenu();
-                        menu.MenuItems.Add(NewMenuItem("Mark as base", new EventHandler(OnMakeLineBase), mSelectedLine, false));
                         menu.MenuItems.Add(NewMenuItem("Change color", new EventHandler(OnChangeLineColor), mSelectedLine, false));
                         menu.MenuItems.Add("-");
                         menu.MenuItems.Add(NewMenuItem("Remove", new EventHandler(OnRemoveLine), mSelectedLine, false));
@@ -242,14 +241,7 @@ namespace WingSuitJudge
 
         private void OnPictureBoxMouseWheel(object sender, MouseEventArgs e)
         {
-            if (e.Delta > 0)
-            {
-                Zoom += 5;
-            }
-            else
-            {
-                Zoom -= 5;
-            }
+            Zoom += Math.Sign(e.Delta) * 5;
         }
 
         private void OnMarkerProperties(object sender, EventArgs e)
@@ -290,7 +282,7 @@ namespace WingSuitJudge
             }
         }
 
-        private void OnChangeSilhouetteColor(object sender, EventArgs e)
+        private void OnChangeWingsuitColor(object sender, EventArgs e)
         {
             int index = (int)((MenuItem)sender).Tag;
             if (index != -1)
@@ -304,16 +296,6 @@ namespace WingSuitJudge
                     marker.SilhoutteColor = dialog.Color;
                     mPictureBox.Invalidate();
                 }
-            }
-        }
-
-        private void OnMakeLineBase(object sender, EventArgs e)
-        {
-            int line = (int)((MenuItem)sender).Tag;
-            if (line != Project.BaseLine)
-            {
-                Project.BaseLine = line;
-                mPictureBox.Invalidate();
             }
         }
 
@@ -360,7 +342,7 @@ namespace WingSuitJudge
 
             if (mShowWingsuits.Checked)
             {
-                Project.PaintSilhouette(e.Graphics);
+                Project.PaintWingsuit(e.Graphics);
             }
             if (mShowLines.Checked)
             {
@@ -475,9 +457,9 @@ namespace WingSuitJudge
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                Project.SaveProject(ProjectName);
                 ProjectName = dialog.FileName;
-            }
+                Project.SaveProject(ProjectName);
+            } 
         }
 
         private void OnSaveClick(object sender, EventArgs e)
@@ -585,6 +567,12 @@ namespace WingSuitJudge
             mPictureBox.Invalidate();
         }
 
+        private void mAngleTolerance_ValueChanged(object sender, EventArgs e)
+        {
+            Project.AngleTolerance = (int)mAngleTolerance.Value;
+            mPictureBox.Invalidate();
+        }
+
         private void OnExportClick(object sender, EventArgs e)
         {
             SaveFileDialog dialog = new SaveFileDialog();
@@ -616,6 +604,36 @@ namespace WingSuitJudge
         private void OnInvertPhotoClick(object sender, EventArgs e)
         {
             mPictureBox.InvertImage();
+        }
+
+        private void OnLineColorClick(object sender, EventArgs e)
+        {
+            ColorDialog dialog = new ColorDialog();
+            dialog.Color = Color.Black;
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                int num = Project.NumLines;
+                for (int i = 0; i < num; ++i)
+                {
+                    Project.GetLine(i).Color = dialog.Color;
+                }
+                mPictureBox.Invalidate();
+            }
+        }
+        
+        private void OnWingsuitColorsClick(object sender, EventArgs e)
+        {
+            ColorDialog dialog = new ColorDialog();
+            dialog.Color = Color.Black;
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                int num = Project.NumMarkers;
+                for (int i = 0; i < num; ++i)
+                {
+                    Project.GetMarker(i).SilhoutteColor = dialog.Color;
+                }
+                mPictureBox.Invalidate();
+            }
         }
 
         #endregion

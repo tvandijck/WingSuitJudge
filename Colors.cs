@@ -11,7 +11,9 @@ namespace WingSuitJudge
         public static Pen SelectedPen = new Pen(Color.Yellow, 3);
         public static Pen BasePen = new Pen(Color.Green, 5);
         public static Pen ErrorPen = new Pen(Color.Red, 5);
-        public static Pen ThinGrayPen = new Pen(Color.Silver, 1);
+        
+        public static Pen AreaCirclePen = new Pen(Color.Silver, 1);
+        public static Brush AreaCircleBrush = new SolidBrush(Color.FromArgb(unchecked((int)0x4000c000)));
 
         public static Brush MarkerNormal = new SolidBrush(Color.FromArgb(unchecked((int)0x80800000)));
         public static Brush MarkerBase = new SolidBrush(Color.FromArgb(unchecked((int)0x80008000)));

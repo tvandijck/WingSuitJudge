@@ -11,8 +11,8 @@ namespace WingSuitJudge
         private List<Marker> mMarkers = new List<Marker>();
         private List<Line> mLines = new List<Line>();
         private int mBaseMarker = 0;
-        private int mBaseLine = 0;
         private int mDistanceTolerance = 25;
+        private int mAngleTolerance = 10;
         private Color mBackColor = SystemColors.AppWorkspace;
 
         private string mDescription;
@@ -41,12 +41,6 @@ namespace WingSuitJudge
         {
             get { return mBaseMarker; }
             set { mBaseMarker = value; }
-        }
-
-        public int BaseLine
-        {
-            get { return mBaseLine; }
-            set { mBaseLine = value; }
         }
 
         public string Description
@@ -91,31 +85,10 @@ namespace WingSuitJudge
             set { mDistanceTolerance = value; }
         }
 
-        public int FindLine(Line aLine)
+        public int AngleTolerance
         {
-            int num = mLines.Count;
-            for (int i = 0; i < num; i++)
-            {
-                if (object.ReferenceEquals(mLines[i], aLine))
-                {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        public int FindLine(float aX, float aY)
-        {
-            int num = mLines.Count;
-            for (int i = 0; i < num; i++)
-            {
-                float d = mLines[i].GetDistance(aX, aY);
-                if (d < 3)
-                {
-                    return i;
-                }
-            }
-            return -1;
+            get { return mAngleTolerance; }
+            set { mAngleTolerance = value; }
         }
 
         #region -- Marker API -------------------------------------------------
@@ -211,7 +184,6 @@ namespace WingSuitJudge
             if (aIndex != -1)
             {
                 mLines.RemoveAt(aIndex);
-                mBaseLine = Math.Max(0, Math.Min(mBaseLine, mLines.Count - 1));
             }
         }
 
@@ -225,28 +197,95 @@ namespace WingSuitJudge
             return mLines[aIndex];
         }
 
+        public int FindLine(Line aLine)
+        {
+            int num = mLines.Count;
+            for (int i = 0; i < num; i++)
+            {
+                if (object.ReferenceEquals(mLines[i], aLine))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        public int FindLine(float aX, float aY)
+        {
+            int num = mLines.Count;
+            for (int i = 0; i < num; i++)
+            {
+                float d = mLines[i].GetDistance(aX, aY);
+                if (d < 3)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
         #endregion
 
-        public void PaintSilhouette(Graphics aGraphics)
+        public bool IsAngleWithInTolerance(float angle)
+        {
+            angle = Math2.NormalizeAngle(angle);
+            for (int i = 0; i < 8; i++)
+            {
+                if (angle >= -mAngleTolerance && angle <= mAngleTolerance)  // -10..10
+                    return true;
+                angle = Math2.NormalizeAngle(angle + 45);
+            }
+            return false;
+        }
+
+        public void PaintWingsuit(Graphics aGraphics)
         {
             int numMarkers = mMarkers.Count;
             for (int i = 0; i < numMarkers; i++)
             {
                 Marker marker = mMarkers[i];
-                marker.DrawSilhouette(aGraphics);
+                marker.DrawWingsuit(aGraphics);
             }
+        }
+
+        private bool HasBaseLength(out float aBaseLength, out Marker aBaseMarker)
+        {
+            if (mBaseMarker >= 0 && mBaseMarker < mMarkers.Count)
+            {
+                aBaseMarker = mMarkers[mBaseMarker];
+
+                int numLines = 0;
+                float length = 0.0f;
+                foreach (Line line in mLines)
+                {
+                    if (aBaseMarker == line.End || aBaseMarker == line.Start)
+                    {
+                        length += line.GetLength();
+                        numLines++;
+                    }
+                }
+
+                if (numLines > 0)
+                {
+                    aBaseLength = length / numLines;
+                    return true;
+                }
+            }
+            aBaseMarker = null;
+            aBaseLength = 0;
+            return false;
         }
 
         public void PaintLines(Graphics aGraphics, int aSelectedLine)
         {
             // get line base length.
+            Marker baseMarker = null;
             float baseLength = 0;
             float minLength = 0;
             float maxLength = 1000;
-            if (mBaseLine >= 0 && mBaseLine < mLines.Count)
+            if (HasBaseLength(out baseLength, out baseMarker))
             {
                 float dtol = mDistanceTolerance * 0.01f;
-                baseLength = mLines[mBaseLine].GetLength();
                 minLength = baseLength - (baseLength * dtol);
                 maxLength = baseLength + (baseLength * dtol);
             }
@@ -256,29 +295,66 @@ namespace WingSuitJudge
             for (int i = 0; i < numLines; i++)
             {
                 Line line = mLines[i];
+
+                bool baseLine = baseMarker == line.End || baseMarker == line.Start;
                 float length = line.GetLength();
-                bool error = (length < minLength) || (length > maxLength);
-                line.Draw(aGraphics, i == aSelectedLine, i == mBaseLine, error);
+                float angle = line.GetAngle();
+                bool error = (length < minLength) || (length > maxLength) || !IsAngleWithInTolerance(angle);
+                line.Draw(aGraphics, i == aSelectedLine, baseLine, error);
             }
+        }
+
+        public bool HasAnyAreaCircles()
+        {
+            foreach (Marker marker in mMarkers)
+            {
+                if (marker.ShowArea)
+                    return true;
+            }
+            return false;
         }
 
         public void PaintAreaCircles(Graphics aGraphics)
         {
-            if (mBaseLine >= 0 && mBaseLine < mLines.Count)
+            float baseLength = 0;
+            Marker baseMarker = null;
+            if (HasBaseLength(out baseLength, out baseMarker) && HasAnyAreaCircles())
             {
                 float dtol = mDistanceTolerance * 0.01f;
-                float baseLength = mLines[mBaseLine].GetLength();
                 float minLength = baseLength - (baseLength * dtol);
                 float maxLength = baseLength + (baseLength * dtol);
 
+                // create path.
+                GraphicsPath path = new GraphicsPath();
+                double angleRad = mAngleTolerance * (Math.PI / 180);
+                for (int i = 0; i < 8; i++)
+                {
+                    float minS = (float)Math.Sin(i * Math.PI / 4 - angleRad);
+                    float minC = (float)Math.Cos(i * Math.PI / 4 - angleRad);
+                    float maxS = (float)Math.Sin(i * Math.PI / 4 + angleRad);
+                    float maxC = (float)Math.Cos(i * Math.PI / 4 + angleRad);
+                    
+                    if (minLength > 0)
+                    {
+                        path.AddArc(-minLength, -minLength, minLength * 2, minLength * 2, i * 45 - mAngleTolerance, mAngleTolerance * 2);
+                    }
+                    path.AddLine(maxC * minLength, maxS * minLength, maxC * maxLength, maxS * maxLength);
+                    path.AddArc(-maxLength, -maxLength, maxLength * 2, maxLength * 2, i * 45 + mAngleTolerance, -mAngleTolerance * 2);
+                    path.CloseFigure();
+                }
+
+                // draw all markers.
                 foreach (Marker marker in mMarkers)
                 {
                     if (marker.ShowArea)
                     {
                         float x = marker.Location.X;
                         float y = marker.Location.Y;
-                        aGraphics.DrawEllipse(Colors.ThinGrayPen, x - minLength, y - minLength, minLength * 2, minLength * 2);
-                        aGraphics.DrawEllipse(Colors.ThinGrayPen, x - maxLength, y - maxLength, maxLength * 2, maxLength * 2);
+
+                        path.Transform(new Matrix(1, 0, 0, 1, x, y));
+                        aGraphics.FillPath(Colors.AreaCircleBrush, path);
+                        aGraphics.DrawPath(Colors.AreaCirclePen, path);
+                        path.Transform(new Matrix(1, 0, 0, 1, -x, -y));
                     }
                 }
             }
@@ -300,32 +376,44 @@ namespace WingSuitJudge
             get
             {
                 // get line base length.
-                if (mBaseLine >= 0 && mBaseLine < mLines.Count)
+                float baseLength;
+                Marker baseMarker = null;
+                if (HasBaseLength(out baseLength, out baseMarker))
                 {
                     float dtol = mDistanceTolerance * 0.01f;
-                    float baseLength = mLines[mBaseLine].GetLength();
                     float minLength = baseLength - (baseLength * dtol);
                     float maxLength = baseLength + (baseLength * dtol);
 
-                    float totalError = 0;
-                    float totalLength = 0;
+                    int numCorrectLines = 0;
                     int numLines = mLines.Count;
+                    float totalLength = 0;
+                    float errorLength = 0;
                     for (int i = 0; i < numLines; i++)
                     {
                         Line line = mLines[i];
                         float length = line.GetLength();
-                        if (length < minLength)
+                        float angle = line.GetAngle();
+                        if (length >= minLength && length <= maxLength && IsAngleWithInTolerance(angle))
                         {
-                            totalError += (minLength - length);
+                            numCorrectLines++;
                         }
-                        if (length > maxLength)
+                        else
                         {
-                            totalError += (length - maxLength);
+                            if (length < minLength)
+                            {
+                                errorLength += (minLength - length);
+                            }
+                            if (length > maxLength)
+                            {
+                                errorLength += (length - maxLength);
+                            }
                         }
                         totalLength += length;
                     }
 
-                    return 1.0f - (totalError / totalLength);
+                    float correctRation = (float)numCorrectLines / (float)numLines;
+                    float lengthRation = 1.0f - ((float)errorLength / (float)totalLength);
+                    return correctRation * lengthRation;
                 }
                 else
                 {
@@ -380,10 +468,10 @@ namespace WingSuitJudge
             using (BinaryWriter writer = new BinaryWriter(fileStream))
             {
                 writer.Write((int)0x4b434c46);
-                writer.Write((int)4);
+                writer.Write((int)6);
                 writer.Write(mBaseMarker);
-                writer.Write(mBaseLine);
                 writer.Write(mDistanceTolerance);
+                writer.Write(mAngleTolerance);
 
                 writer.Write(mBackColor.ToArgb());
                 WriteString(writer, mDescription);
@@ -427,11 +515,20 @@ namespace WingSuitJudge
                 }
 
                 int version = reader.ReadInt32();
-                if (version == 1 || version == 2 || version == 3 || version == 4)
+                if (version <= 6)
                 {
                     mBaseMarker = reader.ReadInt32();
-                    mBaseLine = reader.ReadInt32();
+                    if (version < 6)
+                    {
+                        reader.ReadInt32();
+                    }
+
                     mDistanceTolerance = reader.ReadInt32();
+
+                    if (version >= 5)
+                    {
+                        mAngleTolerance = reader.ReadInt32();
+                    }
 
                     if (version >= 2)
                     {

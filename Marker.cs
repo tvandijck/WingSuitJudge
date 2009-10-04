@@ -11,7 +11,7 @@ namespace WingSuitJudge
         private string mDescription;
         private bool mShowArea;
         private Color mSilhoutteColor = Color.White;
-        private Image mSilhoutte = ImageColorCache.GetSilhouetteImage(Color.White);
+        private Image mSilhoutte = ImageColorCache.GetWingsuitImage(Color.White);
 
         public Marker(float x, float y)
         {
@@ -26,7 +26,6 @@ namespace WingSuitJudge
             mNameTag = tag;
         }  
 
-        [Browsable(false)]
         public PointF Location
         {
             get { return mLocation; }
@@ -59,12 +58,12 @@ namespace WingSuitJudge
                 if (mSilhoutteColor != value)
                 {
                     mSilhoutteColor = value;
-                    mSilhoutte = ImageColorCache.GetSilhouetteImage(mSilhoutteColor);
+                    mSilhoutte = ImageColorCache.GetWingsuitImage(mSilhoutteColor);
                 }
             }
         }
 
-        public void DrawSilhouette(Graphics aGraphics)
+        public void DrawWingsuit(Graphics aGraphics)
         {
             aGraphics.InterpolationMode = InterpolationMode.High;
             aGraphics.DrawImage(mSilhoutte, mLocation.X - 62, mLocation.Y - 8, mSilhoutte.Width * 0.5f, mSilhoutte.Height * 0.5f);
