@@ -20,7 +20,7 @@ namespace WingSuitJudge
                 mWingsuitCache.Add(aColor, result);
             }
             return result;
-        }
+        } 
         
         private static Image Multiply(Image aImage, Color aColor)
         {

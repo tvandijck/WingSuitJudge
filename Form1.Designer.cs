@@ -49,6 +49,7 @@
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
             this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mDisplayMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.mShowLines = new System.Windows.Forms.ToolStripMenuItem();
             this.mShowMarkers = new System.Windows.Forms.ToolStripMenuItem();
@@ -65,13 +66,6 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mMenuPanel = new System.Windows.Forms.Panel();
             this.mAdvert = new System.Windows.Forms.PictureBox();
-            this.mJudgingTools = new System.Windows.Forms.GroupBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.mAngleTolerance = new System.Windows.Forms.NumericUpDown();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.mDistanceTolerance = new System.Windows.Forms.NumericUpDown();
             this.mFormationTools = new System.Windows.Forms.GroupBox();
             this.mBtnFreeTransform = new WingSuitJudge.CheckButton();
             this.mBtnRemoveLine = new WingSuitJudge.CheckButton();
@@ -90,9 +84,6 @@
             this.mMainMenu.SuspendLayout();
             this.mMenuPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mAdvert)).BeginInit();
-            this.mJudgingTools.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.mAngleTolerance)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mDistanceTolerance)).BeginInit();
             this.mFormationTools.SuspendLayout();
             this.mImageTools.SuspendLayout();
             this.SuspendLayout();
@@ -234,7 +225,8 @@
             this.toolStripMenuItem5.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exportToolStripMenuItem,
             this.toolStripMenuItem6,
-            this.propertiesToolStripMenuItem});
+            this.propertiesToolStripMenuItem,
+            this.settingsToolStripMenuItem});
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
             this.toolStripMenuItem5.Size = new System.Drawing.Size(56, 20);
             this.toolStripMenuItem5.Text = "&Project";
@@ -242,21 +234,28 @@
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exportToolStripMenuItem.Text = "&Export...";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.OnExportClick);
             // 
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(133, 6);
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(149, 6);
             // 
             // propertiesToolStripMenuItem
             // 
             this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
-            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.propertiesToolStripMenuItem.Text = "Jump info...";
             this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.OnJumpInfoClick);
+            // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.settingsToolStripMenuItem.Text = "Settings...";
+            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.OnSettingsClick);
             // 
             // mDisplayMenu
             // 
@@ -379,7 +378,6 @@
             // mMenuPanel
             // 
             this.mMenuPanel.Controls.Add(this.mAdvert);
-            this.mMenuPanel.Controls.Add(this.mJudgingTools);
             this.mMenuPanel.Controls.Add(this.mFormationTools);
             this.mMenuPanel.Controls.Add(this.mImageTools);
             this.mMenuPanel.Dock = System.Windows.Forms.DockStyle.Left;
@@ -397,96 +395,6 @@
             this.mAdvert.Size = new System.Drawing.Size(90, 300);
             this.mAdvert.TabIndex = 9;
             this.mAdvert.TabStop = false;
-            // 
-            // mJudgingTools
-            // 
-            this.mJudgingTools.Controls.Add(this.label4);
-            this.mJudgingTools.Controls.Add(this.label2);
-            this.mJudgingTools.Controls.Add(this.mAngleTolerance);
-            this.mJudgingTools.Controls.Add(this.label3);
-            this.mJudgingTools.Controls.Add(this.label1);
-            this.mJudgingTools.Controls.Add(this.mDistanceTolerance);
-            this.mJudgingTools.Dock = System.Windows.Forms.DockStyle.Top;
-            this.mJudgingTools.Location = new System.Drawing.Point(3, 191);
-            this.mJudgingTools.Name = "mJudgingTools";
-            this.mJudgingTools.Size = new System.Drawing.Size(110, 115);
-            this.mJudgingTools.TabIndex = 8;
-            this.mJudgingTools.TabStop = false;
-            this.mJudgingTools.Text = "Judging Tools";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(87, 86);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(11, 13);
-            this.label4.TabIndex = 7;
-            this.label4.Text = "°";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 67);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(84, 13);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "Angle tolerance:";
-            // 
-            // mAngleTolerance
-            // 
-            this.mAngleTolerance.Location = new System.Drawing.Point(6, 83);
-            this.mAngleTolerance.Maximum = new decimal(new int[] {
-            22,
-            0,
-            0,
-            0});
-            this.mAngleTolerance.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.mAngleTolerance.Name = "mAngleTolerance";
-            this.mAngleTolerance.Size = new System.Drawing.Size(81, 20);
-            this.mAngleTolerance.TabIndex = 5;
-            this.mAngleTolerance.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.mAngleTolerance.Value = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.mAngleTolerance.ValueChanged += new System.EventHandler(this.mAngleTolerance_ValueChanged);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(89, 45);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(15, 13);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "%";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 27);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(99, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Distance tolerance:";
-            // 
-            // mDistanceTolerance
-            // 
-            this.mDistanceTolerance.Location = new System.Drawing.Point(6, 43);
-            this.mDistanceTolerance.Name = "mDistanceTolerance";
-            this.mDistanceTolerance.Size = new System.Drawing.Size(81, 20);
-            this.mDistanceTolerance.TabIndex = 0;
-            this.mDistanceTolerance.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.mDistanceTolerance.Value = new decimal(new int[] {
-            25,
-            0,
-            0,
-            0});
-            this.mDistanceTolerance.ValueChanged += new System.EventHandler(this.OnDistanceToleranceValueChanged);
             // 
             // mFormationTools
             // 
@@ -677,10 +585,6 @@
             this.mMainMenu.PerformLayout();
             this.mMenuPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.mAdvert)).EndInit();
-            this.mJudgingTools.ResumeLayout(false);
-            this.mJudgingTools.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.mAngleTolerance)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mDistanceTolerance)).EndInit();
             this.mFormationTools.ResumeLayout(false);
             this.mImageTools.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -715,12 +619,8 @@
         private CheckButton mBtnMoveMarker;
         private CheckButton mBtnRemoveMarker;
         private CheckButton mBtnAddMarker;
-        private System.Windows.Forms.GroupBox mJudgingTools;
         private CheckButton mBtnRemoveLine;
         private CheckButton mBtnAddLine;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.NumericUpDown mDistanceTolerance;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripStatusLabel mAccuracy;
@@ -744,9 +644,7 @@
         private System.Windows.Forms.ToolStripMenuItem mBackgroundColorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mLineColorMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mWingsuitColorsToolStripMenuItem;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.NumericUpDown mAngleTolerance;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
     }
 }
 

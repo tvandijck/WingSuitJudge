@@ -10,6 +10,7 @@ namespace WingSuitJudge
         private string mNameTag;
         private string mDescription;
         private bool mShowArea;
+        private AreaCircle mAreaCircleMode = AreaCircle.Project;
         private Color mSilhoutteColor = Color.White;
         private Image mSilhoutte = ImageColorCache.GetWingsuitImage(Color.White);
 
@@ -48,6 +49,12 @@ namespace WingSuitJudge
         {
             get { return mShowArea; }
             set { mShowArea = value; }
+        }
+
+        public AreaCircle AreaCircleMode
+        {
+            get { return mAreaCircleMode; }
+            set { mAreaCircleMode = value; }
         }
 
         public Color SilhoutteColor

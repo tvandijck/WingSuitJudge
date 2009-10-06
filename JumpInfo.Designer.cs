@@ -87,10 +87,10 @@
             this.label3.TabIndex = 4;
             this.label3.Text = "Location:";
             // 
-            // mLocation
+            // mPlace
             // 
             this.mPlace.Location = new System.Drawing.Point(151, 107);
-            this.mPlace.Name = "mLocation";
+            this.mPlace.Name = "mPlace";
             this.mPlace.Size = new System.Drawing.Size(200, 20);
             this.mPlace.TabIndex = 5;
             // 
@@ -184,7 +184,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "JumpInfo";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "JumpInfo";
+            this.Text = "Jump Information";
             ((System.ComponentModel.ISupportInitialize)(this.mJumpNumber)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.mFallrate)).EndInit();
             this.ResumeLayout(false);

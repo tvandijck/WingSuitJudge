@@ -6,15 +6,28 @@ using System.IO;
 
 namespace WingSuitJudge
 {
+    [Flags]
+    public enum AreaCircle
+    {
+        Project = 0,
+        Deg45 = 1,
+        Deg90 = 2,
+        Both = Deg45 | Deg90  
+    };
+
     public class Project
     {
         private List<Marker> mMarkers = new List<Marker>();
         private List<Line> mLines = new List<Line>();
         private int mBaseMarker = 0;
-        private int mDistanceTolerance = 25;
-        private int mAngleTolerance = 10;
-        private Color mBackColor = SystemColors.AppWorkspace;
 
+        // project settings.
+        private int mDistanceTolerance = 35;
+        private int mAngleTolerance = 18;
+        private Color mBackColor = SystemColors.AppWorkspace;
+        private AreaCircle mAreaCircleMode = AreaCircle.Deg45;
+
+        // project info.
         private string mDescription;
         private DateTime mDate = DateTime.Now;
         private string mPlace;
@@ -31,17 +44,35 @@ namespace WingSuitJudge
             LoadProject(aFilename);
         }
 
+        #region -- Project Settings -------------------------------------------
+
         public Color BackColor
         {
             get { return mBackColor; }
             set { mBackColor = value; }
         }
 
-        public int BaseMarker
+        public AreaCircle AreaCircleMode
         {
-            get { return mBaseMarker; }
-            set { mBaseMarker = value; }
+            get { return mAreaCircleMode; }
+            set { mAreaCircleMode = value; }
         }
+
+        public int DistanceTolerance
+        {
+            get { return mDistanceTolerance; }
+            set { mDistanceTolerance = value; }
+        }
+
+        public int AngleTolerance
+        {
+            get { return mAngleTolerance; }
+            set { mAngleTolerance = value; }
+        }
+
+        #endregion
+
+        #region -- Project Info -----------------------------------------------
 
         public string Description
         {
@@ -79,19 +110,15 @@ namespace WingSuitJudge
             set { mFallrate = value; }
         }
 
-        public int DistanceTolerance
-        {
-            get { return mDistanceTolerance; }
-            set { mDistanceTolerance = value; }
-        }
-
-        public int AngleTolerance
-        {
-            get { return mAngleTolerance; }
-            set { mAngleTolerance = value; }
-        }
+        #endregion
 
         #region -- Marker API -------------------------------------------------
+
+        public int BaseMarker
+        {
+            get { return mBaseMarker; }
+            set { mBaseMarker = value; }
+        }
 
         public void AddMarker(Marker marker)
         {
@@ -226,14 +253,28 @@ namespace WingSuitJudge
 
         #endregion
 
-        public bool IsAngleWithInTolerance(float angle)
+        public bool IsAngleWithInTolerance(float aAngle, AreaCircle aMode)
         {
-            angle = Math2.NormalizeAngle(angle);
-            for (int i = 0; i < 8; i++)
+            AreaCircle cirleMode = (aMode == AreaCircle.Project) ? mAreaCircleMode : aMode;
+            if ((cirleMode & AreaCircle.Deg45) != 0)
             {
-                if (angle >= -mAngleTolerance && angle <= mAngleTolerance)  // -10..10
-                    return true;
-                angle = Math2.NormalizeAngle(angle + 45);
+                float angle = Math2.NormalizeAngle(aAngle + 45);
+                for (int i = 0; i < 4; i++)
+                {
+                    if (angle >= -mAngleTolerance && angle <= mAngleTolerance)
+                        return true;
+                    angle = Math2.NormalizeAngle(angle + 90);
+                }
+            }
+            if ((cirleMode & AreaCircle.Deg90) != 0)
+            {
+                float angle = Math2.NormalizeAngle(aAngle);
+                for (int i = 0; i < 4; i++)
+                {
+                    if (angle >= -mAngleTolerance && angle <= mAngleTolerance)
+                        return true;
+                    angle = Math2.NormalizeAngle(angle + 90);
+                }
             }
             return false;
         }
@@ -299,7 +340,12 @@ namespace WingSuitJudge
                 bool baseLine = baseMarker == line.End || baseMarker == line.Start;
                 float length = line.GetLength();
                 float angle = line.GetAngle();
-                bool error = (length < minLength) || (length > maxLength) || !IsAngleWithInTolerance(angle);
+
+                bool error = (length < minLength)
+                    || (length > maxLength) 
+                    || !IsAngleWithInTolerance(angle, line.End.AreaCircleMode) 
+                    || !IsAngleWithInTolerance(angle, line.Start.AreaCircleMode);
+
                 line.Draw(aGraphics, i == aSelectedLine, baseLine, error);
             }
         }
@@ -314,6 +360,19 @@ namespace WingSuitJudge
             return false;
         }
 
+        private GraphicsPath CreatePath(float aMinLength, float aMaxLength, float aAngleOffset)
+        {
+            aMinLength = Math.Max(aMinLength, 0.01f);
+            GraphicsPath path = new GraphicsPath();
+            for (int i = 0; i < 4; i++)
+            {
+                path.AddArc(-aMinLength, -aMinLength, aMinLength * 2, aMinLength * 2, (i * 90 - mAngleTolerance) + aAngleOffset, mAngleTolerance * 2);
+                path.AddArc(-aMaxLength, -aMaxLength, aMaxLength * 2, aMaxLength * 2, (i * 90 + mAngleTolerance) + aAngleOffset, -mAngleTolerance * 2);
+                path.CloseFigure();
+            }
+            return path;
+        }
+
         public void PaintAreaCircles(Graphics aGraphics)
         {
             float baseLength = 0;
@@ -324,24 +383,9 @@ namespace WingSuitJudge
                 float minLength = baseLength - (baseLength * dtol);
                 float maxLength = baseLength + (baseLength * dtol);
 
-                // create path.
-                GraphicsPath path = new GraphicsPath();
-                double angleRad = mAngleTolerance * (Math.PI / 180);
-                for (int i = 0; i < 8; i++)
-                {
-                    float minS = (float)Math.Sin(i * Math.PI / 4 - angleRad);
-                    float minC = (float)Math.Cos(i * Math.PI / 4 - angleRad);
-                    float maxS = (float)Math.Sin(i * Math.PI / 4 + angleRad);
-                    float maxC = (float)Math.Cos(i * Math.PI / 4 + angleRad);
-                    
-                    if (minLength > 0)
-                    {
-                        path.AddArc(-minLength, -minLength, minLength * 2, minLength * 2, i * 45 - mAngleTolerance, mAngleTolerance * 2);
-                    }
-                    path.AddLine(maxC * minLength, maxS * minLength, maxC * maxLength, maxS * maxLength);
-                    path.AddArc(-maxLength, -maxLength, maxLength * 2, maxLength * 2, i * 45 + mAngleTolerance, -mAngleTolerance * 2);
-                    path.CloseFigure();
-                }
+                // Create path for 90.
+                GraphicsPath path90 = CreatePath(minLength, maxLength, 0);
+                GraphicsPath path45 = CreatePath(minLength, maxLength, 45);
 
                 // draw all markers.
                 foreach (Marker marker in mMarkers)
@@ -351,10 +395,23 @@ namespace WingSuitJudge
                         float x = marker.Location.X;
                         float y = marker.Location.Y;
 
-                        path.Transform(new Matrix(1, 0, 0, 1, x, y));
-                        aGraphics.FillPath(Colors.AreaCircleBrush, path);
-                        aGraphics.DrawPath(Colors.AreaCirclePen, path);
-                        path.Transform(new Matrix(1, 0, 0, 1, -x, -y));
+                        AreaCircle cirleMode = (marker.AreaCircleMode == AreaCircle.Project) ? mAreaCircleMode : marker.AreaCircleMode;
+
+                        if ((cirleMode & AreaCircle.Deg45) != 0)
+                        {
+                            path45.Transform(new Matrix(1, 0, 0, 1, x, y));
+                            aGraphics.FillPath(Colors.AreaCircleBrush, path45);
+                            aGraphics.DrawPath(Colors.AreaCirclePen, path45);
+                            path45.Transform(new Matrix(1, 0, 0, 1, -x, -y));
+                        }
+
+                        if ((cirleMode & AreaCircle.Deg90) != 0)
+                        {
+                            path90.Transform(new Matrix(1, 0, 0, 1, x, y));
+                            aGraphics.FillPath(Colors.AreaCircleBrush, path90);
+                            aGraphics.DrawPath(Colors.AreaCirclePen, path90);
+                            path90.Transform(new Matrix(1, 0, 0, 1, -x, -y));
+                        }
                     }
                 }
             }
@@ -393,7 +450,10 @@ namespace WingSuitJudge
                         Line line = mLines[i];
                         float length = line.GetLength();
                         float angle = line.GetAngle();
-                        if (length >= minLength && length <= maxLength && IsAngleWithInTolerance(angle))
+                        if (length >= minLength
+                            && length <= maxLength 
+                            && IsAngleWithInTolerance(angle, line.End.AreaCircleMode)
+                            && IsAngleWithInTolerance(angle, line.Start.AreaCircleMode))
                         {
                             numCorrectLines++;
                         }
@@ -468,10 +528,11 @@ namespace WingSuitJudge
             using (BinaryWriter writer = new BinaryWriter(fileStream))
             {
                 writer.Write((int)0x4b434c46);
-                writer.Write((int)6);
+                writer.Write((int)7);
                 writer.Write(mBaseMarker);
                 writer.Write(mDistanceTolerance);
                 writer.Write(mAngleTolerance);
+                writer.Write((int)mAreaCircleMode);
 
                 writer.Write(mBackColor.ToArgb());
                 WriteString(writer, mDescription);
@@ -488,6 +549,7 @@ namespace WingSuitJudge
                     writer.Write(marker.Location.Y);
                     writer.Write(marker.ShowArea);
                     writer.Write(marker.SilhoutteColor.ToArgb());
+                    writer.Write((int)marker.AreaCircleMode);
 
                     WriteString(writer, marker.NameTag);
                     WriteString(writer, marker.Description);
@@ -515,7 +577,7 @@ namespace WingSuitJudge
                 }
 
                 int version = reader.ReadInt32();
-                if (version <= 6)
+                if (version <= 7)
                 {
                     mBaseMarker = reader.ReadInt32();
                     if (version < 6)
@@ -528,6 +590,11 @@ namespace WingSuitJudge
                     if (version >= 5)
                     {
                         mAngleTolerance = reader.ReadInt32();
+                    }
+
+                    if (version >= 7)
+                    {
+                        mAreaCircleMode = (AreaCircle)reader.ReadInt32();
                     }
 
                     if (version >= 2)
@@ -556,6 +623,10 @@ namespace WingSuitJudge
                                 reader.ReadBoolean();
                             }
                             marker.SilhoutteColor = Color.FromArgb(reader.ReadInt32());
+                        }
+                        if (version >= 7)
+                        {
+                            marker.AreaCircleMode = (AreaCircle)reader.ReadInt32();
                         }
 
                         marker.NameTag = reader.ReadString();

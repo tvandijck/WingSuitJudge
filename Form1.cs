@@ -45,7 +45,6 @@ namespace WingSuitJudge
                 if (!object.ReferenceEquals(mProject_, value))
                 {
                     mProject_ = value;
-                    mDistanceTolerance.Value = mProject_.DistanceTolerance;
                     mPictureBox.BackColor = mProject_.BackColor;
                     EditorMode = EditMode.AddMarker;
                 }
@@ -177,9 +176,16 @@ namespace WingSuitJudge
                     {
                         Marker marker = Project.GetMarker(mSelectedMarker);
 
+                        MenuItem formationStyle = new MenuItem("Formation Style");
+                        formationStyle.MenuItems.Add(NewMenuItem("45", new EventHandler(OnMarker45), mSelectedMarker, marker.AreaCircleMode == AreaCircle.Deg45));
+                        formationStyle.MenuItems.Add(NewMenuItem("90", new EventHandler(OnMarker90), mSelectedMarker, marker.AreaCircleMode == AreaCircle.Deg90));
+                        formationStyle.MenuItems.Add(NewMenuItem("Both", new EventHandler(OnMarkerBoth), mSelectedMarker, marker.AreaCircleMode == AreaCircle.Both));
+                        formationStyle.MenuItems.Add(NewMenuItem("Project", new EventHandler(OnMarkerProject), mSelectedMarker, marker.AreaCircleMode == AreaCircle.Project));
+
                         ContextMenu menu = new ContextMenu();
                         menu.MenuItems.Add(NewMenuItem("Mark as base", new EventHandler(OnMakeMarkerBase), mSelectedMarker, false));
                         menu.MenuItems.Add(NewMenuItem("Toggle area circles", new EventHandler(OnMarkerToggleAreaCircle), mSelectedMarker, marker.ShowArea));
+                        menu.MenuItems.Add(formationStyle);
                         menu.MenuItems.Add("-");
                         menu.MenuItems.Add(NewMenuItem("Change wingsuit color", new EventHandler(OnChangeWingsuitColor), mSelectedMarker, false));
                         menu.MenuItems.Add("-");
@@ -291,12 +297,45 @@ namespace WingSuitJudge
 
                 ColorDialog dialog = new ColorDialog();
                 dialog.Color = marker.SilhoutteColor;
-                if (dialog.ShowDialog() == DialogResult.OK)
+                if (dialog.ShowDialog(this) == DialogResult.OK)
                 {
                     marker.SilhoutteColor = dialog.Color;
                     mPictureBox.Invalidate();
                 }
             }
+        }
+
+        private void SetMarkerMode(int index, AreaCircle aMode)
+        {
+            if (index != -1)
+            {
+                Marker marker = Project.GetMarker(index);
+                marker.AreaCircleMode = aMode;
+            }
+        }
+
+        private void OnMarker45(object sender, EventArgs e)
+        {
+            int index = (int)((MenuItem)sender).Tag;
+            SetMarkerMode(index, AreaCircle.Deg45);
+        }
+
+        private void OnMarker90(object sender, EventArgs e)
+        {
+            int index = (int)((MenuItem)sender).Tag;
+            SetMarkerMode(index, AreaCircle.Deg90);
+        }
+
+        private void OnMarkerBoth(object sender, EventArgs e)
+        {
+            int index = (int)((MenuItem)sender).Tag;
+            SetMarkerMode(index, AreaCircle.Both);
+        }
+
+        private void OnMarkerProject(object sender, EventArgs e)
+        {
+            int index = (int)((MenuItem)sender).Tag;
+            SetMarkerMode(index, AreaCircle.Project);
         }
 
         private void OnChangeLineColor(object sender, EventArgs e)
@@ -308,7 +347,7 @@ namespace WingSuitJudge
 
                 ColorDialog dialog = new ColorDialog();
                 dialog.Color = line.Color;
-                if (dialog.ShowDialog() == DialogResult.OK)
+                if (dialog.ShowDialog(this) == DialogResult.OK)
                 {
                     line.Color = dialog.Color;
                     mPictureBox.Invalidate();
@@ -379,7 +418,7 @@ namespace WingSuitJudge
             dialog.CheckPathExists = true;
             dialog.ShowHelp = true;
 
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 mPictureBox.LoadImage(dialog.FileName);
             }
@@ -438,7 +477,7 @@ namespace WingSuitJudge
         private void OnAboutClick(object sender, EventArgs e)
         {
             AboutBox box = new AboutBox();
-            box.ShowDialog();
+            box.ShowDialog(this);
         }
 
         private void OnNewClick(object sender, EventArgs e)
@@ -455,7 +494,7 @@ namespace WingSuitJudge
             dialog.AddExtension = true;
             dialog.ShowHelp = true;
 
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 ProjectName = dialog.FileName;
                 Project.SaveProject(ProjectName);
@@ -484,7 +523,7 @@ namespace WingSuitJudge
             dialog.CheckPathExists = true;
             dialog.ShowHelp = true;
 
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 try
                 {
@@ -540,7 +579,7 @@ namespace WingSuitJudge
         {
             ColorDialog dialog = new ColorDialog();
             dialog.Color = Project.BackColor;
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 Project.BackColor = dialog.Color;
                 mPictureBox.BackColor = dialog.Color;
@@ -550,7 +589,7 @@ namespace WingSuitJudge
         private void OnJumpInfoClick(object sender, EventArgs e)
         {
             JumpInfo dialog = new JumpInfo(Project);
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 Project.Description = dialog.Description;
                 Project.Date = dialog.Date;
@@ -561,16 +600,16 @@ namespace WingSuitJudge
             }
         }
 
-        private void OnDistanceToleranceValueChanged(object sender, EventArgs e)
+        private void OnSettingsClick(object sender, EventArgs e)
         {
-            Project.DistanceTolerance = (int)mDistanceTolerance.Value;
-            mPictureBox.Invalidate();
-        }
-
-        private void mAngleTolerance_ValueChanged(object sender, EventArgs e)
-        {
-            Project.AngleTolerance = (int)mAngleTolerance.Value;
-            mPictureBox.Invalidate();
+            ProjectSettings dialog = new ProjectSettings(Project);
+            if (dialog.ShowDialog(this) == DialogResult.OK)
+            {
+                Project.DistanceTolerance = dialog.DistanceTolerance;
+                Project.AngleTolerance = dialog.AngleTolerance;
+                Project.AreaCircleMode = dialog.AreaCircleMode;
+                mPictureBox.Invalidate();
+            }
         }
 
         private void OnExportClick(object sender, EventArgs e)
@@ -583,7 +622,7 @@ namespace WingSuitJudge
             dialog.DefaultExt = "jpg";
             dialog.ShowHelp = true;
 
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 Bitmap bitmap = mPictureBox.CloneBitmap();
                 using (Graphics gfx = Graphics.FromImage(bitmap))
@@ -610,7 +649,7 @@ namespace WingSuitJudge
         {
             ColorDialog dialog = new ColorDialog();
             dialog.Color = Color.Black;
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 int num = Project.NumLines;
                 for (int i = 0; i < num; ++i)
@@ -625,7 +664,7 @@ namespace WingSuitJudge
         {
             ColorDialog dialog = new ColorDialog();
             dialog.Color = Color.Black;
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 int num = Project.NumMarkers;
                 for (int i = 0; i < num; ++i)
@@ -657,5 +696,6 @@ namespace WingSuitJudge
             mShowPhoto.Checked = true;
             mShowAreaCircles.Checked = true;
         }
+
     }
 }
