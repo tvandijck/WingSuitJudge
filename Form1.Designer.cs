@@ -42,7 +42,6 @@
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
             this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -62,6 +61,8 @@
             this.mMenuPanel = new System.Windows.Forms.Panel();
             this.mFormationTools = new System.Windows.Forms.GroupBox();
             this.mImageTools = new System.Windows.Forms.GroupBox();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.printMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mPictureBox = new WingSuitJudge.ImagePanel();
             this.mAdvert = new System.Windows.Forms.PictureBox();
             this.mBtnFreeTransform = new WingSuitJudge.CheckButton();
@@ -79,6 +80,7 @@
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             this.openFormationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveFormationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.indexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mStatusBar.SuspendLayout();
             this.mMainMenu.SuspendLayout();
@@ -145,6 +147,8 @@
             this.toolStripSeparator1,
             this.saveFormationToolStripMenuItem,
             this.saveAsToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.printMenuItem,
             this.toolStripMenuItem2,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -199,30 +203,22 @@
             this.toolStripMenuItem5.Size = new System.Drawing.Size(56, 20);
             this.toolStripMenuItem5.Text = "&Project";
             // 
-            // exportToolStripMenuItem
-            // 
-            this.exportToolStripMenuItem.Image = global::WingSuitJudge.Properties.Resources.export;
-            this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.exportToolStripMenuItem.Text = "&Export...";
-            this.exportToolStripMenuItem.Click += new System.EventHandler(this.OnExportClick);
-            // 
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(133, 6);
             // 
             // propertiesToolStripMenuItem
             // 
             this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
-            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.propertiesToolStripMenuItem.Text = "Jump info...";
             this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.OnJumpInfoClick);
             // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.settingsToolStripMenuItem.Text = "Settings...";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.OnSettingsClick);
             // 
@@ -380,6 +376,19 @@
             this.mImageTools.TabIndex = 6;
             this.mImageTools.TabStop = false;
             this.mImageTools.Text = "Image Tools";
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(188, 6);
+            // 
+            // printMenuItem
+            // 
+            this.printMenuItem.Image = global::WingSuitJudge.Properties.Resources.printer;
+            this.printMenuItem.Name = "printMenuItem";
+            this.printMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.printMenuItem.Text = "Print...";
+            this.printMenuItem.Click += new System.EventHandler(this.printMenuItem_Click);
             // 
             // mPictureBox
             // 
@@ -569,6 +578,14 @@
             this.saveFormationToolStripMenuItem.Text = "&Save...";
             this.saveFormationToolStripMenuItem.Click += new System.EventHandler(this.OnSaveClick);
             // 
+            // exportToolStripMenuItem
+            // 
+            this.exportToolStripMenuItem.Image = global::WingSuitJudge.Properties.Resources.export;
+            this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.exportToolStripMenuItem.Text = "&Export...";
+            this.exportToolStripMenuItem.Click += new System.EventHandler(this.OnExportClick);
+            // 
             // indexToolStripMenuItem
             // 
             this.indexToolStripMenuItem.Image = global::WingSuitJudge.Properties.Resources.help;
@@ -654,6 +671,8 @@
         private System.Windows.Forms.ToolStripMenuItem mLineColorMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mWingsuitColorsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem printMenuItem;
     }
 }
 

@@ -158,6 +158,13 @@ namespace WingSuitJudge.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap printer {
+            get {
+                object obj = ResourceManager.GetObject("printer", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap remove_line {
             get {
                 object obj = ResourceManager.GetObject("remove_line", resourceCulture);

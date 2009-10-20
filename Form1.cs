@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Drawing.Printing;
 
 namespace WingSuitJudge
 {
@@ -761,6 +762,78 @@ namespace WingSuitJudge
                 Settings.Default.DistanceTolerance = Project.DistanceTolerance;
                 Settings.Default.Save();
             }
+        }
+
+        private void printMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                PrintDocument pd = new PrintDocument();
+                pd.PrintPage += new PrintPageEventHandler(pd_PrintPage);
+
+                PrintPreviewDialog dialog = new PrintPreviewDialog();
+                dialog.Document = pd;
+                dialog.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, ex.Message);
+            }
+        }
+
+        void pd_PrintPage(object sender, PrintPageEventArgs e)
+        {
+            Rectangle margin = e.MarginBounds;
+            float scale = 1.0f;
+            float x = margin.X + margin.Width * 0.5f;
+            float y = margin.Y + margin.Height * 0.5f;
+
+            int num = Project.NumMarkers;
+            if (num > 0)
+            {
+                RectangleF rect = Project.BoundingRect;
+                rect.Inflate(50, 50);
+                rect.Height += 120;
+
+                float width = rect.Width;
+                float height = rect.Height;
+                float cx = rect.Left + rect.Right;
+                float cy = rect.Top + rect.Bottom;
+
+                // calculate scale.
+                float scaleX = margin.Width / width;
+                float scaleY = margin.Height / height;
+                scale = Math.Min(4, Math.Min(scaleX, scaleY));
+
+                // calculate center.
+                x = margin.X + ((margin.Width * 0.5f) - (cx * scale * 0.5f));
+                y = margin.Y + ((margin.Height * 0.5f) - (cy * scale * 0.5f));
+            }
+
+            e.Graphics.Clip = new Region(margin);
+            e.Graphics.Transform = new Matrix(scale, 0, 0, scale, x, y);
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+            mPictureBox.DrawBitmap(e.Graphics);
+
+            if (mShowWingsuits.Checked)
+            {
+                Project.PaintWingsuit(e.Graphics);
+            }
+            if (mShowLines.Checked)
+            {
+                Project.PaintLines(e.Graphics, -1);
+            }
+            if (mShowFlightZones.Checked)
+            {
+                Project.PaintFlightZones(e.Graphics);
+            }
+            if (mShowMarkers.Checked)
+            {
+                Project.PaintMarkers(e.Graphics, -1);
+            }
+
+            e.HasMorePages = false;
         }
     }
 }

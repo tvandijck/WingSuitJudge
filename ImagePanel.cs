@@ -141,11 +141,16 @@ namespace WingSuitJudge
             e.Graphics.DrawLine(Pens.Black, -10000, 0, 10000, 0);
             e.Graphics.DrawLine(Pens.Black, 0, -10000, 0, 10000);
 
+            DrawBitmap(e.Graphics);
+            base.OnPaint(e);
+        }
+
+        public void DrawBitmap(Graphics aGraphics)
+        {
             if (mBitmap != null)
             {
-                e.Graphics.DrawImage(mBitmap, mBitmapRect);
+                aGraphics.DrawImage(mBitmap, mBitmapRect);
             }
-            base.OnPaint(e);
         }
 
         protected override void OnMouseClick(MouseEventArgs e)
