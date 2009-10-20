@@ -7,7 +7,7 @@ using System.IO;
 namespace WingSuitJudge
 {
     [Flags]
-    public enum AreaCircle
+    public enum FlightZone
     {
         Project = 0,
         Deg45 = 1,
@@ -25,7 +25,7 @@ namespace WingSuitJudge
         private int mDistanceTolerance = 35;
         private int mAngleTolerance = 18;
         private Color mBackColor = SystemColors.AppWorkspace;
-        private AreaCircle mAreaCircleMode = AreaCircle.Deg45;
+        private FlightZone mFlightZoneMode = FlightZone.Deg45;
 
         // project info.
         private string mDescription;
@@ -52,10 +52,10 @@ namespace WingSuitJudge
             set { mBackColor = value; }
         }
 
-        public AreaCircle AreaCircleMode
+        public FlightZone FlightZoneMode
         {
-            get { return mAreaCircleMode; }
-            set { mAreaCircleMode = value; }
+            get { return mFlightZoneMode; }
+            set { mFlightZoneMode = value; }
         }
 
         public int DistanceTolerance
@@ -253,10 +253,10 @@ namespace WingSuitJudge
 
         #endregion
 
-        public bool IsAngleWithInTolerance(float aAngle, AreaCircle aMode)
+        public bool IsAngleWithInTolerance(float aAngle, FlightZone aMode)
         {
-            AreaCircle cirleMode = (aMode == AreaCircle.Project) ? mAreaCircleMode : aMode;
-            if ((cirleMode & AreaCircle.Deg45) != 0)
+            FlightZone cirleMode = (aMode == FlightZone.Project) ? mFlightZoneMode : aMode;
+            if ((cirleMode & FlightZone.Deg45) != 0)
             {
                 float angle = Math2.NormalizeAngle(aAngle + 45);
                 for (int i = 0; i < 4; i++)
@@ -266,7 +266,7 @@ namespace WingSuitJudge
                     angle = Math2.NormalizeAngle(angle + 90);
                 }
             }
-            if ((cirleMode & AreaCircle.Deg90) != 0)
+            if ((cirleMode & FlightZone.Deg90) != 0)
             {
                 float angle = Math2.NormalizeAngle(aAngle);
                 for (int i = 0; i < 4; i++)
@@ -343,18 +343,18 @@ namespace WingSuitJudge
 
                 bool error = (length < minLength)
                     || (length > maxLength) 
-                    || !IsAngleWithInTolerance(angle, line.End.AreaCircleMode) 
-                    || !IsAngleWithInTolerance(angle, line.Start.AreaCircleMode);
+                    || !IsAngleWithInTolerance(angle, line.End.FlightZoneMode) 
+                    || !IsAngleWithInTolerance(angle, line.Start.FlightZoneMode);
 
                 line.Draw(aGraphics, i == aSelectedLine, baseLine, error);
             }
         }
 
-        public bool HasAnyAreaCircles()
+        public bool HasAnyFlightZones()
         {
             foreach (Marker marker in mMarkers)
             {
-                if (marker.ShowArea)
+                if (marker.ShowFlightZone)
                     return true;
             }
             return false;
@@ -373,11 +373,11 @@ namespace WingSuitJudge
             return path;
         }
 
-        public void PaintAreaCircles(Graphics aGraphics)
+        public void PaintFlightZones(Graphics aGraphics)
         {
             float baseLength = 0;
             Marker baseMarker = null;
-            if (HasBaseLength(out baseLength, out baseMarker) && HasAnyAreaCircles())
+            if (HasBaseLength(out baseLength, out baseMarker) && HasAnyFlightZones())
             {
                 float dtol = mDistanceTolerance * 0.01f;
                 float minLength = baseLength - (baseLength * dtol);
@@ -390,26 +390,26 @@ namespace WingSuitJudge
                 // draw all markers.
                 foreach (Marker marker in mMarkers)
                 {
-                    if (marker.ShowArea)
+                    if (marker.ShowFlightZone)
                     {
                         float x = marker.Location.X;
                         float y = marker.Location.Y;
 
-                        AreaCircle cirleMode = (marker.AreaCircleMode == AreaCircle.Project) ? mAreaCircleMode : marker.AreaCircleMode;
+                        FlightZone cirleMode = (marker.FlightZoneMode == FlightZone.Project) ? mFlightZoneMode : marker.FlightZoneMode;
 
-                        if ((cirleMode & AreaCircle.Deg45) != 0)
+                        if ((cirleMode & FlightZone.Deg45) != 0)
                         {
                             path45.Transform(new Matrix(1, 0, 0, 1, x, y));
-                            aGraphics.FillPath(Colors.AreaCircleBrush, path45);
-                            aGraphics.DrawPath(Colors.AreaCirclePen, path45);
+                            aGraphics.FillPath(Colors.FlightZoneBrush, path45);
+                            aGraphics.DrawPath(Colors.FlightZonePen, path45);
                             path45.Transform(new Matrix(1, 0, 0, 1, -x, -y));
                         }
 
-                        if ((cirleMode & AreaCircle.Deg90) != 0)
+                        if ((cirleMode & FlightZone.Deg90) != 0)
                         {
                             path90.Transform(new Matrix(1, 0, 0, 1, x, y));
-                            aGraphics.FillPath(Colors.AreaCircleBrush, path90);
-                            aGraphics.DrawPath(Colors.AreaCirclePen, path90);
+                            aGraphics.FillPath(Colors.FlightZoneBrush, path90);
+                            aGraphics.DrawPath(Colors.FlightZonePen, path90);
                             path90.Transform(new Matrix(1, 0, 0, 1, -x, -y));
                         }
                     }
@@ -452,8 +452,8 @@ namespace WingSuitJudge
                         float angle = line.GetAngle();
                         if (length >= minLength
                             && length <= maxLength 
-                            && IsAngleWithInTolerance(angle, line.End.AreaCircleMode)
-                            && IsAngleWithInTolerance(angle, line.Start.AreaCircleMode))
+                            && IsAngleWithInTolerance(angle, line.End.FlightZoneMode)
+                            && IsAngleWithInTolerance(angle, line.Start.FlightZoneMode))
                         {
                             numCorrectLines++;
                         }
@@ -532,7 +532,7 @@ namespace WingSuitJudge
                 writer.Write(mBaseMarker);
                 writer.Write(mDistanceTolerance);
                 writer.Write(mAngleTolerance);
-                writer.Write((int)mAreaCircleMode);
+                writer.Write((int)mFlightZoneMode);
 
                 writer.Write(mBackColor.ToArgb());
                 WriteString(writer, mDescription);
@@ -547,9 +547,9 @@ namespace WingSuitJudge
                 {
                     writer.Write(marker.Location.X);
                     writer.Write(marker.Location.Y);
-                    writer.Write(marker.ShowArea);
+                    writer.Write(marker.ShowFlightZone);
                     writer.Write(marker.SilhoutteColor.ToArgb());
-                    writer.Write((int)marker.AreaCircleMode);
+                    writer.Write((int)marker.FlightZoneMode);
 
                     WriteString(writer, marker.NameTag);
                     WriteString(writer, marker.Description);
@@ -594,7 +594,7 @@ namespace WingSuitJudge
 
                     if (version >= 7)
                     {
-                        mAreaCircleMode = (AreaCircle)reader.ReadInt32();
+                        mFlightZoneMode = (FlightZone)reader.ReadInt32();
                     }
 
                     if (version >= 2)
@@ -615,7 +615,7 @@ namespace WingSuitJudge
                         float x = reader.ReadSingle();
                         float y = reader.ReadSingle();
                         Marker marker = new Marker(x, y);
-                        marker.ShowArea = reader.ReadBoolean();
+                        marker.ShowFlightZone = reader.ReadBoolean();
                         if (version >= 3)
                         {
                             if (version == 3)
@@ -626,7 +626,7 @@ namespace WingSuitJudge
                         }
                         if (version >= 7)
                         {
-                            marker.AreaCircleMode = (AreaCircle)reader.ReadInt32();
+                            marker.FlightZoneMode = (FlightZone)reader.ReadInt32();
                         }
 
                         marker.NameTag = reader.ReadString();

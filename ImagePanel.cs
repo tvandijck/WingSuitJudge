@@ -76,7 +76,11 @@ namespace WingSuitJudge
 
         public Bitmap CloneBitmap()
         {
-            return (Bitmap)mBitmap.Clone();
+            if (mBitmap != null)
+            {
+                return (Bitmap)mBitmap.Clone();
+            }
+            return null;
         }
 
         public int Zoom

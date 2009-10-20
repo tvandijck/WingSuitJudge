@@ -10,7 +10,7 @@ namespace WingSuitJudge
     public class MoveMarkerAction : Action
     {
         int mSelected = -1;
-        bool mShowArea;
+        bool mShowFlightZone;
 
         public MoveMarkerAction(Project aProject)
             : base(aProject)
@@ -25,8 +25,8 @@ namespace WingSuitJudge
                 if (mSelected != -1)
                 {
                     Marker marker = Project.GetMarker(mSelected);
-                    mShowArea = marker.ShowArea;
-                    marker.ShowArea = true;
+                    mShowFlightZone = marker.ShowFlightZone;
+                    marker.ShowFlightZone = true;
                     aSender.Invalidate();
                 }
                 return false;
@@ -39,7 +39,7 @@ namespace WingSuitJudge
             if (mSelected != -1)
             {
                 Marker marker = Project.GetMarker(mSelected);
-                marker.ShowArea = mShowArea;
+                marker.ShowFlightZone = mShowFlightZone;
                 aSender.Invalidate();
                 mSelected = -1;
             }

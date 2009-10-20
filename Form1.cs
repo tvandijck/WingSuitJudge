@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Reflection;
 using System.Diagnostics;
+using System.Drawing.Imaging;
 
 namespace WingSuitJudge
 {
@@ -152,7 +153,7 @@ namespace WingSuitJudge
                 FileVersionInfo info = FileVersionInfo.GetVersionInfo(assembly.Location);
                 if (info != null)
                 {
-                    return string.Format("{0}.{1}.{2}", info.ProductMajorPart, 
+                    return string.Format("{0}.{1}.{2}", info.ProductMajorPart,
                         info.ProductMinorPart, info.ProductBuildPart);
                 }
                 else
@@ -177,14 +178,14 @@ namespace WingSuitJudge
                         Marker marker = Project.GetMarker(mSelectedMarker);
 
                         MenuItem formationStyle = new MenuItem("Formation Style");
-                        formationStyle.MenuItems.Add(NewMenuItem("45", new EventHandler(OnMarker45), mSelectedMarker, marker.AreaCircleMode == AreaCircle.Deg45));
-                        formationStyle.MenuItems.Add(NewMenuItem("90", new EventHandler(OnMarker90), mSelectedMarker, marker.AreaCircleMode == AreaCircle.Deg90));
-                        formationStyle.MenuItems.Add(NewMenuItem("Both", new EventHandler(OnMarkerBoth), mSelectedMarker, marker.AreaCircleMode == AreaCircle.Both));
-                        formationStyle.MenuItems.Add(NewMenuItem("Project", new EventHandler(OnMarkerProject), mSelectedMarker, marker.AreaCircleMode == AreaCircle.Project));
+                        formationStyle.MenuItems.Add(NewMenuItem("45", new EventHandler(OnMarker45), mSelectedMarker, marker.FlightZoneMode == FlightZone.Deg45));
+                        formationStyle.MenuItems.Add(NewMenuItem("90", new EventHandler(OnMarker90), mSelectedMarker, marker.FlightZoneMode == FlightZone.Deg90));
+                        formationStyle.MenuItems.Add(NewMenuItem("Both", new EventHandler(OnMarkerBoth), mSelectedMarker, marker.FlightZoneMode == FlightZone.Both));
+                        formationStyle.MenuItems.Add(NewMenuItem("Project", new EventHandler(OnMarkerProject), mSelectedMarker, marker.FlightZoneMode == FlightZone.Project));
 
                         ContextMenu menu = new ContextMenu();
                         menu.MenuItems.Add(NewMenuItem("Mark as base", new EventHandler(OnMakeMarkerBase), mSelectedMarker, false));
-                        menu.MenuItems.Add(NewMenuItem("Toggle area circles", new EventHandler(OnMarkerToggleAreaCircle), mSelectedMarker, marker.ShowArea));
+                        menu.MenuItems.Add(NewMenuItem("Toggle Flight Zone", new EventHandler(OnMarkerToggleFlightZone), mSelectedMarker, marker.ShowFlightZone));
                         menu.MenuItems.Add(formationStyle);
                         menu.MenuItems.Add("-");
                         menu.MenuItems.Add(NewMenuItem("Change wingsuit color", new EventHandler(OnChangeWingsuitColor), mSelectedMarker, false));
@@ -261,7 +262,7 @@ namespace WingSuitJudge
                 {
                     marker.NameTag = props.NameTag;
                     marker.Description = props.Description;
-                    marker.ShowArea = props.ShowArea;
+                    marker.ShowFlightZone = props.ShowFlightZone;
                     mPictureBox.Invalidate();
                 }
             }
@@ -277,13 +278,13 @@ namespace WingSuitJudge
             }
         }
 
-        private void OnMarkerToggleAreaCircle(object sender, EventArgs e)
+        private void OnMarkerToggleFlightZone(object sender, EventArgs e)
         {
             int index = (int)((MenuItem)sender).Tag;
             if (index != -1)
             {
                 Marker marker = Project.GetMarker(index);
-                marker.ShowArea = !marker.ShowArea;
+                marker.ShowFlightZone = !marker.ShowFlightZone;
                 mPictureBox.Invalidate();
             }
         }
@@ -305,37 +306,37 @@ namespace WingSuitJudge
             }
         }
 
-        private void SetMarkerMode(int index, AreaCircle aMode)
+        private void SetMarkerMode(int index, FlightZone aMode)
         {
             if (index != -1)
             {
                 Marker marker = Project.GetMarker(index);
-                marker.AreaCircleMode = aMode;
+                marker.FlightZoneMode = aMode;
             }
         }
 
         private void OnMarker45(object sender, EventArgs e)
         {
             int index = (int)((MenuItem)sender).Tag;
-            SetMarkerMode(index, AreaCircle.Deg45);
+            SetMarkerMode(index, FlightZone.Deg45);
         }
 
         private void OnMarker90(object sender, EventArgs e)
         {
             int index = (int)((MenuItem)sender).Tag;
-            SetMarkerMode(index, AreaCircle.Deg90);
+            SetMarkerMode(index, FlightZone.Deg90);
         }
 
         private void OnMarkerBoth(object sender, EventArgs e)
         {
             int index = (int)((MenuItem)sender).Tag;
-            SetMarkerMode(index, AreaCircle.Both);
+            SetMarkerMode(index, FlightZone.Both);
         }
 
         private void OnMarkerProject(object sender, EventArgs e)
         {
             int index = (int)((MenuItem)sender).Tag;
-            SetMarkerMode(index, AreaCircle.Project);
+            SetMarkerMode(index, FlightZone.Project);
         }
 
         private void OnChangeLineColor(object sender, EventArgs e)
@@ -387,10 +388,10 @@ namespace WingSuitJudge
             {
                 Project.PaintLines(e.Graphics, mSelectedLine);
             }
-            if (mShowAreaCircles.Checked)
+            if (mShowFlightZones.Checked)
             {
-                Project.PaintAreaCircles(e.Graphics);
-            }            
+                Project.PaintFlightZones(e.Graphics);
+            }
             if (mShowMarkers.Checked)
             {
                 Project.PaintMarkers(e.Graphics, mSelectedMarker);
@@ -498,7 +499,7 @@ namespace WingSuitJudge
             {
                 ProjectName = dialog.FileName;
                 Project.SaveProject(ProjectName);
-            } 
+            }
         }
 
         private void OnSaveClick(object sender, EventArgs e)
@@ -529,6 +530,7 @@ namespace WingSuitJudge
                 {
                     Project = new Project(dialog.FileName);
                     ProjectName = dialog.FileName;
+                    SaveSettings();
                 }
                 catch (Exception ex)
                 {
@@ -607,7 +609,7 @@ namespace WingSuitJudge
             {
                 Project.DistanceTolerance = dialog.DistanceTolerance;
                 Project.AngleTolerance = dialog.AngleTolerance;
-                Project.AreaCircleMode = dialog.AreaCircleMode;
+                Project.FlightZoneMode = dialog.FlightZoneMode;
                 mPictureBox.Invalidate();
             }
         }
@@ -625,11 +627,52 @@ namespace WingSuitJudge
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 Bitmap bitmap = mPictureBox.CloneBitmap();
+
+                float x, y;
+                if (bitmap == null)
+                {
+                    RectangleF rect = Project.BoundingRect;
+                    rect.Inflate(50, 50);
+                    rect.Height += 120;
+
+                    bitmap = new Bitmap((int)rect.Width, (int)rect.Height, PixelFormat.Format24bppRgb);
+                    using (Graphics gfx = Graphics.FromImage(bitmap))
+                    {
+                        gfx.Clear(BackColor);
+                    }
+
+                    float cx = rect.Left + rect.Right;
+                    float cy = rect.Top + rect.Bottom;
+                    x = (bitmap.Width * 0.5f) - (cx * 0.5f);
+                    y = (bitmap.Height * 0.5f) - (cy * 0.5f);
+                }
+                else
+                {
+                    x = bitmap.Width * 0.5f;
+                    y = bitmap.Height * 0.5f;
+                }
+
                 using (Graphics gfx = Graphics.FromImage(bitmap))
                 {
-                    gfx.Transform = new Matrix(1, 0, 0, 1, bitmap.Width * 0.5f, bitmap.Height * 0.5f);
-                    Project.PaintLines(gfx, -1);
-                    Project.PaintMarkers(gfx, -1);
+                    gfx.SmoothingMode = SmoothingMode.AntiAlias;
+                    gfx.Transform = new Matrix(1, 0, 0, 1, x, y);
+
+                    if (mShowWingsuits.Checked)
+                    {
+                        Project.PaintWingsuit(gfx);
+                    }
+                    if (mShowLines.Checked)
+                    {
+                        Project.PaintLines(gfx, -1);
+                    }
+                    if (mShowFlightZones.Checked)
+                    {
+                        Project.PaintFlightZones(gfx);
+                    }
+                    if (mShowMarkers.Checked)
+                    {
+                        Project.PaintMarkers(gfx, -1);
+                    }
                 }
                 bitmap.Save(dialog.FileName);
             }
@@ -659,7 +702,7 @@ namespace WingSuitJudge
                 mPictureBox.Invalidate();
             }
         }
-        
+
         private void OnWingsuitColorsClick(object sender, EventArgs e)
         {
             ColorDialog dialog = new ColorDialog();
@@ -675,6 +718,11 @@ namespace WingSuitJudge
             }
         }
 
+        private void OnFormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveSettings();
+        }
+
         #endregion
 
         private static MenuItem NewMenuItem(string aName, EventHandler aHandler, object aTag, bool aChecked)
@@ -687,15 +735,32 @@ namespace WingSuitJudge
 
         private void ResetProject()
         {
+            SaveSettings();
             Project = new Project();
             ProjectName = null;
             mPictureBox.ResetImage();
-            mShowLines.Checked = true;
-            mShowMarkers.Checked = true;
-            mShowWingsuits.Checked = false;
-            mShowPhoto.Checked = true;
-            mShowAreaCircles.Checked = true;
+            /*mShowLines.Checked = Settings.Default.ShowLines;
+            mShowMarkers.Checked = Settings.Default.ShowMarkers;
+            mShowWingsuits.Checked = Settings.Default.ShowWingsuits;
+            mShowPhoto.Checked = Settings.Default.ShowPhoto;
+            mShowFlightZones.Checked = Settings.Default.ShowFlightZones;
+            Project.AngleTolerance = Settings.Default.AngleTolerance;
+            Project.DistanceTolerance = Settings.Default.DistanceTolerance;*/
         }
 
+        private void SaveSettings()
+        {
+            /*Settings.Default.ShowLines = mShowLines.Checked;
+            Settings.Default.ShowMarkers = mShowMarkers.Checked;
+            Settings.Default.ShowWingsuits = mShowWingsuits.Checked;
+            Settings.Default.ShowPhoto = mShowPhoto.Checked;
+            Settings.Default.ShowFlightZones = mShowFlightZones.Checked;
+            if (Project != null)
+            {
+                Settings.Default.AngleTolerance = Project.AngleTolerance;
+                Settings.Default.DistanceTolerance = Project.DistanceTolerance;
+            }
+            Settings.Default.Save();*/
+        }
     }
 }

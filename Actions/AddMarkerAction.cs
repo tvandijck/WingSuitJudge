@@ -27,7 +27,7 @@ namespace WingSuitJudge
                 else
                 {
                     Marker marker = Project.GetMarker(selected);
-                    marker.ShowArea = !marker.ShowArea;
+                    marker.ShowFlightZone = !marker.ShowFlightZone;
                 }
                 aSender.Invalidate();
                 return false;

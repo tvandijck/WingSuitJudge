@@ -81,16 +81,16 @@ namespace WingSuitJudge.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap arrow_in {
+        internal static System.Drawing.Bitmap banner01 {
             get {
-                object obj = ResourceManager.GetObject("arrow_in", resourceCulture);
+                object obj = ResourceManager.GetObject("banner01", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap arrow_out {
+        internal static System.Drawing.Bitmap fit_to_screen {
             get {
-                object obj = ResourceManager.GetObject("arrow_out", resourceCulture);
+                object obj = ResourceManager.GetObject("fit_to_screen", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -98,6 +98,13 @@ namespace WingSuitJudge.Properties {
         internal static System.Drawing.Bitmap invert_photo {
             get {
                 object obj = ResourceManager.GetObject("invert_photo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap move_canvas {
+            get {
+                object obj = ResourceManager.GetObject("move_canvas", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

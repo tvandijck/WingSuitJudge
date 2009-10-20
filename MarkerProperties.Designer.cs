@@ -34,7 +34,7 @@
             this.mDescription = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.mShowArea = new System.Windows.Forms.CheckBox();
+            this.mShowFlightZone = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -90,22 +90,22 @@
             this.button2.Text = "Cancel";
             this.button2.UseVisualStyleBackColor = true;
             // 
-            // mShowArea
+            // mShowFlightZone
             // 
-            this.mShowArea.AutoSize = true;
-            this.mShowArea.Location = new System.Drawing.Point(13, 271);
-            this.mShowArea.Name = "mShowArea";
-            this.mShowArea.Size = new System.Drawing.Size(124, 17);
-            this.mShowArea.TabIndex = 6;
-            this.mShowArea.Text = "Show tolerance area";
-            this.mShowArea.UseVisualStyleBackColor = true;
+            this.mShowFlightZone.AutoSize = true;
+            this.mShowFlightZone.Location = new System.Drawing.Point(13, 271);
+            this.mShowFlightZone.Name = "mShowFlightZone";
+            this.mShowFlightZone.Size = new System.Drawing.Size(124, 17);
+            this.mShowFlightZone.TabIndex = 6;
+            this.mShowFlightZone.Text = "Show Flight Zone";
+            this.mShowFlightZone.UseVisualStyleBackColor = true;
             // 
             // MarkerProperties
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(268, 338);
-            this.Controls.Add(this.mShowArea);
+            this.Controls.Add(this.mShowFlightZone);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.mDescription);
@@ -129,7 +129,7 @@
         private System.Windows.Forms.TextBox mDescription;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.CheckBox mShowArea;
+        private System.Windows.Forms.CheckBox mShowFlightZone;
 
     }
 }

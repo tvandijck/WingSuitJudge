@@ -9,6 +9,7 @@ namespace WingSuitJudge
         private Image mImage;
         private bool mHighlite = false;
         private bool mChecked = false;
+        private bool mMouseDown = false;
         private string mTooltip;
         private ToolTip mToopTipCtrl = new ToolTip();
 
@@ -67,6 +68,11 @@ namespace WingSuitJudge
 
                 RectangleF srcRect = new RectangleF(0, 0, mImage.Width, mImage.Height);
                 RectangleF destRect = new RectangleF(x, y, mImage.Width, mImage.Height);
+                if (mMouseDown)
+                {
+                    destRect.Inflate(-1, -1);
+                }
+
                 e.Graphics.DrawImage(mImage, destRect, srcRect, GraphicsUnit.Pixel);
             }
         }
@@ -83,6 +89,20 @@ namespace WingSuitJudge
             mHighlite = false;
             Invalidate();
             base.OnMouseLeave(e);
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            mMouseDown = true;
+            Invalidate();
+            base.OnMouseDown(e);
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            mMouseDown = false;
+            Invalidate();
+            base.OnMouseUp(e);
         }
     }
 }

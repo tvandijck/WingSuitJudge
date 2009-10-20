@@ -16,7 +16,7 @@ namespace WingSuitJudge
             mMarker = aMarker;
             mNameTag.Text = mMarker.NameTag;
             mDescription.Text = mMarker.Description;
-            mShowArea.Checked = mMarker.ShowArea;
+            mShowFlightZone.Checked = mMarker.ShowFlightZone;
         }
 
         public string NameTag
@@ -29,9 +29,9 @@ namespace WingSuitJudge
             get { return mDescription.Text; }
         }
 
-        public bool ShowArea
+        public bool ShowFlightZone
         {
-            get { return mShowArea.Checked; }
+            get { return mShowFlightZone.Checked; }
         }
     }
 }

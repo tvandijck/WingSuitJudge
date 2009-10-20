@@ -9,8 +9,8 @@ namespace WingSuitJudge
         private PointF mLocation;
         private string mNameTag;
         private string mDescription;
-        private bool mShowArea;
-        private AreaCircle mAreaCircleMode = AreaCircle.Project;
+        private bool mShowFlightZone;
+        private FlightZone mFlightZoneMode = FlightZone.Project;
         private Color mSilhoutteColor = Color.White;
         private Image mSilhoutte = ImageColorCache.GetWingsuitImage(Color.White);
 
@@ -45,16 +45,16 @@ namespace WingSuitJudge
             set { mDescription = value; }
         }
 
-        public bool ShowArea
+        public bool ShowFlightZone
         {
-            get { return mShowArea; }
-            set { mShowArea = value; }
+            get { return mShowFlightZone; }
+            set { mShowFlightZone = value; }
         }
 
-        public AreaCircle AreaCircleMode
+        public FlightZone FlightZoneMode
         {
-            get { return mAreaCircleMode; }
-            set { mAreaCircleMode = value; }
+            get { return mFlightZoneMode; }
+            set { mFlightZoneMode = value; }
         }
 
         public Color SilhoutteColor

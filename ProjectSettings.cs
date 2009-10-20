@@ -21,9 +21,9 @@ namespace WingSuitJudge
             InitializeComponent();
             mDistanceTolerance.Value = aProject.DistanceTolerance;
             mAngleTolerance.Value = aProject.AngleTolerance;
-            mDeg45.Checked = aProject.AreaCircleMode == AreaCircle.Deg45;
-            mDeg90.Checked = aProject.AreaCircleMode == AreaCircle.Deg90;
-            mDegBoth.Checked = aProject.AreaCircleMode == AreaCircle.Both;
+            mDeg45.Checked = aProject.FlightZoneMode == FlightZone.Deg45;
+            mDeg90.Checked = aProject.FlightZoneMode == FlightZone.Deg90;
+            mDegBoth.Checked = aProject.FlightZoneMode == FlightZone.Both;
         }
 
         public int DistanceTolerance
@@ -36,19 +36,19 @@ namespace WingSuitJudge
             get { return (int)mAngleTolerance.Value; }
         }
 
-        public AreaCircle AreaCircleMode
+        public FlightZone FlightZoneMode
         {
             get
             {
                 if (mDeg45.Checked)
                 {
-                    return AreaCircle.Deg45;
+                    return FlightZone.Deg45;
                 }
                 if (mDeg90.Checked)
                 {
-                    return AreaCircle.Deg90;
+                    return FlightZone.Deg90;
                 }
-                return AreaCircle.Both;
+                return FlightZone.Both;
             }
         }
     }
