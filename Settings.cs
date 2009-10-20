@@ -40,14 +40,45 @@ namespace WingSuitJudge
 
         public void Load()
         {
-            ShowLines = (int)Registry.GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "ShowLines", 1) == 1;
-            ShowMarkers = (int)Registry.GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "ShowMarkers", 1) == 1;
-            ShowWingsuits = (int)Registry.GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "ShowWingsuits", 0) == 1;
-            ShowPhoto = (int)Registry.GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "ShowPhoto", 1) == 1;
-            ShowFlightZones = (int)Registry.GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "ShowFlightZones", 1) == 1;
-            AngleTolerance = (int)Registry.GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "AngleTolerance", 18);
-            DistanceTolerance = (int)Registry.GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DistanceTolerance", 35);
-            BaseLineColor = Color.FromArgb((int)Registry.GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "BaseLineColor", Color.Blue.ToArgb()));
+            ShowLines = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "ShowLines", true);
+            ShowMarkers = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "ShowMarkers", true);
+            ShowWingsuits = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "ShowWingsuits", false);
+            ShowPhoto = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "ShowPhoto", true);
+            ShowFlightZones = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "ShowFlightZones", true);
+            AngleTolerance = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "AngleTolerance", 18);
+            DistanceTolerance = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DistanceTolerance", 35);
+            BaseLineColor = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "BaseLineColor", Color.Blue);
+        }
+        
+        static bool GetValue(string location, string key, bool def)
+        {
+            object value = Registry.GetValue(location, key, def);
+            if (value == null)
+            {
+                return def;
+            }
+            return (int)value == 1;
+        }
+
+
+        static int GetValue(string location, string key, int def)
+        {
+            object value = Registry.GetValue(location, key, def);
+            if (value == null)
+            {
+                return def;
+            }
+            return (int)value;
+        }
+
+        static Color GetValue(string location, string key, Color def)
+        {
+            object value = Registry.GetValue(location, key, def.ToArgb());
+            if (value == null)
+            {
+                return def;
+            }
+            return Color.FromArgb((int)value);
         }
     }
 }

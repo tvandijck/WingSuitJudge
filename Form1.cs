@@ -773,7 +773,7 @@ namespace WingSuitJudge
 
                 PrintPreviewDialog dialog = new PrintPreviewDialog();
                 dialog.Document = pd;
-                dialog.ShowDialog();
+                dialog.ShowDialog(this); 
             }
             catch (Exception ex)
             {
