@@ -32,8 +32,8 @@
             this.mNameTag = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.mDescription = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnOK = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.mShowFlightZone = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
@@ -64,50 +64,53 @@
             // 
             // mDescription
             // 
+            this.mDescription.AcceptsReturn = true;
             this.mDescription.Location = new System.Drawing.Point(13, 74);
             this.mDescription.Multiline = true;
             this.mDescription.Name = "mDescription";
             this.mDescription.Size = new System.Drawing.Size(243, 191);
             this.mDescription.TabIndex = 3;
             // 
-            // button1
+            // btnOK
             // 
-            this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button1.Location = new System.Drawing.Point(181, 303);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "OK";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnOK.Location = new System.Drawing.Point(181, 303);
+            this.btnOK.Name = "btnOK";
+            this.btnOK.Size = new System.Drawing.Size(75, 23);
+            this.btnOK.TabIndex = 4;
+            this.btnOK.Text = "OK";
+            this.btnOK.UseVisualStyleBackColor = true;
             // 
-            // button2
+            // btnCancel
             // 
-            this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button2.Location = new System.Drawing.Point(100, 303);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 5;
-            this.button2.Text = "Cancel";
-            this.button2.UseVisualStyleBackColor = true;
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(100, 303);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.TabIndex = 5;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // mShowFlightZone
             // 
             this.mShowFlightZone.AutoSize = true;
             this.mShowFlightZone.Location = new System.Drawing.Point(13, 271);
             this.mShowFlightZone.Name = "mShowFlightZone";
-            this.mShowFlightZone.Size = new System.Drawing.Size(124, 17);
+            this.mShowFlightZone.Size = new System.Drawing.Size(109, 17);
             this.mShowFlightZone.TabIndex = 6;
             this.mShowFlightZone.Text = "Show Flight Zone";
             this.mShowFlightZone.UseVisualStyleBackColor = true;
             // 
             // MarkerProperties
             // 
+            this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(268, 338);
             this.Controls.Add(this.mShowFlightZone);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnOK);
             this.Controls.Add(this.mDescription);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.mNameTag);
@@ -127,8 +130,8 @@
         private System.Windows.Forms.TextBox mNameTag;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox mDescription;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.CheckBox mShowFlightZone;
 
     }

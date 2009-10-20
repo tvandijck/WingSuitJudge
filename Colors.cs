@@ -1,8 +1,7 @@
 ﻿using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms;
 using System.IO;
-using WingSuitJudge.Properties;
+using System.Windows.Forms;
 
 namespace WingSuitJudge
 {
@@ -10,7 +9,7 @@ namespace WingSuitJudge
     {
         public static Pen BlackPen = new Pen(Color.Black, 3);
         public static Pen SelectedPen = new Pen(Color.Yellow, 3);
-        public static Pen BasePen = new Pen(Color.Blue, 5);
+        public static Pen BasePen = new Pen(Settings.Default.BaseLineColor, 5);
         public static Pen ErrorPen = new Pen(Color.Red, 5);
         
         public static Pen FlightZonePen = new Pen(Color.Silver, 1);

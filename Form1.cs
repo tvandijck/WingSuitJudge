@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.IO;
-using System.Windows.Forms;
-using System.Reflection;
-using System.Diagnostics;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Reflection;
+using System.Windows.Forms;
 
 namespace WingSuitJudge
 {
@@ -739,28 +739,28 @@ namespace WingSuitJudge
             Project = new Project();
             ProjectName = null;
             mPictureBox.ResetImage();
-            /*mShowLines.Checked = Settings.Default.ShowLines;
+            mShowLines.Checked = Settings.Default.ShowLines;
             mShowMarkers.Checked = Settings.Default.ShowMarkers;
             mShowWingsuits.Checked = Settings.Default.ShowWingsuits;
             mShowPhoto.Checked = Settings.Default.ShowPhoto;
             mShowFlightZones.Checked = Settings.Default.ShowFlightZones;
             Project.AngleTolerance = Settings.Default.AngleTolerance;
-            Project.DistanceTolerance = Settings.Default.DistanceTolerance;*/
+            Project.DistanceTolerance = Settings.Default.DistanceTolerance;
         }
 
         private void SaveSettings()
         {
-            /*Settings.Default.ShowLines = mShowLines.Checked;
-            Settings.Default.ShowMarkers = mShowMarkers.Checked;
-            Settings.Default.ShowWingsuits = mShowWingsuits.Checked;
-            Settings.Default.ShowPhoto = mShowPhoto.Checked;
-            Settings.Default.ShowFlightZones = mShowFlightZones.Checked;
             if (Project != null)
             {
+                Settings.Default.ShowLines = mShowLines.Checked;
+                Settings.Default.ShowMarkers = mShowMarkers.Checked;
+                Settings.Default.ShowWingsuits = mShowWingsuits.Checked;
+                Settings.Default.ShowPhoto = mShowPhoto.Checked;
+                Settings.Default.ShowFlightZones = mShowFlightZones.Checked;
                 Settings.Default.AngleTolerance = Project.AngleTolerance;
                 Settings.Default.DistanceTolerance = Project.DistanceTolerance;
+                Settings.Default.Save();
             }
-            Settings.Default.Save();*/
         }
     }
 }

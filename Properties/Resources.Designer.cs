@@ -88,9 +88,37 @@ namespace WingSuitJudge.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap export {
+            get {
+                object obj = ResourceManager.GetObject("export", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap fit_to_screen {
             get {
                 object obj = ResourceManager.GetObject("fit_to_screen", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap help {
+            get {
+                object obj = ResourceManager.GetObject("help", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap image_add {
+            get {
+                object obj = ResourceManager.GetObject("image_add", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap image_delete {
+            get {
+                object obj = ResourceManager.GetObject("image_delete", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,6 +151,13 @@ namespace WingSuitJudge.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap open_project {
+            get {
+                object obj = ResourceManager.GetObject("open_project", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap remove_line {
             get {
                 object obj = ResourceManager.GetObject("remove_line", resourceCulture);
@@ -141,6 +176,13 @@ namespace WingSuitJudge.Properties {
             get {
                 object obj = ResourceManager.GetObject("rotate_cursor", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap save_project {
+            get {
+                object obj = ResourceManager.GetObject("save_project", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

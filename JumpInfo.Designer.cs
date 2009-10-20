@@ -164,8 +164,10 @@
             // 
             // JumpInfo
             // 
+            this.AcceptButton = this.mBtnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.mBtnCancel;
             this.ClientSize = new System.Drawing.Size(368, 208);
             this.Controls.Add(this.mBtnCancel);
             this.Controls.Add(this.mBtnOK);
