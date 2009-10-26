@@ -16,7 +16,7 @@ namespace WingSuitJudge
                 int selected = Project.FindLine(e.X, e.Y);
                 if (selected != -1)
                 {
-                    Project.RemoveLine(selected);
+                    CommandSystem.RemoveLine(Project, selected);
                     aSender.Invalidate();
                     return false;
                 }

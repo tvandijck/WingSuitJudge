@@ -64,6 +64,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AboutBox.cs">
@@ -87,6 +88,7 @@
       <DependentUpon>CheckButton.cs</DependentUpon>
     </Compile>
     <Compile Include="Colors.cs" />
+    <Compile Include="CommandSystem.cs" />
     <Compile Include="ImageColorCache.cs" />
     <Compile Include="ImagePanel.cs">
       <SubType>UserControl</SubType>

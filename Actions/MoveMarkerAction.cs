@@ -7,6 +7,8 @@ namespace WingSuitJudge
     {
         int mSelected = -1;
         bool mShowFlightZone;
+        PointF mOldLocation;
+        PointF mNewLocation;
 
         public MoveMarkerAction(Project aProject)
             : base(aProject)
@@ -21,6 +23,7 @@ namespace WingSuitJudge
                 if (mSelected != -1)
                 {
                     Marker marker = Project.GetMarker(mSelected);
+                    mOldLocation = marker.Location;
                     mShowFlightZone = marker.ShowFlightZone;
                     marker.ShowFlightZone = true;
                     aSender.Invalidate();
@@ -34,8 +37,18 @@ namespace WingSuitJudge
         {
             if (mSelected != -1)
             {
+                // revert the 'action'.
                 Marker marker = Project.GetMarker(mSelected);
                 marker.ShowFlightZone = mShowFlightZone;
+                marker.Location = mOldLocation;
+
+                // notify the command system of our intent.
+                if (mOldLocation != mNewLocation)
+                {
+                    CommandSystem.MoveMarker(Project, mSelected, mOldLocation, mNewLocation);
+                }
+
+                // redraw ;).
                 aSender.Invalidate();
                 mSelected = -1;
             }
@@ -47,7 +60,8 @@ namespace WingSuitJudge
             if (mSelected != -1 && e.Button == MouseButtons.Left)
             {
                 Marker marker = Project.GetMarker(mSelected);
-                marker.Location = new PointF(e.X, e.Y);
+                mNewLocation = new PointF(e.X, e.Y);
+                marker.Location = mNewLocation;
                 aSender.Invalidate();
                 return false;
             }

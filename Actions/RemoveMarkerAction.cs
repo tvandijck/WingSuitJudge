@@ -16,7 +16,7 @@ namespace WingSuitJudge
                 int selected = Project.FindMarker(e.X, e.Y);
                 if (selected != -1)
                 {
-                    Project.RemoveMarker(selected);
+                    CommandSystem.RemoveMarker(Project, selected);
                     aSender.Invalidate();
                     return false;
                 }

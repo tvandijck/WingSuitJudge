@@ -36,6 +36,11 @@ namespace WingSuitJudge
         public override bool OnMouseDown(ImagePanel aSender, MouseEventArgs e)
         {
             GetCursor(e.X, e.Y, out mMode);
+            if (mMode != Mode.None)
+            {
+                CommandSystem.AddRollback(Project);
+            }
+
             mMousePosition.X = e.X;
             mMousePosition.Y = e.Y;
             return true;

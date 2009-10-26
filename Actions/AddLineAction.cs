@@ -19,7 +19,7 @@ namespace WingSuitJudge
                 int selected = Project.FindMarker(e.X, e.Y);
                 if (selected == -1)
                 {
-                    Project.AddMarker(new Marker(e.X, e.Y));
+                    CommandSystem.AddMarker(Project, e.X, e.Y);
                     selected = Project.FindMarker(e.X, e.Y);
                 }
 
@@ -29,7 +29,7 @@ namespace WingSuitJudge
                 }
                 else
                 {
-                    Project.AddLine(mDragLine.StartMarker, selected);
+                    CommandSystem.AddLine(Project, mDragLine.StartMarker, selected);
                     mDragLine = null;
                 }
                 aSender.Invalidate();

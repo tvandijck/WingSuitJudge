@@ -35,13 +35,23 @@
             this.mCopyright = new System.Windows.Forms.ToolStripStatusLabel();
             this.mMainMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importPhotoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openFormationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.saveFormationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.printMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripMenuItem();
+            this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
             this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,38 +66,35 @@
             this.mLineColorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mWingsuitColorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.indexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mMenuPanel = new System.Windows.Forms.Panel();
-            this.mFormationTools = new System.Windows.Forms.GroupBox();
-            this.mImageTools = new System.Windows.Forms.GroupBox();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.printMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.mPictureBox = new WingSuitJudge.ImagePanel();
+            this.mSizeBox = new System.Windows.Forms.GroupBox();
+            this.mWingsuitSize = new System.Windows.Forms.NumericUpDown();
             this.mAdvert = new System.Windows.Forms.PictureBox();
+            this.mFormationTools = new System.Windows.Forms.GroupBox();
             this.mBtnFreeTransform = new WingSuitJudge.CheckButton();
             this.mBtnRemoveLine = new WingSuitJudge.CheckButton();
             this.mBtnAddLine = new WingSuitJudge.CheckButton();
             this.mBtnMoveMarker = new WingSuitJudge.CheckButton();
             this.mBtnRemoveMarker = new WingSuitJudge.CheckButton();
             this.mBtnAddMarker = new WingSuitJudge.CheckButton();
+            this.mImageTools = new System.Windows.Forms.GroupBox();
             this.mBtnInvertPhoto = new WingSuitJudge.CheckButton();
             this.mBtnCenterImage = new WingSuitJudge.CheckButton();
             this.mBtnMoveImage = new WingSuitJudge.CheckButton();
             this.mBtnZoomOut = new WingSuitJudge.CheckButton();
             this.mBtnZoomIn = new WingSuitJudge.CheckButton();
-            this.importPhotoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
-            this.openFormationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveFormationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.indexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mPictureBox = new WingSuitJudge.ImagePanel();
             this.mStatusBar.SuspendLayout();
             this.mMainMenu.SuspendLayout();
             this.mMenuPanel.SuspendLayout();
+            this.mSizeBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.mWingsuitSize)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mAdvert)).BeginInit();
             this.mFormationTools.SuspendLayout();
             this.mImageTools.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.mAdvert)).BeginInit();
             this.SuspendLayout();
             // 
             // mStatusBar
@@ -127,6 +134,7 @@
             // 
             this.mMainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.toolStripMenuItem7,
             this.toolStripMenuItem5,
             this.mDisplayMenu,
             this.helpToolStripMenuItem});
@@ -155,6 +163,24 @@
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "&File";
             // 
+            // importPhotoToolStripMenuItem
+            // 
+            this.importPhotoToolStripMenuItem.Image = global::WingSuitJudge.Properties.Resources.image_add;
+            this.importPhotoToolStripMenuItem.Name = "importPhotoToolStripMenuItem";
+            this.importPhotoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
+            this.importPhotoToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.importPhotoToolStripMenuItem.Text = "Import photo...";
+            this.importPhotoToolStripMenuItem.Click += new System.EventHandler(this.OnImportImageClick);
+            // 
+            // toolStripMenuItem4
+            // 
+            this.toolStripMenuItem4.Image = global::WingSuitJudge.Properties.Resources.image_delete;
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(191, 22);
+            this.toolStripMenuItem4.Text = "Reset photo";
+            this.toolStripMenuItem4.Click += new System.EventHandler(this.OnResetPhotoClick);
+            // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
@@ -167,10 +193,28 @@
             this.newToolStripMenuItem.Text = "&New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.OnNewClick);
             // 
+            // openFormationToolStripMenuItem
+            // 
+            this.openFormationToolStripMenuItem.Image = global::WingSuitJudge.Properties.Resources.open_project;
+            this.openFormationToolStripMenuItem.Name = "openFormationToolStripMenuItem";
+            this.openFormationToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.openFormationToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.openFormationToolStripMenuItem.Text = "&Open...";
+            this.openFormationToolStripMenuItem.Click += new System.EventHandler(this.OnOpenClick);
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(188, 6);
+            // 
+            // saveFormationToolStripMenuItem
+            // 
+            this.saveFormationToolStripMenuItem.Image = global::WingSuitJudge.Properties.Resources.save_project;
+            this.saveFormationToolStripMenuItem.Name = "saveFormationToolStripMenuItem";
+            this.saveFormationToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.saveFormationToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.saveFormationToolStripMenuItem.Text = "&Save...";
+            this.saveFormationToolStripMenuItem.Click += new System.EventHandler(this.OnSaveClick);
             // 
             // saveAsToolStripMenuItem
             // 
@@ -178,6 +222,19 @@
             this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.saveAsToolStripMenuItem.Text = "Save as...";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.OnSaveAsClick);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(188, 6);
+            // 
+            // printMenuItem
+            // 
+            this.printMenuItem.Image = global::WingSuitJudge.Properties.Resources.printer;
+            this.printMenuItem.Name = "printMenuItem";
+            this.printMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.printMenuItem.Text = "Print...";
+            this.printMenuItem.Click += new System.EventHandler(this.printMenuItem_Click);
             // 
             // toolStripMenuItem2
             // 
@@ -192,6 +249,31 @@
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.OnExitClick);
             // 
+            // toolStripMenuItem7
+            // 
+            this.toolStripMenuItem7.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.undoToolStripMenuItem,
+            this.redoToolStripMenuItem});
+            this.toolStripMenuItem7.Name = "toolStripMenuItem7";
+            this.toolStripMenuItem7.Size = new System.Drawing.Size(39, 20);
+            this.toolStripMenuItem7.Text = "&Edit";
+            // 
+            // undoToolStripMenuItem
+            // 
+            this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
+            this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.undoToolStripMenuItem.Text = "Undo";
+            this.undoToolStripMenuItem.Click += new System.EventHandler(this.OnUndoClick);
+            // 
+            // redoToolStripMenuItem
+            // 
+            this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
+            this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
+            this.redoToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.redoToolStripMenuItem.Text = "Redo";
+            this.redoToolStripMenuItem.Click += new System.EventHandler(this.OnRedoClick);
+            // 
             // toolStripMenuItem5
             // 
             this.toolStripMenuItem5.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -202,6 +284,14 @@
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
             this.toolStripMenuItem5.Size = new System.Drawing.Size(56, 20);
             this.toolStripMenuItem5.Text = "&Project";
+            // 
+            // exportToolStripMenuItem
+            // 
+            this.exportToolStripMenuItem.Image = global::WingSuitJudge.Properties.Resources.export;
+            this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.exportToolStripMenuItem.Text = "&Export...";
+            this.exportToolStripMenuItem.Click += new System.EventHandler(this.OnExportClick);
             // 
             // toolStripMenuItem6
             // 
@@ -264,7 +354,7 @@
             this.mShowWingsuits.Name = "mShowWingsuits";
             this.mShowWingsuits.Size = new System.Drawing.Size(212, 22);
             this.mShowWingsuits.Text = "Wingsuits";
-            this.mShowWingsuits.CheckedChanged += new System.EventHandler(this.OnRepaintEvent);
+            this.mShowWingsuits.CheckedChanged += new System.EventHandler(this.OnShowWingsuitChangedEvent);
             // 
             // mShowPhoto
             // 
@@ -322,6 +412,13 @@
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "&Help";
             // 
+            // indexToolStripMenuItem
+            // 
+            this.indexToolStripMenuItem.Image = global::WingSuitJudge.Properties.Resources.help;
+            this.indexToolStripMenuItem.Name = "indexToolStripMenuItem";
+            this.indexToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.indexToolStripMenuItem.Text = "&Index";
+            // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
@@ -336,6 +433,7 @@
             // 
             // mMenuPanel
             // 
+            this.mMenuPanel.Controls.Add(this.mSizeBox);
             this.mMenuPanel.Controls.Add(this.mAdvert);
             this.mMenuPanel.Controls.Add(this.mFormationTools);
             this.mMenuPanel.Controls.Add(this.mImageTools);
@@ -345,6 +443,53 @@
             this.mMenuPanel.Padding = new System.Windows.Forms.Padding(3);
             this.mMenuPanel.Size = new System.Drawing.Size(116, 805);
             this.mMenuPanel.TabIndex = 6;
+            // 
+            // mSizeBox
+            // 
+            this.mSizeBox.Controls.Add(this.mWingsuitSize);
+            this.mSizeBox.Dock = System.Windows.Forms.DockStyle.Top;
+            this.mSizeBox.Location = new System.Drawing.Point(3, 191);
+            this.mSizeBox.Name = "mSizeBox";
+            this.mSizeBox.Size = new System.Drawing.Size(110, 50);
+            this.mSizeBox.TabIndex = 10;
+            this.mSizeBox.TabStop = false;
+            this.mSizeBox.Text = "Wingsuit Size";
+            this.mSizeBox.Visible = false;
+            // 
+            // mWingsuitSize
+            // 
+            this.mWingsuitSize.Location = new System.Drawing.Point(9, 19);
+            this.mWingsuitSize.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.mWingsuitSize.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.mWingsuitSize.Name = "mWingsuitSize";
+            this.mWingsuitSize.Size = new System.Drawing.Size(91, 20);
+            this.mWingsuitSize.TabIndex = 0;
+            this.mWingsuitSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.mWingsuitSize.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.mWingsuitSize.ValueChanged += new System.EventHandler(this.OnWingsuitSizeValueChanged);
+            // 
+            // mAdvert
+            // 
+            this.mAdvert.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.mAdvert.Image = global::WingSuitJudge.Properties.Resources.banner01;
+            this.mAdvert.InitialImage = null;
+            this.mAdvert.Location = new System.Drawing.Point(13, 495);
+            this.mAdvert.Name = "mAdvert";
+            this.mAdvert.Size = new System.Drawing.Size(90, 300);
+            this.mAdvert.TabIndex = 9;
+            this.mAdvert.TabStop = false;
             // 
             // mFormationTools
             // 
@@ -361,63 +506,6 @@
             this.mFormationTools.TabIndex = 7;
             this.mFormationTools.TabStop = false;
             this.mFormationTools.Text = "Formation Tools";
-            // 
-            // mImageTools
-            // 
-            this.mImageTools.Controls.Add(this.mBtnInvertPhoto);
-            this.mImageTools.Controls.Add(this.mBtnCenterImage);
-            this.mImageTools.Controls.Add(this.mBtnMoveImage);
-            this.mImageTools.Controls.Add(this.mBtnZoomOut);
-            this.mImageTools.Controls.Add(this.mBtnZoomIn);
-            this.mImageTools.Dock = System.Windows.Forms.DockStyle.Top;
-            this.mImageTools.Location = new System.Drawing.Point(3, 3);
-            this.mImageTools.Name = "mImageTools";
-            this.mImageTools.Size = new System.Drawing.Size(110, 94);
-            this.mImageTools.TabIndex = 6;
-            this.mImageTools.TabStop = false;
-            this.mImageTools.Text = "Image Tools";
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(188, 6);
-            // 
-            // printMenuItem
-            // 
-            this.printMenuItem.Image = global::WingSuitJudge.Properties.Resources.printer;
-            this.printMenuItem.Name = "printMenuItem";
-            this.printMenuItem.Size = new System.Drawing.Size(191, 22);
-            this.printMenuItem.Text = "Print...";
-            this.printMenuItem.Click += new System.EventHandler(this.printMenuItem_Click);
-            // 
-            // mPictureBox
-            // 
-            this.mPictureBox.BackColor = System.Drawing.SystemColors.AppWorkspace;
-            this.mPictureBox.Cursor = System.Windows.Forms.Cursors.Default;
-            this.mPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mPictureBox.Location = new System.Drawing.Point(116, 24);
-            this.mPictureBox.MoveMode = false;
-            this.mPictureBox.Name = "mPictureBox";
-            this.mPictureBox.Origin = ((System.Drawing.PointF)(resources.GetObject("mPictureBox.Origin")));
-            this.mPictureBox.Size = new System.Drawing.Size(1000, 805);
-            this.mPictureBox.TabIndex = 7;
-            this.mPictureBox.Zoom = 100;
-            this.mPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.OnPictureBoxPaint);
-            this.mPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseMove);
-            this.mPictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseClick);
-            this.mPictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseDown);
-            this.mPictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseUp);
-            // 
-            // mAdvert
-            // 
-            this.mAdvert.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.mAdvert.Image = global::WingSuitJudge.Properties.Resources.banner01;
-            this.mAdvert.InitialImage = null;
-            this.mAdvert.Location = new System.Drawing.Point(13, 495);
-            this.mAdvert.Name = "mAdvert";
-            this.mAdvert.Size = new System.Drawing.Size(90, 300);
-            this.mAdvert.TabIndex = 9;
-            this.mAdvert.TabStop = false;
             // 
             // mBtnFreeTransform
             // 
@@ -485,6 +573,21 @@
             this.mBtnAddMarker.Tooltip = "Add marker";
             this.mBtnAddMarker.Click += new System.EventHandler(this.OnAddMarkerClick);
             // 
+            // mImageTools
+            // 
+            this.mImageTools.Controls.Add(this.mBtnInvertPhoto);
+            this.mImageTools.Controls.Add(this.mBtnCenterImage);
+            this.mImageTools.Controls.Add(this.mBtnMoveImage);
+            this.mImageTools.Controls.Add(this.mBtnZoomOut);
+            this.mImageTools.Controls.Add(this.mBtnZoomIn);
+            this.mImageTools.Dock = System.Windows.Forms.DockStyle.Top;
+            this.mImageTools.Location = new System.Drawing.Point(3, 3);
+            this.mImageTools.Name = "mImageTools";
+            this.mImageTools.Size = new System.Drawing.Size(110, 94);
+            this.mImageTools.TabIndex = 6;
+            this.mImageTools.TabStop = false;
+            this.mImageTools.Text = "Image Tools";
+            // 
             // mBtnInvertPhoto
             // 
             this.mBtnInvertPhoto.Checked = false;
@@ -542,56 +645,23 @@
             this.mBtnZoomIn.DoubleClick += new System.EventHandler(this.OnZoomInClick);
             this.mBtnZoomIn.Click += new System.EventHandler(this.OnZoomInClick);
             // 
-            // importPhotoToolStripMenuItem
+            // mPictureBox
             // 
-            this.importPhotoToolStripMenuItem.Image = global::WingSuitJudge.Properties.Resources.image_add;
-            this.importPhotoToolStripMenuItem.Name = "importPhotoToolStripMenuItem";
-            this.importPhotoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
-            this.importPhotoToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-            this.importPhotoToolStripMenuItem.Text = "Import photo...";
-            this.importPhotoToolStripMenuItem.Click += new System.EventHandler(this.OnImportImageClick);
-            // 
-            // toolStripMenuItem4
-            // 
-            this.toolStripMenuItem4.Image = global::WingSuitJudge.Properties.Resources.image_delete;
-            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(191, 22);
-            this.toolStripMenuItem4.Text = "Reset photo";
-            this.toolStripMenuItem4.Click += new System.EventHandler(this.OnResetPhotoClick);
-            // 
-            // openFormationToolStripMenuItem
-            // 
-            this.openFormationToolStripMenuItem.Image = global::WingSuitJudge.Properties.Resources.open_project;
-            this.openFormationToolStripMenuItem.Name = "openFormationToolStripMenuItem";
-            this.openFormationToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openFormationToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-            this.openFormationToolStripMenuItem.Text = "&Open...";
-            this.openFormationToolStripMenuItem.Click += new System.EventHandler(this.OnOpenClick);
-            // 
-            // saveFormationToolStripMenuItem
-            // 
-            this.saveFormationToolStripMenuItem.Image = global::WingSuitJudge.Properties.Resources.save_project;
-            this.saveFormationToolStripMenuItem.Name = "saveFormationToolStripMenuItem";
-            this.saveFormationToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveFormationToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-            this.saveFormationToolStripMenuItem.Text = "&Save...";
-            this.saveFormationToolStripMenuItem.Click += new System.EventHandler(this.OnSaveClick);
-            // 
-            // exportToolStripMenuItem
-            // 
-            this.exportToolStripMenuItem.Image = global::WingSuitJudge.Properties.Resources.export;
-            this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
-            this.exportToolStripMenuItem.Text = "&Export...";
-            this.exportToolStripMenuItem.Click += new System.EventHandler(this.OnExportClick);
-            // 
-            // indexToolStripMenuItem
-            // 
-            this.indexToolStripMenuItem.Image = global::WingSuitJudge.Properties.Resources.help;
-            this.indexToolStripMenuItem.Name = "indexToolStripMenuItem";
-            this.indexToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-            this.indexToolStripMenuItem.Text = "&Index";
+            this.mPictureBox.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.mPictureBox.Cursor = System.Windows.Forms.Cursors.Default;
+            this.mPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mPictureBox.Location = new System.Drawing.Point(116, 24);
+            this.mPictureBox.MoveMode = false;
+            this.mPictureBox.Name = "mPictureBox";
+            this.mPictureBox.Origin = ((System.Drawing.PointF)(resources.GetObject("mPictureBox.Origin")));
+            this.mPictureBox.Size = new System.Drawing.Size(1000, 805);
+            this.mPictureBox.TabIndex = 7;
+            this.mPictureBox.Zoom = 100;
+            this.mPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.OnPictureBoxPaint);
+            this.mPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseMove);
+            this.mPictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseClick);
+            this.mPictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseDown);
+            this.mPictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseUp);
             // 
             // Form1
             // 
@@ -604,15 +674,18 @@
             this.Controls.Add(this.mMainMenu);
             this.Name = "Form1";
             this.Text = "Wingsuit Flock Judging Tool";
+            this.Shown += new System.EventHandler(this.Form1_Shown);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnFormClosing);
             this.mStatusBar.ResumeLayout(false);
             this.mStatusBar.PerformLayout();
             this.mMainMenu.ResumeLayout(false);
             this.mMainMenu.PerformLayout();
             this.mMenuPanel.ResumeLayout(false);
+            this.mSizeBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.mWingsuitSize)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mAdvert)).EndInit();
             this.mFormationTools.ResumeLayout(false);
             this.mImageTools.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.mAdvert)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -673,6 +746,11 @@
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem printMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem7;
+        private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
+        private System.Windows.Forms.GroupBox mSizeBox;
+        private System.Windows.Forms.NumericUpDown mWingsuitSize;
     }
 }
 

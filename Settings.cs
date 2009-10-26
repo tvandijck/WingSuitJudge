@@ -12,6 +12,7 @@ namespace WingSuitJudge
         public bool ShowFlightZones { get; set; }
         public int AngleTolerance { get; set; }
         public int DistanceTolerance { get; set; }
+        public int WingsuitSize { get; set; }
         public Color BaseLineColor { get; set; }
 
         private static Settings defaultInstance = new Settings();
@@ -36,6 +37,7 @@ namespace WingSuitJudge
             Registry.SetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "AngleTolerance", AngleTolerance, RegistryValueKind.DWord);
             Registry.SetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DistanceTolerance", DistanceTolerance, RegistryValueKind.DWord);
             Registry.SetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "BaseLineColor", BaseLineColor.ToArgb(), RegistryValueKind.DWord);
+            Registry.SetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "WingsuitSize", WingsuitSize, RegistryValueKind.DWord);
         }
 
         public void Load()
@@ -47,6 +49,7 @@ namespace WingSuitJudge
             ShowFlightZones = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "ShowFlightZones", true);
             AngleTolerance = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "AngleTolerance", 18);
             DistanceTolerance = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DistanceTolerance", 35);
+            WingsuitSize = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "WingsuitSize", 100);
             BaseLineColor = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "BaseLineColor", Color.Blue);
         }
         

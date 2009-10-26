@@ -69,10 +69,11 @@ namespace WingSuitJudge
             }
         }
 
-        public void DrawWingsuit(Graphics aGraphics)
+        public void DrawWingsuit(Graphics aGraphics, float aScale)
         {
             aGraphics.InterpolationMode = InterpolationMode.High;
-            aGraphics.DrawImage(mSilhoutte, mLocation.X - 62, mLocation.Y - 8, mSilhoutte.Width * 0.5f, mSilhoutte.Height * 0.5f);
+            aGraphics.DrawImage(mSilhoutte, mLocation.X - (62 * aScale), mLocation.Y - (8 * aScale), 
+                mSilhoutte.Width * 0.5f * aScale, mSilhoutte.Height * 0.5f * aScale);
         }
 
         public void Draw(Graphics aGraphics, bool aSelected, bool aBase)

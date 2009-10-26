@@ -12,7 +12,7 @@ namespace WingSuitJudge
         Project = 0,
         Deg45 = 1,
         Deg90 = 2,
-        Both = Deg45 | Deg90  
+        Both = Deg45 | Deg90
     };
 
     public class Project
@@ -42,6 +42,13 @@ namespace WingSuitJudge
         public Project(string aFilename)
         {
             LoadProject(aFilename);
+        }
+
+        public void Clear()
+        {
+            mMarkers.Clear();
+            mLines.Clear();
+
         }
 
         #region -- Project Settings -------------------------------------------
@@ -185,6 +192,16 @@ namespace WingSuitJudge
             return -1;
         }
 
+        public bool HasAnyFlightZones()
+        {
+            foreach (Marker marker in mMarkers)
+            {
+                if (marker.ShowFlightZone)
+                    return true;
+            }
+            return false;
+        }
+
         #endregion
 
         #region -- Line API ---------------------------------------------------
@@ -253,39 +270,15 @@ namespace WingSuitJudge
 
         #endregion
 
-        public bool IsAngleWithInTolerance(float aAngle, FlightZone aMode)
-        {
-            FlightZone cirleMode = (aMode == FlightZone.Project) ? mFlightZoneMode : aMode;
-            if ((cirleMode & FlightZone.Deg45) != 0)
-            {
-                float angle = Math2.NormalizeAngle(aAngle + 45);
-                for (int i = 0; i < 4; i++)
-                {
-                    if (angle >= -mAngleTolerance && angle <= mAngleTolerance)
-                        return true;
-                    angle = Math2.NormalizeAngle(angle + 90);
-                }
-            }
-            if ((cirleMode & FlightZone.Deg90) != 0)
-            {
-                float angle = Math2.NormalizeAngle(aAngle);
-                for (int i = 0; i < 4; i++)
-                {
-                    if (angle >= -mAngleTolerance && angle <= mAngleTolerance)
-                        return true;
-                    angle = Math2.NormalizeAngle(angle + 90);
-                }
-            }
-            return false;
-        }
+        #region -- Rendering API ----------------------------------------------
 
-        public void PaintWingsuit(Graphics aGraphics)
+        public void PaintWingsuit(Graphics aGraphics, float aScale)
         {
             int numMarkers = mMarkers.Count;
             for (int i = 0; i < numMarkers; i++)
             {
                 Marker marker = mMarkers[i];
-                marker.DrawWingsuit(aGraphics);
+                marker.DrawWingsuit(aGraphics, aScale);
             }
         }
 
@@ -342,22 +335,12 @@ namespace WingSuitJudge
                 float angle = line.GetAngle();
 
                 bool error = (length < minLength)
-                    || (length > maxLength) 
-                    || !IsAngleWithInTolerance(angle, line.End.FlightZoneMode) 
+                    || (length > maxLength)
+                    || !IsAngleWithInTolerance(angle, line.End.FlightZoneMode)
                     || !IsAngleWithInTolerance(angle, line.Start.FlightZoneMode);
 
                 line.Draw(aGraphics, i == aSelectedLine, baseLine, error);
             }
-        }
-
-        public bool HasAnyFlightZones()
-        {
-            foreach (Marker marker in mMarkers)
-            {
-                if (marker.ShowFlightZone)
-                    return true;
-            }
-            return false;
         }
 
         private GraphicsPath CreatePath(float aMinLength, float aMaxLength, float aAngleOffset)
@@ -428,87 +411,9 @@ namespace WingSuitJudge
         }
 
 
-        public float Accuracy
-        {
-            get
-            {
-                // get line base length.
-                float baseLength;
-                Marker baseMarker = null;
-                if (HasBaseLength(out baseLength, out baseMarker))
-                {
-                    float dtol = mDistanceTolerance * 0.01f;
-                    float minLength = baseLength - (baseLength * dtol);
-                    float maxLength = baseLength + (baseLength * dtol);
+        #endregion
 
-                    int numCorrectLines = 0;
-                    int numLines = mLines.Count;
-                    float totalLength = 0;
-                    float errorLength = 0;
-                    for (int i = 0; i < numLines; i++)
-                    {
-                        Line line = mLines[i];
-                        float length = line.GetLength();
-                        float angle = line.GetAngle();
-                        if (length >= minLength
-                            && length <= maxLength 
-                            && IsAngleWithInTolerance(angle, line.End.FlightZoneMode)
-                            && IsAngleWithInTolerance(angle, line.Start.FlightZoneMode))
-                        {
-                            numCorrectLines++;
-                        }
-                        else
-                        {
-                            if (length < minLength)
-                            {
-                                errorLength += (minLength - length);
-                            }
-                            if (length > maxLength)
-                            {
-                                errorLength += (length - maxLength);
-                            }
-                        }
-                        totalLength += length;
-                    }
-
-                    float correctRation = (float)numCorrectLines / (float)numLines;
-                    float lengthRation = 1.0f - ((float)errorLength / (float)totalLength);
-                    return correctRation * lengthRation;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-        }
-
-        public RectangleF BoundingRect
-        {
-            get
-            {
-                int num = mMarkers.Count;
-                if (num <= 0)
-                {
-                    return RectangleF.Empty;
-                }
-
-                Marker marker = mMarkers[0];
-                float minX = marker.Location.X;
-                float maxX = marker.Location.X;
-                float minY = marker.Location.Y;
-                float maxY = marker.Location.Y;
-
-                for (int i = 1; i < num; i++)
-                {
-                    marker = mMarkers[i];
-                    minX = Math.Min(minX, marker.Location.X);
-                    maxX = Math.Max(maxX, marker.Location.X);
-                    minY = Math.Min(minY, marker.Location.Y);
-                    maxY = Math.Max(maxY, marker.Location.Y);
-                }
-                return new RectangleF(minX, minY, maxX - minX, maxY - minY);
-            }
-        }
+        #region -- Save/Load methods ------------------------------------------
 
         private static void WriteString(BinaryWriter aWriter, string aString)
         {
@@ -524,8 +429,15 @@ namespace WingSuitJudge
 
         public void SaveProject(string aFilename)
         {
-            FileStream fileStream = new FileStream(aFilename, FileMode.Create);
-            using (BinaryWriter writer = new BinaryWriter(fileStream))
+            using (FileStream fileStream = new FileStream(aFilename, FileMode.Create))
+            {
+                Serialize(fileStream);
+            }
+        }
+
+        public void Serialize(Stream aStream)
+        {
+            using (BinaryWriter writer = new BinaryWriter(aStream))
             {
                 writer.Write((int)0x4b434c46);
                 writer.Write((int)7);
@@ -567,8 +479,15 @@ namespace WingSuitJudge
 
         private void LoadProject(string aFilename)
         {
-            FileStream fileStream = new FileStream(aFilename, FileMode.Open);
-            using (BinaryReader reader = new BinaryReader(fileStream))
+            using (FileStream fileStream = new FileStream(aFilename, FileMode.Open))
+            {
+                Deserialize(aFilename, fileStream);
+            }
+        }
+
+        public void Deserialize(string aFilename, Stream aStream)
+        {
+            using (BinaryReader reader = new BinaryReader(aStream))
             {
                 uint id = reader.ReadUInt32();
                 if (id != 0x4b434c46)
@@ -653,6 +572,116 @@ namespace WingSuitJudge
                 }
             }
         }
+
+        #endregion
+        
+        public bool IsAngleWithInTolerance(float aAngle, FlightZone aMode)
+        {
+            FlightZone cirleMode = (aMode == FlightZone.Project) ? mFlightZoneMode : aMode;
+            if ((cirleMode & FlightZone.Deg45) != 0)
+            {
+                float angle = Math2.NormalizeAngle(aAngle + 45);
+                for (int i = 0; i < 4; i++)
+                {
+                    if (angle >= -mAngleTolerance && angle <= mAngleTolerance)
+                        return true;
+                    angle = Math2.NormalizeAngle(angle + 90);
+                }
+            }
+            if ((cirleMode & FlightZone.Deg90) != 0)
+            {
+                float angle = Math2.NormalizeAngle(aAngle);
+                for (int i = 0; i < 4; i++)
+                {
+                    if (angle >= -mAngleTolerance && angle <= mAngleTolerance)
+                        return true;
+                    angle = Math2.NormalizeAngle(angle + 90);
+                }
+            }
+            return false;
+        }
+
+        public float Accuracy
+        {
+            get
+            {
+                // get line base length.
+                float baseLength;
+                Marker baseMarker = null;
+                if (HasBaseLength(out baseLength, out baseMarker))
+                {
+                    float dtol = mDistanceTolerance * 0.01f;
+                    float minLength = baseLength - (baseLength * dtol);
+                    float maxLength = baseLength + (baseLength * dtol);
+
+                    int numCorrectLines = 0;
+                    int numLines = mLines.Count;
+                    float totalLength = 0;
+                    float errorLength = 0;
+                    for (int i = 0; i < numLines; i++)
+                    {
+                        Line line = mLines[i];
+                        float length = line.GetLength();
+                        float angle = line.GetAngle();
+                        if (length >= minLength
+                            && length <= maxLength
+                            && IsAngleWithInTolerance(angle, line.End.FlightZoneMode)
+                            && IsAngleWithInTolerance(angle, line.Start.FlightZoneMode))
+                        {
+                            numCorrectLines++;
+                        }
+                        else
+                        {
+                            if (length < minLength)
+                            {
+                                errorLength += (minLength - length);
+                            }
+                            if (length > maxLength)
+                            {
+                                errorLength += (length - maxLength);
+                            }
+                        }
+                        totalLength += length;
+                    }
+
+                    float correctRation = (float)numCorrectLines / (float)numLines;
+                    float lengthRation = 1.0f - ((float)errorLength / (float)totalLength);
+                    return correctRation * lengthRation;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        public RectangleF BoundingRect
+        {
+            get
+            {
+                int num = mMarkers.Count;
+                if (num <= 0)
+                {
+                    return RectangleF.Empty;
+                }
+
+                Marker marker = mMarkers[0];
+                float minX = marker.Location.X;
+                float maxX = marker.Location.X;
+                float minY = marker.Location.Y;
+                float maxY = marker.Location.Y;
+
+                for (int i = 1; i < num; i++)
+                {
+                    marker = mMarkers[i];
+                    minX = Math.Min(minX, marker.Location.X);
+                    maxX = Math.Max(maxX, marker.Location.X);
+                    minY = Math.Min(minY, marker.Location.Y);
+                    maxY = Math.Max(maxY, marker.Location.Y);
+                }
+                return new RectangleF(minX, minY, maxX - minX, maxY - minY);
+            }
+        }      
 
         public void Offset(float dx, float dy)
         {

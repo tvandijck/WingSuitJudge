@@ -16,13 +16,11 @@ namespace WingSuitJudge
                 int selected = Project.FindMarker(e.X, e.Y);
                 if (selected == -1)
                 {
-                    Project.AddMarker(new Marker(e.X, e.Y));
-
+                    CommandSystem.AddMarker(Project, e.X, e.Y);
                 }
                 else
                 {
-                    Marker marker = Project.GetMarker(selected);
-                    marker.ShowFlightZone = !marker.ShowFlightZone;
+                    CommandSystem.MarkerToggleFlightZone(Project, selected);
                 }
                 aSender.Invalidate();
                 return false;

@@ -46,6 +46,7 @@ namespace WingSuitJudge
             {
                 if (!object.ReferenceEquals(mProject_, value))
                 {
+                    CommandSystem.Reset();
                     mProject_ = value;
                     mPictureBox.BackColor = mProject_.BackColor;
                     EditorMode = EditMode.AddMarker;
@@ -261,6 +262,7 @@ namespace WingSuitJudge
                 MarkerProperties props = new MarkerProperties(marker);
                 if (props.ShowDialog(this) == DialogResult.OK)
                 {
+                    CommandSystem.AddRollback(Project);
                     marker.NameTag = props.NameTag;
                     marker.Description = props.Description;
                     marker.ShowFlightZone = props.ShowFlightZone;
@@ -274,6 +276,7 @@ namespace WingSuitJudge
             int marker = (int)((MenuItem)sender).Tag;
             if (marker != Project.BaseMarker)
             {
+                CommandSystem.AddRollback(Project);
                 Project.BaseMarker = marker;
                 mPictureBox.Invalidate();
             }
@@ -284,8 +287,7 @@ namespace WingSuitJudge
             int index = (int)((MenuItem)sender).Tag;
             if (index != -1)
             {
-                Marker marker = Project.GetMarker(index);
-                marker.ShowFlightZone = !marker.ShowFlightZone;
+                CommandSystem.MarkerToggleFlightZone(Project, index);
                 mPictureBox.Invalidate();
             }
         }
@@ -301,8 +303,12 @@ namespace WingSuitJudge
                 dialog.Color = marker.SilhoutteColor;
                 if (dialog.ShowDialog(this) == DialogResult.OK)
                 {
-                    marker.SilhoutteColor = dialog.Color;
-                    mPictureBox.Invalidate();
+                    if (marker.SilhoutteColor != dialog.Color)
+                    {
+                        CommandSystem.AddRollback(Project);
+                        marker.SilhoutteColor = dialog.Color;
+                        mPictureBox.Invalidate();
+                    }
                 }
             }
         }
@@ -312,7 +318,11 @@ namespace WingSuitJudge
             if (index != -1)
             {
                 Marker marker = Project.GetMarker(index);
-                marker.FlightZoneMode = aMode;
+                if (marker.FlightZoneMode != aMode)
+                {
+                    CommandSystem.AddRollback(Project);
+                    marker.FlightZoneMode = aMode;
+                }
             }
         }
 
@@ -351,8 +361,12 @@ namespace WingSuitJudge
                 dialog.Color = line.Color;
                 if (dialog.ShowDialog(this) == DialogResult.OK)
                 {
-                    line.Color = dialog.Color;
-                    mPictureBox.Invalidate();
+                    if (line.Color != dialog.Color)
+                    {
+                        CommandSystem.AddRollback(Project);
+                        line.Color = dialog.Color;
+                        mPictureBox.Invalidate();
+                    }
                 }
             }
         }
@@ -362,7 +376,7 @@ namespace WingSuitJudge
             int marker = (int)((MenuItem)sender).Tag;
             if (marker != -1)
             {
-                Project.RemoveMarker(marker);
+                CommandSystem.RemoveMarker(Project, marker);
                 mPictureBox.Invalidate();
             }
         }
@@ -372,7 +386,7 @@ namespace WingSuitJudge
             int line = (int)((MenuItem)sender).Tag;
             if (line != -1)
             {
-                Project.RemoveLine(line);
+                CommandSystem.RemoveLine(Project, line);
                 mPictureBox.Invalidate();
             }
         }
@@ -383,7 +397,7 @@ namespace WingSuitJudge
 
             if (mShowWingsuits.Checked)
             {
-                Project.PaintWingsuit(e.Graphics);
+                Project.PaintWingsuit(e.Graphics, Settings.Default.WingsuitSize * 0.01f);
             }
             if (mShowLines.Checked)
             {
@@ -584,8 +598,12 @@ namespace WingSuitJudge
             dialog.Color = Project.BackColor;
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                Project.BackColor = dialog.Color;
-                mPictureBox.BackColor = dialog.Color;
+                if (Project.BackColor != dialog.Color)
+                {
+                    CommandSystem.AddRollback(Project);
+                    Project.BackColor = dialog.Color;
+                    mPictureBox.BackColor = dialog.Color;
+                }
             }
         }
 
@@ -594,6 +612,7 @@ namespace WingSuitJudge
             JumpInfo dialog = new JumpInfo(Project);
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
+                CommandSystem.AddRollback(Project);
                 Project.Description = dialog.Description;
                 Project.Date = dialog.Date;
                 Project.Place = dialog.Place;
@@ -608,6 +627,7 @@ namespace WingSuitJudge
             ProjectSettings dialog = new ProjectSettings(Project);
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
+                CommandSystem.AddRollback(Project);
                 Project.DistanceTolerance = dialog.DistanceTolerance;
                 Project.AngleTolerance = dialog.AngleTolerance;
                 Project.FlightZoneMode = dialog.FlightZoneMode;
@@ -660,7 +680,7 @@ namespace WingSuitJudge
 
                     if (mShowWingsuits.Checked)
                     {
-                        Project.PaintWingsuit(gfx);
+                        Project.PaintWingsuit(gfx, Settings.Default.WingsuitSize * 0.01f);
                     }
                     if (mShowLines.Checked)
                     {
@@ -684,6 +704,12 @@ namespace WingSuitJudge
             mPictureBox.Invalidate();
         }
 
+        private void OnShowWingsuitChangedEvent(object sender, EventArgs e)
+        {
+            mSizeBox.Visible = mShowWingsuits.Checked;
+            mPictureBox.Invalidate();
+        }
+
         private void OnInvertPhotoClick(object sender, EventArgs e)
         {
             mPictureBox.InvertImage();
@@ -695,6 +721,7 @@ namespace WingSuitJudge
             dialog.Color = Color.Black;
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
+                CommandSystem.AddRollback(Project);
                 int num = Project.NumLines;
                 for (int i = 0; i < num; ++i)
                 {
@@ -710,6 +737,7 @@ namespace WingSuitJudge
             dialog.Color = Color.Black;
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
+                CommandSystem.AddRollback(Project);
                 int num = Project.NumMarkers;
                 for (int i = 0; i < num; ++i)
                 {
@@ -719,9 +747,33 @@ namespace WingSuitJudge
             }
         }
 
+        private void OnWingsuitSizeValueChanged(object sender, EventArgs e)
+        {
+            Settings.Default.WingsuitSize = (int)mWingsuitSize.Value;
+            mPictureBox.Invalidate();
+        }
+
         private void OnFormClosing(object sender, FormClosingEventArgs e)
         {
             SaveSettings();
+        }
+
+        private void OnUndoClick(object sender, EventArgs e)
+        {
+            CommandSystem.Undo(Project);
+
+            // reset the editor action and repaint.
+            EditorMode = EditorMode;
+            mPictureBox.Invalidate();
+        }
+
+        private void OnRedoClick(object sender, EventArgs e)
+        {
+            CommandSystem.Redo(Project);
+
+            // reset the editor action and repaint.
+            EditorMode = EditorMode;
+            mPictureBox.Invalidate();
         }
 
         #endregion
@@ -745,6 +797,7 @@ namespace WingSuitJudge
             mShowWingsuits.Checked = Settings.Default.ShowWingsuits;
             mShowPhoto.Checked = Settings.Default.ShowPhoto;
             mShowFlightZones.Checked = Settings.Default.ShowFlightZones;
+            mWingsuitSize.Value = Settings.Default.WingsuitSize;
             Project.AngleTolerance = Settings.Default.AngleTolerance;
             Project.DistanceTolerance = Settings.Default.DistanceTolerance;
         }
@@ -760,6 +813,7 @@ namespace WingSuitJudge
                 Settings.Default.ShowFlightZones = mShowFlightZones.Checked;
                 Settings.Default.AngleTolerance = Project.AngleTolerance;
                 Settings.Default.DistanceTolerance = Project.DistanceTolerance;
+                Settings.Default.WingsuitSize = (int)mWingsuitSize.Value;
                 Settings.Default.Save();
             }
         }
@@ -818,7 +872,7 @@ namespace WingSuitJudge
 
             if (mShowWingsuits.Checked)
             {
-                Project.PaintWingsuit(e.Graphics);
+                Project.PaintWingsuit(e.Graphics, Settings.Default.WingsuitSize * 0.01f);
             }
             if (mShowLines.Checked)
             {
@@ -834,6 +888,21 @@ namespace WingSuitJudge
             }
 
             e.HasMorePages = false;
+        }
+
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            if (DateTime.Now > new DateTime(2009, 12, 31))
+            {
+                MessageBox.Show(this, "The application has expired.\nYou may want to contact flylikebrick.com for a newer version.\nThe application will exit now.", 
+                    "Expired", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Close();
+            }
+            else
+            {
+                MessageBox.Show(this, "This is a beta release, which will expire on December 31, 2009.\n", 
+                    "Beta release",  MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
     }
 }
