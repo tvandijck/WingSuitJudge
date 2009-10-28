@@ -40,7 +40,14 @@ namespace WingSuitJudge
                     pen.Color = Color;
                 }
             }
-            aGraphics.DrawLine(pen, Start.Location, End.Location);
+
+            // get 'direction' of the line, so we can contract it.
+            PointF nml = new PointF(End.Location.X - Start.Location.X, End.Location.Y - Start.Location.Y);
+            float len = Math2.Length(nml);
+            nml.X *= 8.0f / len;
+            nml.Y *= 8.0f / len;
+            
+            aGraphics.DrawLine(pen, Math2.Add(Start.Location, nml), Math2.Sub(End.Location, nml));
         }
 
         public float GetDistance(float aX, float aY)

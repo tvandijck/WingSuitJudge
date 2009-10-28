@@ -24,6 +24,7 @@ namespace WingSuitJudge
                 {
                     Marker marker = Project.GetMarker(mSelected);
                     mOldLocation = marker.Location;
+                    mNewLocation = marker.Location;
                     mShowFlightZone = marker.ShowFlightZone;
                     marker.ShowFlightZone = true;
                     aSender.Invalidate();

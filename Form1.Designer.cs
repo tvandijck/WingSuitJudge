@@ -74,19 +74,19 @@
             this.mWingsuitSize = new System.Windows.Forms.NumericUpDown();
             this.mAdvert = new System.Windows.Forms.PictureBox();
             this.mFormationTools = new System.Windows.Forms.GroupBox();
+            this.mImageTools = new System.Windows.Forms.GroupBox();
+            this.mPictureBox = new WingSuitJudge.ImagePanel();
             this.mBtnFreeTransform = new WingSuitJudge.CheckButton();
             this.mBtnRemoveLine = new WingSuitJudge.CheckButton();
             this.mBtnAddLine = new WingSuitJudge.CheckButton();
             this.mBtnMoveMarker = new WingSuitJudge.CheckButton();
             this.mBtnRemoveMarker = new WingSuitJudge.CheckButton();
             this.mBtnAddMarker = new WingSuitJudge.CheckButton();
-            this.mImageTools = new System.Windows.Forms.GroupBox();
             this.mBtnInvertPhoto = new WingSuitJudge.CheckButton();
             this.mBtnCenterImage = new WingSuitJudge.CheckButton();
             this.mBtnMoveImage = new WingSuitJudge.CheckButton();
             this.mBtnZoomOut = new WingSuitJudge.CheckButton();
             this.mBtnZoomIn = new WingSuitJudge.CheckButton();
-            this.mPictureBox = new WingSuitJudge.ImagePanel();
             this.mStatusBar.SuspendLayout();
             this.mMainMenu.SuspendLayout();
             this.mMenuPanel.SuspendLayout();
@@ -103,9 +103,9 @@
             this.mZoomText,
             this.mAccuracy,
             this.mCopyright});
-            this.mStatusBar.Location = new System.Drawing.Point(0, 829);
+            this.mStatusBar.Location = new System.Drawing.Point(0, 708);
             this.mStatusBar.Name = "mStatusBar";
-            this.mStatusBar.Size = new System.Drawing.Size(1116, 22);
+            this.mStatusBar.Size = new System.Drawing.Size(1008, 22);
             this.mStatusBar.TabIndex = 2;
             this.mStatusBar.Text = "statusStrip2";
             // 
@@ -126,7 +126,7 @@
             // mCopyright
             // 
             this.mCopyright.Name = "mCopyright";
-            this.mCopyright.Size = new System.Drawing.Size(901, 17);
+            this.mCopyright.Size = new System.Drawing.Size(793, 17);
             this.mCopyright.Spring = true;
             this.mCopyright.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -140,7 +140,7 @@
             this.helpToolStripMenuItem});
             this.mMainMenu.Location = new System.Drawing.Point(0, 0);
             this.mMainMenu.Name = "mMainMenu";
-            this.mMainMenu.Size = new System.Drawing.Size(1116, 24);
+            this.mMainMenu.Size = new System.Drawing.Size(1008, 24);
             this.mMainMenu.TabIndex = 5;
             this.mMainMenu.Text = "mainMenu";
             // 
@@ -441,7 +441,7 @@
             this.mMenuPanel.Location = new System.Drawing.Point(0, 24);
             this.mMenuPanel.Name = "mMenuPanel";
             this.mMenuPanel.Padding = new System.Windows.Forms.Padding(3);
-            this.mMenuPanel.Size = new System.Drawing.Size(116, 805);
+            this.mMenuPanel.Size = new System.Drawing.Size(116, 684);
             this.mMenuPanel.TabIndex = 6;
             // 
             // mSizeBox
@@ -482,10 +482,11 @@
             // 
             // mAdvert
             // 
+            this.mAdvert.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mAdvert.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.mAdvert.Image = global::WingSuitJudge.Properties.Resources.banner01;
             this.mAdvert.InitialImage = null;
-            this.mAdvert.Location = new System.Drawing.Point(13, 495);
+            this.mAdvert.Location = new System.Drawing.Point(13, 374);
             this.mAdvert.Name = "mAdvert";
             this.mAdvert.Size = new System.Drawing.Size(90, 300);
             this.mAdvert.TabIndex = 9;
@@ -506,6 +507,39 @@
             this.mFormationTools.TabIndex = 7;
             this.mFormationTools.TabStop = false;
             this.mFormationTools.Text = "Formation Tools";
+            // 
+            // mImageTools
+            // 
+            this.mImageTools.Controls.Add(this.mBtnInvertPhoto);
+            this.mImageTools.Controls.Add(this.mBtnCenterImage);
+            this.mImageTools.Controls.Add(this.mBtnMoveImage);
+            this.mImageTools.Controls.Add(this.mBtnZoomOut);
+            this.mImageTools.Controls.Add(this.mBtnZoomIn);
+            this.mImageTools.Dock = System.Windows.Forms.DockStyle.Top;
+            this.mImageTools.Location = new System.Drawing.Point(3, 3);
+            this.mImageTools.Name = "mImageTools";
+            this.mImageTools.Size = new System.Drawing.Size(110, 94);
+            this.mImageTools.TabIndex = 6;
+            this.mImageTools.TabStop = false;
+            this.mImageTools.Text = "Image Tools";
+            // 
+            // mPictureBox
+            // 
+            this.mPictureBox.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.mPictureBox.Cursor = System.Windows.Forms.Cursors.Default;
+            this.mPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mPictureBox.Location = new System.Drawing.Point(116, 24);
+            this.mPictureBox.MoveMode = false;
+            this.mPictureBox.Name = "mPictureBox";
+            this.mPictureBox.Origin = ((System.Drawing.PointF)(resources.GetObject("mPictureBox.Origin")));
+            this.mPictureBox.Size = new System.Drawing.Size(892, 684);
+            this.mPictureBox.TabIndex = 7;
+            this.mPictureBox.Zoom = 100;
+            this.mPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.OnPictureBoxPaint);
+            this.mPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseMove);
+            this.mPictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseClick);
+            this.mPictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseDown);
+            this.mPictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseUp);
             // 
             // mBtnFreeTransform
             // 
@@ -573,21 +607,6 @@
             this.mBtnAddMarker.Tooltip = "Add marker";
             this.mBtnAddMarker.Click += new System.EventHandler(this.OnAddMarkerClick);
             // 
-            // mImageTools
-            // 
-            this.mImageTools.Controls.Add(this.mBtnInvertPhoto);
-            this.mImageTools.Controls.Add(this.mBtnCenterImage);
-            this.mImageTools.Controls.Add(this.mBtnMoveImage);
-            this.mImageTools.Controls.Add(this.mBtnZoomOut);
-            this.mImageTools.Controls.Add(this.mBtnZoomIn);
-            this.mImageTools.Dock = System.Windows.Forms.DockStyle.Top;
-            this.mImageTools.Location = new System.Drawing.Point(3, 3);
-            this.mImageTools.Name = "mImageTools";
-            this.mImageTools.Size = new System.Drawing.Size(110, 94);
-            this.mImageTools.TabIndex = 6;
-            this.mImageTools.TabStop = false;
-            this.mImageTools.Text = "Image Tools";
-            // 
             // mBtnInvertPhoto
             // 
             this.mBtnInvertPhoto.Checked = false;
@@ -645,33 +664,17 @@
             this.mBtnZoomIn.DoubleClick += new System.EventHandler(this.OnZoomInClick);
             this.mBtnZoomIn.Click += new System.EventHandler(this.OnZoomInClick);
             // 
-            // mPictureBox
-            // 
-            this.mPictureBox.BackColor = System.Drawing.SystemColors.AppWorkspace;
-            this.mPictureBox.Cursor = System.Windows.Forms.Cursors.Default;
-            this.mPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mPictureBox.Location = new System.Drawing.Point(116, 24);
-            this.mPictureBox.MoveMode = false;
-            this.mPictureBox.Name = "mPictureBox";
-            this.mPictureBox.Origin = ((System.Drawing.PointF)(resources.GetObject("mPictureBox.Origin")));
-            this.mPictureBox.Size = new System.Drawing.Size(1000, 805);
-            this.mPictureBox.TabIndex = 7;
-            this.mPictureBox.Zoom = 100;
-            this.mPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.OnPictureBoxPaint);
-            this.mPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseMove);
-            this.mPictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseClick);
-            this.mPictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseDown);
-            this.mPictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseUp);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1116, 851);
+            this.ClientSize = new System.Drawing.Size(1008, 730);
             this.Controls.Add(this.mPictureBox);
             this.Controls.Add(this.mMenuPanel);
             this.Controls.Add(this.mStatusBar);
             this.Controls.Add(this.mMainMenu);
+            this.MainMenuStrip = this.mMainMenu;
+            this.MinimumSize = new System.Drawing.Size(260, 640);
             this.Name = "Form1";
             this.Text = "Wingsuit Flock Judging Tool";
             this.Shown += new System.EventHandler(this.Form1_Shown);
