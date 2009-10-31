@@ -46,10 +46,20 @@ namespace WingSuitJudge
             {
                 if (!object.ReferenceEquals(mProject_, value))
                 {
+                    if (mProject_ != null)
+                    {
+                        mProject_.OnDirty -= new EventHandler(OnProjectDirty);
+                    }
+
                     CommandSystem.Reset();
                     mProject_ = value;
                     mPictureBox.BackColor = mProject_.BackColor;
                     EditorMode = EditMode.AddMarker;
+
+                    if (mProject_ != null)
+                    {
+                        mProject_.OnDirty += new EventHandler(OnProjectDirty);
+                    }
                 }
             }
         }
@@ -60,14 +70,15 @@ namespace WingSuitJudge
             get { return mProjectName_; }
             set
             {
+                string dirty = Project.Dirty ? "*" : "";
                 mProjectName_ = value;
                 if (string.IsNullOrEmpty(value))
                 {
-                    Text = string.Format("Wingsuit Flock Judging Tool {0}", Version);
+                    Text = string.Format("Wingsuit Flock Judging Tool {0} - [noname.flock{1}]", Version, dirty);
                 }
                 else
                 {
-                    Text = string.Format("Wingsuit Flock Judging Tool {0} - [{1}]", Version, Path.GetFileName(value));
+                    Text = string.Format("Wingsuit Flock Judging Tool {0} - [{1}{2}]", Version, Path.GetFileName(value), dirty);
                 }
             }
         }
@@ -389,12 +400,16 @@ namespace WingSuitJudge
                 CommandSystem.RemoveLine(Project, line);
                 mPictureBox.Invalidate();
             }
-        }
+        } 
 
         private void OnPictureBoxPaint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
+            if (mShowPhoto.Checked)
+            {
+                mPictureBox.DrawBitmap(e.Graphics);
+            }
             if (mShowWingsuits.Checked)
             {
                 Project.PaintWingsuit(e.Graphics, Settings.Default.WingsuitSize * 0.01f);
@@ -425,6 +440,11 @@ namespace WingSuitJudge
 
         #region -- Form Events ------------------------------------------------
 
+        void OnProjectDirty(object sender, EventArgs e)
+        {
+            ProjectName = ProjectName;
+        }
+
         private void OnImportImageClick(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
@@ -437,6 +457,7 @@ namespace WingSuitJudge
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 mPictureBox.LoadImage(dialog.FileName);
+                Project.PhotoName = dialog.FileName;
             }
         }
 
@@ -480,7 +501,7 @@ namespace WingSuitJudge
             EditorMode = EditMode.MoveImage;
         }
 
-        private void mFreeTransform_Click(object sender, EventArgs e)
+        private void OnTransformClick(object sender, EventArgs e)
         {
             EditorMode = EditMode.FreeTransform;
         }
@@ -498,7 +519,10 @@ namespace WingSuitJudge
 
         private void OnNewClick(object sender, EventArgs e)
         {
-            ResetProject();
+            if (IsItSaveToDestroyProject())
+            {
+                ResetProject();
+            }
         }
 
         private void OnSaveAsClick(object sender, EventArgs e)
@@ -532,25 +556,51 @@ namespace WingSuitJudge
 
         private void OnOpenClick(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Title = "Open project";
-            dialog.Filter = "Flock files (*.flock)|*.flock";
-            dialog.CheckFileExists = true;
-            dialog.CheckPathExists = true;
-            dialog.ShowHelp = true;
-
-            if (dialog.ShowDialog(this) == DialogResult.OK)
+            if (IsItSaveToDestroyProject())
             {
-                try
+                OpenFileDialog dialog = new OpenFileDialog();
+                dialog.Title = "Open project";
+                dialog.Filter = "Flock files (*.flock)|*.flock";
+                dialog.CheckFileExists = true;
+                dialog.CheckPathExists = true;
+                dialog.ShowHelp = true;
+
+                if (dialog.ShowDialog(this) == DialogResult.OK)
                 {
-                    Project = new Project(dialog.FileName);
-                    ProjectName = dialog.FileName;
-                    SaveSettings();
-                }
-                catch (Exception ex)
-                {
-                    ResetProject();
-                    MessageBox.Show(this, ex.Message, "Error loading project", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    try
+                    {
+                        Project = new Project(dialog.FileName);
+                        ProjectName = dialog.FileName;
+                        SaveSettings();
+                        OnCenterImageClick(sender, e);
+
+                        if (!string.IsNullOrEmpty(Project.PhotoName))
+                        {
+                            if (File.Exists(Project.PhotoName))
+                            {
+                                mPictureBox.LoadImage(Project.PhotoName);
+                            }
+                            else
+                            {
+                                string photoName = Path.Combine(Path.GetDirectoryName(dialog.FileName), Path.GetFileName(Project.PhotoName));
+                                if (File.Exists(photoName))
+                                {
+                                    mPictureBox.LoadImage(photoName);
+                                }
+                                else
+                                {
+                                    string message = string.Format("The photo [{0}] associated with this project could not be found.", 
+                                        Path.GetFileName(Project.PhotoName));
+                                    MessageBox.Show(this, message, "Error loading associated photo.", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ResetProject();
+                        MessageBox.Show(this, ex.Message, "Error loading project", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
         }
@@ -558,6 +608,7 @@ namespace WingSuitJudge
         private void OnResetPhotoClick(object sender, EventArgs e)
         {
             mPictureBox.ResetImage();
+            Project.PhotoName = null;
         }
 
         private void OnCenterImageClick(object sender, EventArgs e)
@@ -727,6 +778,7 @@ namespace WingSuitJudge
                 {
                     Project.GetLine(i).Color = dialog.Color;
                 }
+                Project.Dirty = true;
                 mPictureBox.Invalidate();
             }
         }
@@ -743,6 +795,7 @@ namespace WingSuitJudge
                 {
                     Project.GetMarker(i).SilhoutteColor = dialog.Color;
                 }
+                Project.Dirty = true;
                 mPictureBox.Invalidate();
             }
         }
@@ -756,6 +809,10 @@ namespace WingSuitJudge
         private void OnFormClosing(object sender, FormClosingEventArgs e)
         {
             SaveSettings();
+            if (!IsItSaveToDestroyProject())
+            {
+                e.Cancel = true;
+            }
         }
 
         private void OnUndoClick(object sender, EventArgs e)
@@ -774,6 +831,21 @@ namespace WingSuitJudge
             // reset the editor action and repaint.
             EditorMode = EditorMode;
             mPictureBox.Invalidate();
+        }
+
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            if (DateTime.Now > new DateTime(2009, 12, 31))
+            {
+                MessageBox.Show(this, "The application has expired.\nYou may want to contact flylikebrick.com for a newer version.\nThe application will exit now.",
+                    "Expired", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Close();
+            }
+            else
+            {
+                MessageBox.Show(this, "This is a beta release, which will expire on December 31, 2009.\n",
+                    "Beta release", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         #endregion
@@ -800,6 +872,7 @@ namespace WingSuitJudge
             mWingsuitSize.Value = Settings.Default.WingsuitSize;
             Project.AngleTolerance = Settings.Default.AngleTolerance;
             Project.DistanceTolerance = Settings.Default.DistanceTolerance;
+            Project.Dirty = false;
         }
 
         private void SaveSettings()
@@ -868,8 +941,10 @@ namespace WingSuitJudge
             e.Graphics.Transform = new Matrix(scale, 0, 0, scale, x, y);
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            mPictureBox.DrawBitmap(e.Graphics);
-
+            if (mShowPhoto.Checked)
+            {
+                mPictureBox.DrawBitmap(e.Graphics);
+            }
             if (mShowWingsuits.Checked)
             {
                 Project.PaintWingsuit(e.Graphics, Settings.Default.WingsuitSize * 0.01f);
@@ -890,19 +965,25 @@ namespace WingSuitJudge
             e.HasMorePages = false;
         }
 
-        private void Form1_Shown(object sender, EventArgs e)
+        private bool IsItSaveToDestroyProject()
         {
-            if (DateTime.Now > new DateTime(2009, 12, 31))
+            if (Project.Dirty)
             {
-                MessageBox.Show(this, "The application has expired.\nYou may want to contact flylikebrick.com for a newer version.\nThe application will exit now.", 
-                    "Expired", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Close();
+                switch (MessageBox.Show(this, "Project has been modified but not saved yet.\nDo you want to save first?",
+                    "Project not saved", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+                {
+                    case DialogResult.Cancel:
+                        return false;
+
+                    case DialogResult.Yes:
+                        OnSaveClick(this, EventArgs.Empty);
+                        return !Project.Dirty;
+
+                    case DialogResult.No:
+                        return true;
+                }
             }
-            else
-            {
-                MessageBox.Show(this, "This is a beta release, which will expire on December 31, 2009.\n", 
-                    "Beta release",  MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
+            return true;
         }
     }
 }

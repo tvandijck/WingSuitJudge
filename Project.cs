@@ -17,6 +17,7 @@ namespace WingSuitJudge
 
     public class Project
     {
+        private bool mDirty = false;
         private List<Marker> mMarkers = new List<Marker>();
         private List<Line> mLines = new List<Line>();
         private int mBaseMarker = 0;
@@ -34,6 +35,9 @@ namespace WingSuitJudge
         private float mGlideRatio;
         private int mJumpNumber;
         private int mFallrate;
+        private string mPhotoName;
+
+        public event EventHandler OnDirty;
 
         public Project()
         {
@@ -48,7 +52,23 @@ namespace WingSuitJudge
         {
             mMarkers.Clear();
             mLines.Clear();
+            Dirty = true;
+        }
 
+        public bool Dirty
+        {
+            get { return mDirty; }
+            set 
+            { 
+                if (mDirty != value)
+                {
+                    mDirty = value; 
+                    if (OnDirty != null)
+                    {
+                        OnDirty(this, EventArgs.Empty);
+                    }
+                }
+            }
         }
 
         #region -- Project Settings -------------------------------------------
@@ -56,25 +76,53 @@ namespace WingSuitJudge
         public Color BackColor
         {
             get { return mBackColor; }
-            set { mBackColor = value; }
+            set
+            {
+                if (value != mBackColor)
+                {
+                    mBackColor = value;
+                    Dirty = true;
+                }
+            }
         }
 
         public FlightZone FlightZoneMode
         {
             get { return mFlightZoneMode; }
-            set { mFlightZoneMode = value; }
+            set
+            {
+                if (value != mFlightZoneMode)
+                {
+                    mFlightZoneMode = value;
+                    Dirty = true;
+                }
+            }
         }
 
         public int DistanceTolerance
         {
             get { return mDistanceTolerance; }
-            set { mDistanceTolerance = value; }
+            set 
+            {
+                if (value != mDistanceTolerance)
+                {
+                    mDistanceTolerance = value;
+                    Dirty = true;
+                }
+            }
         }
 
         public int AngleTolerance
         {
             get { return mAngleTolerance; }
-            set { mAngleTolerance = value; }
+            set 
+            {
+                if (value != mAngleTolerance)
+                {
+                    mAngleTolerance = value;
+                    Dirty = true;
+                }
+            }
         }
 
         #endregion
@@ -84,37 +132,92 @@ namespace WingSuitJudge
         public string Description
         {
             get { return mDescription; }
-            set { mDescription = value; }
+            set
+            {
+                if (value != mDescription)
+                {
+                    mDescription = value;
+                    Dirty = true;
+                }
+            }
         }
 
         public DateTime Date
         {
             get { return mDate; }
-            set { mDate = value; }
+            set
+            {
+                if (value != mDate)
+                {
+                    mDate = value;
+                    Dirty = true;
+                }
+            }
         }
 
         public string Place
         {
             get { return mPlace; }
-            set { mPlace = value; }
+            set
+            {
+                if (value != mPlace)
+                {
+                    mPlace = value;
+                    Dirty = true;
+                }
+            }
         }
 
         public float GlideRatio
         {
             get { return mGlideRatio; }
-            set { mGlideRatio = value; }
+            set
+            {
+                if (value != mGlideRatio)
+                {
+                    mGlideRatio = value;
+                    Dirty = true;
+                }
+            }
         }
 
         public int JumpNumber
         {
             get { return mJumpNumber; }
-            set { mJumpNumber = value; }
+            set
+            {
+                if (value != mJumpNumber)
+                {
+                    mJumpNumber = value;
+                    Dirty = true;
+                }
+            }
         }
 
         public int Fallrate
         {
             get { return mFallrate; }
-            set { mFallrate = value; }
+            set
+            {
+                if (value != mFallrate)
+                {
+                    mFallrate = value;
+                    Dirty = true;
+                }
+            }
+        }
+
+        public string PhotoName
+        {
+            get { return mPhotoName; }
+            set
+            {
+                if (value != mPhotoName)
+                {
+                    mPhotoName = value;
+                    Dirty = true;
+                }
+            }
         }
 
         #endregion
@@ -124,12 +227,20 @@ namespace WingSuitJudge
         public int BaseMarker
         {
             get { return mBaseMarker; }
-            set { mBaseMarker = value; }
+            set
+            {
+                if (value != mBaseMarker)
+                {
+                    mBaseMarker = value;
+                    Dirty = true;
+                }
+            }
         }
 
         public void AddMarker(Marker marker)
         {
             mMarkers.Add(marker);
+            Dirty = true;
         }
 
         public void RemoveMarker(int aIndex)
@@ -151,6 +262,7 @@ namespace WingSuitJudge
                 // remove marker.
                 mMarkers.RemoveAt(aIndex);
                 mBaseMarker = Math.Max(0, Math.Min(mBaseMarker, mMarkers.Count - 1));
+                Dirty = true;
             }
         }
 
@@ -221,6 +333,7 @@ namespace WingSuitJudge
 
             // found no matching lines.
             mLines.Add(new Line(start, end));
+            Dirty = true;
         }
 
         public void RemoveLine(int aIndex)
@@ -228,6 +341,7 @@ namespace WingSuitJudge
             if (aIndex != -1)
             {
                 mLines.RemoveAt(aIndex);
+                Dirty = true;
             }
         }
 
@@ -433,18 +547,20 @@ namespace WingSuitJudge
             {
                 Serialize(fileStream);
             }
+            Dirty = false;
         }
 
         public void Serialize(Stream aStream)
         {
             using (BinaryWriter writer = new BinaryWriter(aStream))
             {
-                writer.Write((int)0x4b434c46);
-                writer.Write((int)7);
+                writer.Write((int)0x4b434c46);      // identifier.
+                writer.Write((int)8);               // version number.
                 writer.Write(mBaseMarker);
                 writer.Write(mDistanceTolerance);
                 writer.Write(mAngleTolerance);
                 writer.Write((int)mFlightZoneMode);
+                WriteString(writer, mPhotoName);
 
                 writer.Write(mBackColor.ToArgb());
                 WriteString(writer, mDescription);
@@ -483,6 +599,7 @@ namespace WingSuitJudge
             {
                 Deserialize(aFilename, fileStream);
             }
+            Dirty = false;
         }
 
         public void Deserialize(string aFilename, Stream aStream)
@@ -496,7 +613,7 @@ namespace WingSuitJudge
                 }
 
                 int version = reader.ReadInt32();
-                if (version <= 7)
+                if (version <= 8)
                 {
                     mBaseMarker = reader.ReadInt32();
                     if (version < 6)
@@ -514,6 +631,11 @@ namespace WingSuitJudge
                     if (version >= 7)
                     {
                         mFlightZoneMode = (FlightZone)reader.ReadInt32();
+                    }
+
+                    if (version >= 8)
+                    {
+                        mPhotoName = reader.ReadString();
                     }
 
                     if (version >= 2)
@@ -685,27 +807,35 @@ namespace WingSuitJudge
 
         public void Offset(float dx, float dy)
         {
-            int numMarkers = mMarkers.Count;
-            for (int i = 0; i < numMarkers; i++)
+            if (dx != 0 || dy != 0)
             {
-                Marker marker = mMarkers[i];
-                marker.Location = new PointF(marker.Location.X + dx, marker.Location.Y + dy);
+                int numMarkers = mMarkers.Count;
+                for (int i = 0; i < numMarkers; i++)
+                {
+                    Marker marker = mMarkers[i];
+                    marker.Location = new PointF(marker.Location.X + dx, marker.Location.Y + dy);
+                }
+                Dirty = true;
             }
         }
 
         public void Rotate(float cx, float cy, float angle)
         {
-            float c = (float)Math.Cos(angle);
-            float s = (float)Math.Sin(angle);
-
-            int numMarkers = mMarkers.Count;
-            for (int i = 0; i < numMarkers; i++)
+            if (angle != 0)
             {
-                Marker marker = mMarkers[i];
+                float c = (float)Math.Cos(angle);
+                float s = (float)Math.Sin(angle);
 
-                float x = marker.Location.X - cx;
-                float y = marker.Location.Y - cy;
-                marker.Location = new PointF(x * c + y * s + cx, x * -s + y * c + cy);
+                int numMarkers = mMarkers.Count;
+                for (int i = 0; i < numMarkers; i++)
+                {
+                    Marker marker = mMarkers[i];
+
+                    float x = marker.Location.X - cx;
+                    float y = marker.Location.Y - cy;
+                    marker.Location = new PointF(x * c + y * s + cx, x * -s + y * c + cy);
+                }
+                Dirty = true;
             }
         }
     }

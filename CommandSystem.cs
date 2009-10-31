@@ -35,6 +35,7 @@ namespace WingSuitJudge
                 {
                     mProject.Clear();
                     mProject.Deserialize("undo", stream);
+                    mProject.Dirty = true;
                 }
             }
         }
@@ -91,6 +92,7 @@ namespace WingSuitJudge
                 AddRollback(aProject);
                 Marker marker = aProject.GetMarker(aIndex);
                 marker.Location = aNew;
+                aProject.Dirty = true;
             }
         }
 
@@ -101,6 +103,7 @@ namespace WingSuitJudge
                 AddRollback(aProject);
                 Marker marker = aProject.GetMarker(aIndex);
                 marker.ShowFlightZone = !marker.ShowFlightZone;
+                aProject.Dirty = true;
             }
         }
 
