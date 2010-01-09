@@ -835,7 +835,7 @@ namespace WingSuitJudge
 
         private void Form1_Shown(object sender, EventArgs e)
         {
-            if (DateTime.Now > new DateTime(2009, 12, 31))
+            if (DateTime.Now > new DateTime(2010, 4, 30))
             {
                 MessageBox.Show(this, "The application has expired.\nYou may want to contact flylikebrick.com for a newer version.\nThe application will exit now.",
                     "Expired", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -843,7 +843,7 @@ namespace WingSuitJudge
             }
             else
             {
-                MessageBox.Show(this, "This is a beta release, which will expire on December 31, 2009.\n",
+                MessageBox.Show(this, "This is a beta release, which will expire on April 30, 2010.\n",
                     "Beta release", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
