@@ -422,6 +422,10 @@ namespace WingSuitJudge
             {
                 Project.PaintFlightZones(e.Graphics);
             }
+            if (mShowDots.Checked)
+            {
+                Project.PaintDots(e.Graphics, Settings.Default.DotCount, Settings.Default.DotSize * 1.0f, Settings.Default.DotDistance * 0.5f);
+            }
             if (mShowMarkers.Checked)
             {
                 Project.PaintMarkers(e.Graphics, mSelectedMarker);
@@ -806,6 +810,14 @@ namespace WingSuitJudge
             mPictureBox.Invalidate();
         }
 
+        private void OnDotSettingChanged(object sender, EventArgs e)
+        {
+            Settings.Default.DotCount = (int)mDotCount.Value;
+            Settings.Default.DotSize = (int)mDotSize.Value;
+            Settings.Default.DotDistance = (int)mDotDistance.Value;
+            mPictureBox.Invalidate();
+        }
+
         private void OnFormClosing(object sender, FormClosingEventArgs e)
         {
             SaveSettings();
@@ -869,7 +881,11 @@ namespace WingSuitJudge
             mShowWingsuits.Checked = Settings.Default.ShowWingsuits;
             mShowPhoto.Checked = Settings.Default.ShowPhoto;
             mShowFlightZones.Checked = Settings.Default.ShowFlightZones;
+            mShowDots.Checked = Settings.Default.ShowDots;
             mWingsuitSize.Value = Settings.Default.WingsuitSize;
+            mDotCount.Value = Settings.Default.DotCount;
+            mDotSize.Value = Settings.Default.DotSize;
+            mDotDistance.Value = Settings.Default.DotDistance;
             Project.AngleTolerance = Settings.Default.AngleTolerance;
             Project.DistanceTolerance = Settings.Default.DistanceTolerance;
             Project.Dirty = false;
@@ -884,9 +900,13 @@ namespace WingSuitJudge
                 Settings.Default.ShowWingsuits = mShowWingsuits.Checked;
                 Settings.Default.ShowPhoto = mShowPhoto.Checked;
                 Settings.Default.ShowFlightZones = mShowFlightZones.Checked;
+                Settings.Default.ShowDots = mShowDots.Checked;
                 Settings.Default.AngleTolerance = Project.AngleTolerance;
                 Settings.Default.DistanceTolerance = Project.DistanceTolerance;
                 Settings.Default.WingsuitSize = (int)mWingsuitSize.Value;
+                Settings.Default.DotCount = (int)mDotCount.Value;
+                Settings.Default.DotSize = (int)mDotSize.Value;
+                Settings.Default.DotDistance = (int)mDotDistance.Value;
                 Settings.Default.Save();
             }
         }

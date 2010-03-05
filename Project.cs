@@ -58,11 +58,11 @@ namespace WingSuitJudge
         public bool Dirty
         {
             get { return mDirty; }
-            set 
-            { 
+            set
+            {
                 if (mDirty != value)
                 {
-                    mDirty = value; 
+                    mDirty = value;
                     if (OnDirty != null)
                     {
                         OnDirty(this, EventArgs.Empty);
@@ -102,7 +102,7 @@ namespace WingSuitJudge
         public int DistanceTolerance
         {
             get { return mDistanceTolerance; }
-            set 
+            set
             {
                 if (value != mDistanceTolerance)
                 {
@@ -115,7 +115,7 @@ namespace WingSuitJudge
         public int AngleTolerance
         {
             get { return mAngleTolerance; }
-            set 
+            set
             {
                 if (value != mAngleTolerance)
                 {
@@ -396,8 +396,66 @@ namespace WingSuitJudge
             }
         }
 
+        public void PaintDots(Graphics aGraphics, int aWidth, float aDotSize, float aDotDistance)
+        {
+            float baseLength;
+            Marker baseMarker;
+            if (!HasBaseLength(out baseLength, out baseMarker))
+            {
+            }
+
+            if (baseMarker != null)
+            {
+                float d = aDotSize * 0.5f;
+                for (int y = 0; y < aWidth; y++)
+                {
+                    for (int x = 0; x < aWidth; x++)
+                    {
+                        float xp = baseMarker.Location.X + (x * aDotDistance) - (y * aDotDistance);
+                        float yp = baseMarker.Location.Y + (y * aDotDistance) + (x * aDotDistance);
+
+                        float dist;
+                        Marker marker;
+                        FindClosestMarker(xp, yp, out dist, out marker);
+                        if (dist < d)
+                        {
+                            aGraphics.FillEllipse(Colors.GreenDotBrush, xp - d, yp - d, aDotSize, aDotSize);
+                            aGraphics.DrawEllipse(Colors.DotPen, xp - d, yp - d, aDotSize, aDotSize);
+                        }
+                        else if (dist < (d * 2))
+                        {
+                            aGraphics.FillEllipse(Colors.RedDotBrush, xp - d, yp - d, aDotSize, aDotSize);
+                            aGraphics.DrawEllipse(Colors.DotPen, xp - d, yp - d, aDotSize, aDotSize);
+                            aGraphics.DrawLine(Colors.ErrorPen, xp, yp, marker.Location.X, marker.Location.Y);
+                        }
+                        else
+                        {
+                            aGraphics.FillEllipse(Colors.GrayDotBrush, xp - d, yp - d, aDotSize, aDotSize);
+                            aGraphics.DrawEllipse(Colors.DotPen, xp - d, yp - d, aDotSize, aDotSize);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void FindClosestMarker(float aX, float aY, out float aDistance, out Marker aMarker)
+        {
+            aDistance = float.MaxValue;
+            aMarker = null;
+            foreach (Marker m in mMarkers)
+            {
+                float d = Math2.Distance(m.Location.X, m.Location.Y, aX, aY);
+                if (d < aDistance)
+                {
+                    aDistance = d;
+                    aMarker = m;
+                }
+            }
+        }
+
         private bool HasBaseLength(out float aBaseLength, out Marker aBaseMarker)
         {
+            aBaseMarker = null;
             if (mBaseMarker >= 0 && mBaseMarker < mMarkers.Count)
             {
                 aBaseMarker = mMarkers[mBaseMarker];
@@ -419,7 +477,6 @@ namespace WingSuitJudge
                     return true;
                 }
             }
-            aBaseMarker = null;
             aBaseLength = 0;
             return false;
         }
@@ -696,7 +753,7 @@ namespace WingSuitJudge
         }
 
         #endregion
-        
+
         public bool IsAngleWithInTolerance(float aAngle, FlightZone aMode)
         {
             FlightZone cirleMode = (aMode == FlightZone.Project) ? mFlightZoneMode : aMode;
@@ -803,7 +860,7 @@ namespace WingSuitJudge
                 }
                 return new RectangleF(minX, minY, maxX - minX, maxY - minY);
             }
-        }      
+        }
 
         public void Offset(float dx, float dy)
         {

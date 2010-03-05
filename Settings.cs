@@ -10,9 +10,13 @@ namespace WingSuitJudge
         public bool ShowWingsuits { get; set; }
         public bool ShowPhoto { get; set; }
         public bool ShowFlightZones { get; set; }
+        public bool ShowDots { get; set; }
         public int AngleTolerance { get; set; }
         public int DistanceTolerance { get; set; }
         public int WingsuitSize { get; set; }
+        public int DotCount { get; set; }
+        public int DotSize { get; set; }
+        public int DotDistance { get; set; }
         public Color BaseLineColor { get; set; }
 
         private static Settings defaultInstance = new Settings();
@@ -34,10 +38,14 @@ namespace WingSuitJudge
             Registry.SetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "ShowWingsuits", ShowWingsuits, RegistryValueKind.DWord);
             Registry.SetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "ShowPhoto", ShowPhoto, RegistryValueKind.DWord);
             Registry.SetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "ShowFlightZones", ShowFlightZones, RegistryValueKind.DWord);
+            Registry.SetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "ShowDots", ShowDots, RegistryValueKind.DWord);
             Registry.SetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "AngleTolerance", AngleTolerance, RegistryValueKind.DWord);
             Registry.SetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DistanceTolerance", DistanceTolerance, RegistryValueKind.DWord);
             Registry.SetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "BaseLineColor", BaseLineColor.ToArgb(), RegistryValueKind.DWord);
             Registry.SetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "WingsuitSize", WingsuitSize, RegistryValueKind.DWord);
+            Registry.SetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DotCount", DotCount, RegistryValueKind.DWord);
+            Registry.SetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DotSize", DotSize, RegistryValueKind.DWord);
+            Registry.SetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DotDistance", DotDistance, RegistryValueKind.DWord);
         }
 
         public void Load()
@@ -47,15 +55,19 @@ namespace WingSuitJudge
             ShowWingsuits = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "ShowWingsuits", false);
             ShowPhoto = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "ShowPhoto", true);
             ShowFlightZones = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "ShowFlightZones", true);
+            ShowDots = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "ShowDots", true);
             AngleTolerance = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "AngleTolerance", 18);
             DistanceTolerance = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DistanceTolerance", 35);
             WingsuitSize = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "WingsuitSize", 100);
             BaseLineColor = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "BaseLineColor", Color.Blue);
+            DotCount = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DotCount", 3);
+            DotSize = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DotSize", 80);
+            DotDistance = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DotDistance", 250);
         }
-        
+
         static bool GetValue(string location, string key, bool def)
         {
-            object value = Registry.GetValue(location, key, def);
+            object value = Registry.GetValue(location, key, def ? 1 : 0);
             if (value == null)
             {
                 return def;
