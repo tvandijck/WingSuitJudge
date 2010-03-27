@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace WingSuitJudge
+namespace Flock
 {
     public partial class JumpInfo : Form
     {

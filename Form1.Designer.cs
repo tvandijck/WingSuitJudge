@@ -1,4 +1,4 @@
-﻿namespace WingSuitJudge
+﻿namespace Flock
 {
     partial class Form1
     {
@@ -78,19 +78,19 @@
             this.mWingsuitSize = new System.Windows.Forms.NumericUpDown();
             this.mAdvert = new System.Windows.Forms.PictureBox();
             this.mFormationTools = new System.Windows.Forms.GroupBox();
-            this.mBtnFreeTransform = new WingSuitJudge.CheckButton();
-            this.mBtnRemoveLine = new WingSuitJudge.CheckButton();
-            this.mBtnAddLine = new WingSuitJudge.CheckButton();
-            this.mBtnMoveMarker = new WingSuitJudge.CheckButton();
-            this.mBtnRemoveMarker = new WingSuitJudge.CheckButton();
-            this.mBtnAddMarker = new WingSuitJudge.CheckButton();
+            this.mBtnFreeTransform = new Flock.CheckButton();
+            this.mBtnRemoveLine = new Flock.CheckButton();
+            this.mBtnAddLine = new Flock.CheckButton();
+            this.mBtnMoveMarker = new Flock.CheckButton();
+            this.mBtnRemoveMarker = new Flock.CheckButton();
+            this.mBtnAddMarker = new Flock.CheckButton();
             this.mImageTools = new System.Windows.Forms.GroupBox();
-            this.mBtnInvertPhoto = new WingSuitJudge.CheckButton();
-            this.mBtnCenterImage = new WingSuitJudge.CheckButton();
-            this.mBtnMoveImage = new WingSuitJudge.CheckButton();
-            this.mBtnZoomOut = new WingSuitJudge.CheckButton();
-            this.mBtnZoomIn = new WingSuitJudge.CheckButton();
-            this.mPictureBox = new WingSuitJudge.ImagePanel();
+            this.mBtnInvertPhoto = new Flock.CheckButton();
+            this.mBtnCenterImage = new Flock.CheckButton();
+            this.mBtnMoveImage = new Flock.CheckButton();
+            this.mBtnZoomOut = new Flock.CheckButton();
+            this.mBtnZoomIn = new Flock.CheckButton();
+            this.mPictureBox = new Flock.ImagePanel();
             this.mStatusBar.SuspendLayout();
             this.mMainMenu.SuspendLayout();
             this.mMenuPanel.SuspendLayout();
@@ -177,7 +177,7 @@
             // 
             // openFormationToolStripMenuItem
             // 
-            this.openFormationToolStripMenuItem.Image = global::WingSuitJudge.Properties.Resources.open_project;
+            this.openFormationToolStripMenuItem.Image = global::Flock.Properties.Resources.open_project;
             this.openFormationToolStripMenuItem.Name = "openFormationToolStripMenuItem";
             this.openFormationToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.openFormationToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
@@ -191,7 +191,7 @@
             // 
             // saveFormationToolStripMenuItem
             // 
-            this.saveFormationToolStripMenuItem.Image = global::WingSuitJudge.Properties.Resources.save_project;
+            this.saveFormationToolStripMenuItem.Image = global::Flock.Properties.Resources.save_project;
             this.saveFormationToolStripMenuItem.Name = "saveFormationToolStripMenuItem";
             this.saveFormationToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.saveFormationToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
@@ -212,7 +212,7 @@
             // 
             // printMenuItem
             // 
-            this.printMenuItem.Image = global::WingSuitJudge.Properties.Resources.printer;
+            this.printMenuItem.Image = global::Flock.Properties.Resources.printer;
             this.printMenuItem.Name = "printMenuItem";
             this.printMenuItem.Size = new System.Drawing.Size(155, 22);
             this.printMenuItem.Text = "Print...";
@@ -271,7 +271,7 @@
             // 
             // importPhotoToolStripMenuItem
             // 
-            this.importPhotoToolStripMenuItem.Image = global::WingSuitJudge.Properties.Resources.image_add;
+            this.importPhotoToolStripMenuItem.Image = global::Flock.Properties.Resources.image_add;
             this.importPhotoToolStripMenuItem.Name = "importPhotoToolStripMenuItem";
             this.importPhotoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
             this.importPhotoToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
@@ -280,7 +280,7 @@
             // 
             // resetPhotoToolStripMenuItem
             // 
-            this.resetPhotoToolStripMenuItem.Image = global::WingSuitJudge.Properties.Resources.image_delete;
+            this.resetPhotoToolStripMenuItem.Image = global::Flock.Properties.Resources.image_delete;
             this.resetPhotoToolStripMenuItem.Name = "resetPhotoToolStripMenuItem";
             this.resetPhotoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
             this.resetPhotoToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
@@ -289,7 +289,7 @@
             // 
             // exportToolStripMenuItem
             // 
-            this.exportToolStripMenuItem.Image = global::WingSuitJudge.Properties.Resources.export;
+            this.exportToolStripMenuItem.Image = global::Flock.Properties.Resources.export;
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
             this.exportToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.exportToolStripMenuItem.Text = "&Export...";
@@ -385,7 +385,7 @@
             this.mShowDots.Name = "mShowDots";
             this.mShowDots.Size = new System.Drawing.Size(212, 22);
             this.mShowDots.Text = "Dots";
-            this.mShowDots.CheckedChanged += new System.EventHandler(this.OnRepaintEvent);
+            this.mShowDots.CheckedChanged += new System.EventHandler(this.OnShowDotChangedEvent);
             // 
             // toolStripMenuItem8
             // 
@@ -425,7 +425,8 @@
             // 
             // indexToolStripMenuItem
             // 
-            this.indexToolStripMenuItem.Image = global::WingSuitJudge.Properties.Resources.help;
+            this.indexToolStripMenuItem.Enabled = false;
+            this.indexToolStripMenuItem.Image = global::Flock.Properties.Resources.help;
             this.indexToolStripMenuItem.Name = "indexToolStripMenuItem";
             this.indexToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.indexToolStripMenuItem.Text = "&Index";
@@ -563,7 +564,7 @@
             // 
             this.mAdvert.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mAdvert.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.mAdvert.Image = global::WingSuitJudge.Properties.Resources.banner01;
+            this.mAdvert.Image = global::Flock.Properties.Resources.banner01;
             this.mAdvert.InitialImage = null;
             this.mAdvert.Location = new System.Drawing.Point(13, 374);
             this.mAdvert.Name = "mAdvert";
@@ -590,67 +591,67 @@
             // mBtnFreeTransform
             // 
             this.mBtnFreeTransform.Checked = false;
-            this.mBtnFreeTransform.Image = global::WingSuitJudge.Properties.Resources.move_formation;
+            this.mBtnFreeTransform.Image = global::Flock.Properties.Resources.move_formation;
             this.mBtnFreeTransform.Location = new System.Drawing.Point(73, 53);
             this.mBtnFreeTransform.Name = "mBtnFreeTransform";
             this.mBtnFreeTransform.Size = new System.Drawing.Size(33, 33);
             this.mBtnFreeTransform.TabIndex = 13;
-            this.mBtnFreeTransform.Tooltip = "Free transform formation";
+            this.mBtnFreeTransform.Tooltip = "Free transform formation [c]";
             this.mBtnFreeTransform.Click += new System.EventHandler(this.OnTransformClick);
             // 
             // mBtnRemoveLine
             // 
             this.mBtnRemoveLine.Checked = false;
-            this.mBtnRemoveLine.Image = global::WingSuitJudge.Properties.Resources.remove_line;
+            this.mBtnRemoveLine.Image = global::Flock.Properties.Resources.remove_line;
             this.mBtnRemoveLine.Location = new System.Drawing.Point(39, 53);
             this.mBtnRemoveLine.Name = "mBtnRemoveLine";
             this.mBtnRemoveLine.Size = new System.Drawing.Size(33, 33);
             this.mBtnRemoveLine.TabIndex = 10;
-            this.mBtnRemoveLine.Tooltip = "Remove line";
+            this.mBtnRemoveLine.Tooltip = "Remove line [x]";
             this.mBtnRemoveLine.Click += new System.EventHandler(this.OnRemoveLineClick);
             // 
             // mBtnAddLine
             // 
             this.mBtnAddLine.Checked = false;
-            this.mBtnAddLine.Image = global::WingSuitJudge.Properties.Resources.add_line;
+            this.mBtnAddLine.Image = global::Flock.Properties.Resources.add_line;
             this.mBtnAddLine.Location = new System.Drawing.Point(5, 53);
             this.mBtnAddLine.Name = "mBtnAddLine";
             this.mBtnAddLine.Size = new System.Drawing.Size(33, 33);
             this.mBtnAddLine.TabIndex = 9;
-            this.mBtnAddLine.Tooltip = "Add line";
+            this.mBtnAddLine.Tooltip = "Add line [z]";
             this.mBtnAddLine.Click += new System.EventHandler(this.OnAddLineClick);
             // 
             // mBtnMoveMarker
             // 
             this.mBtnMoveMarker.Checked = false;
-            this.mBtnMoveMarker.Image = global::WingSuitJudge.Properties.Resources.move_marker;
+            this.mBtnMoveMarker.Image = global::Flock.Properties.Resources.move_marker;
             this.mBtnMoveMarker.Location = new System.Drawing.Point(73, 19);
             this.mBtnMoveMarker.Name = "mBtnMoveMarker";
             this.mBtnMoveMarker.Size = new System.Drawing.Size(33, 33);
             this.mBtnMoveMarker.TabIndex = 8;
-            this.mBtnMoveMarker.Tooltip = "Move marker";
+            this.mBtnMoveMarker.Tooltip = "Move marker [d]";
             this.mBtnMoveMarker.Click += new System.EventHandler(this.OnMoveMarkerClick);
             // 
             // mBtnRemoveMarker
             // 
             this.mBtnRemoveMarker.Checked = false;
-            this.mBtnRemoveMarker.Image = global::WingSuitJudge.Properties.Resources.remove_marker;
+            this.mBtnRemoveMarker.Image = global::Flock.Properties.Resources.remove_marker;
             this.mBtnRemoveMarker.Location = new System.Drawing.Point(39, 19);
             this.mBtnRemoveMarker.Name = "mBtnRemoveMarker";
             this.mBtnRemoveMarker.Size = new System.Drawing.Size(33, 33);
             this.mBtnRemoveMarker.TabIndex = 7;
-            this.mBtnRemoveMarker.Tooltip = "Remove marker";
+            this.mBtnRemoveMarker.Tooltip = "Remove marker [s]";
             this.mBtnRemoveMarker.Click += new System.EventHandler(this.OnRemoveMarkerClick);
             // 
             // mBtnAddMarker
             // 
             this.mBtnAddMarker.Checked = false;
-            this.mBtnAddMarker.Image = global::WingSuitJudge.Properties.Resources.add_marker;
+            this.mBtnAddMarker.Image = global::Flock.Properties.Resources.add_marker;
             this.mBtnAddMarker.Location = new System.Drawing.Point(5, 19);
             this.mBtnAddMarker.Name = "mBtnAddMarker";
             this.mBtnAddMarker.Size = new System.Drawing.Size(33, 33);
             this.mBtnAddMarker.TabIndex = 6;
-            this.mBtnAddMarker.Tooltip = "Add marker";
+            this.mBtnAddMarker.Tooltip = "Add marker [a]";
             this.mBtnAddMarker.Click += new System.EventHandler(this.OnAddMarkerClick);
             // 
             // mImageTools
@@ -671,7 +672,7 @@
             // mBtnInvertPhoto
             // 
             this.mBtnInvertPhoto.Checked = false;
-            this.mBtnInvertPhoto.Image = global::WingSuitJudge.Properties.Resources.invert_photo;
+            this.mBtnInvertPhoto.Image = global::Flock.Properties.Resources.invert_photo;
             this.mBtnInvertPhoto.Location = new System.Drawing.Point(39, 53);
             this.mBtnInvertPhoto.Name = "mBtnInvertPhoto";
             this.mBtnInvertPhoto.Size = new System.Drawing.Size(33, 33);
@@ -682,7 +683,7 @@
             // mBtnCenterImage
             // 
             this.mBtnCenterImage.Checked = false;
-            this.mBtnCenterImage.Image = global::WingSuitJudge.Properties.Resources.fit_to_screen;
+            this.mBtnCenterImage.Image = global::Flock.Properties.Resources.fit_to_screen;
             this.mBtnCenterImage.Location = new System.Drawing.Point(5, 53);
             this.mBtnCenterImage.Name = "mBtnCenterImage";
             this.mBtnCenterImage.Size = new System.Drawing.Size(33, 33);
@@ -693,18 +694,18 @@
             // mBtnMoveImage
             // 
             this.mBtnMoveImage.Checked = false;
-            this.mBtnMoveImage.Image = global::WingSuitJudge.Properties.Resources.move_canvas;
+            this.mBtnMoveImage.Image = global::Flock.Properties.Resources.move_canvas;
             this.mBtnMoveImage.Location = new System.Drawing.Point(73, 19);
             this.mBtnMoveImage.Name = "mBtnMoveImage";
             this.mBtnMoveImage.Size = new System.Drawing.Size(33, 33);
             this.mBtnMoveImage.TabIndex = 5;
-            this.mBtnMoveImage.Tooltip = "Move canvas";
+            this.mBtnMoveImage.Tooltip = "Move canvas [m]";
             this.mBtnMoveImage.Click += new System.EventHandler(this.OnMoveImageClick);
             // 
             // mBtnZoomOut
             // 
             this.mBtnZoomOut.Checked = false;
-            this.mBtnZoomOut.Image = global::WingSuitJudge.Properties.Resources.zoom_out;
+            this.mBtnZoomOut.Image = global::Flock.Properties.Resources.zoom_out;
             this.mBtnZoomOut.Location = new System.Drawing.Point(39, 19);
             this.mBtnZoomOut.Name = "mBtnZoomOut";
             this.mBtnZoomOut.Size = new System.Drawing.Size(33, 33);
@@ -716,7 +717,7 @@
             // mBtnZoomIn
             // 
             this.mBtnZoomIn.Checked = false;
-            this.mBtnZoomIn.Image = global::WingSuitJudge.Properties.Resources.zoom_in;
+            this.mBtnZoomIn.Image = global::Flock.Properties.Resources.zoom_in;
             this.mBtnZoomIn.Location = new System.Drawing.Point(5, 19);
             this.mBtnZoomIn.Name = "mBtnZoomIn";
             this.mBtnZoomIn.Size = new System.Drawing.Size(33, 33);
@@ -736,11 +737,12 @@
             this.mPictureBox.Origin = ((System.Drawing.PointF)(resources.GetObject("mPictureBox.Origin")));
             this.mPictureBox.Size = new System.Drawing.Size(892, 684);
             this.mPictureBox.TabIndex = 7;
-            this.mPictureBox.Zoom = 100;
+            this.mPictureBox.Zoom = 100F;
             this.mPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.OnPictureBoxPaint);
             this.mPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseMove);
             this.mPictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseClick);
             this.mPictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseDown);
+            this.mPictureBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
             this.mPictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseUp);
             // 
             // Form1
@@ -755,8 +757,8 @@
             this.MainMenuStrip = this.mMainMenu;
             this.MinimumSize = new System.Drawing.Size(260, 768);
             this.Name = "Form1";
-            this.Text = "Wingsuit Flock Judging Tool";
-            this.Shown += new System.EventHandler(this.Form1_Shown);
+            this.Text = "Flock Briefing Tool";
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnFormClosing);
             this.mStatusBar.ResumeLayout(false);
             this.mStatusBar.PerformLayout();

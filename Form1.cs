@@ -7,8 +7,9 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Drawing.Printing;
+using System.Runtime.InteropServices;
 
-namespace WingSuitJudge
+namespace Flock
 {
     public partial class Form1 : Form
     {
@@ -74,11 +75,11 @@ namespace WingSuitJudge
                 mProjectName_ = value;
                 if (string.IsNullOrEmpty(value))
                 {
-                    Text = string.Format("Wingsuit Flock Judging Tool {0} - [noname.flock{1}]", Version, dirty);
+                    Text = string.Format("Flock Briefing Tool {0} [beta] - [noname.flock{1}]", Version, dirty);
                 }
                 else
                 {
-                    Text = string.Format("Wingsuit Flock Judging Tool {0} - [{1}{2}]", Version, Path.GetFileName(value), dirty);
+                    Text = string.Format("Flock Briefing Tool {0} [beta]  - [{1}{2}]", Version, Path.GetFileName(value), dirty);
                 }
             }
         }
@@ -128,13 +129,13 @@ namespace WingSuitJudge
             }
         }
 
-        private int Zoom
+        private float Zoom
         {
             get { return mPictureBox.Zoom; }
             set
             {
                 mPictureBox.Zoom = value;
-                mZoomText.Text = string.Format("Zoom: {0}%", mPictureBox.Zoom);
+                mZoomText.Text = string.Format("Zoom: {0}%", (int)mPictureBox.Zoom);
             }
         }
 
@@ -261,7 +262,27 @@ namespace WingSuitJudge
 
         private void OnPictureBoxMouseWheel(object sender, MouseEventArgs e)
         {
-            Zoom += Math.Sign(e.Delta) * 5;
+            float scroll = e.Delta * 0.001f;
+            float offsetX = mPictureBox.Origin.X;
+            float offsetY = mPictureBox.Origin.Y;
+
+            float scale = (Zoom * 0.01f);
+            float recipScale = 1.0f / scale;
+            float selectedX = (e.X - offsetX) * recipScale;
+            float selectedY = (e.Y - offsetY) * recipScale;
+
+            scale += (scale * scroll);
+            scale = Math.Max(scale, 0.1f);
+
+            recipScale = 1.0f / scale;
+            selectedX = (e.X - offsetX) * recipScale - selectedX;
+            selectedY = (e.Y - offsetY) * recipScale - selectedY;
+
+            offsetX += selectedX * scale;
+            offsetY += selectedY * scale;
+
+            mPictureBox.Origin = new PointF(offsetX, offsetY);
+            Zoom = scale * 100;
         }
 
         private void OnMarkerProperties(object sender, EventArgs e)
@@ -462,52 +483,62 @@ namespace WingSuitJudge
             {
                 mPictureBox.LoadImage(dialog.FileName);
                 Project.PhotoName = dialog.FileName;
+                mPictureBox.Focus();
             }
         }
 
         private void OnZoomInClick(object sender, EventArgs e)
         {
             Zoom += 10;
+            mPictureBox.Focus();
         }
 
         private void OnZoomOutClick(object sender, EventArgs e)
         {
             Zoom -= 10;
+            mPictureBox.Focus();
         }
 
         private void OnAddMarkerClick(object sender, EventArgs e)
         {
             EditorMode = EditMode.AddMarker;
+            mPictureBox.Focus();
         }
 
         private void OnRemoveMarkerClick(object sender, EventArgs e)
         {
             EditorMode = EditMode.RemoveMarker;
+            mPictureBox.Focus();
         }
 
         private void OnMoveMarkerClick(object sender, EventArgs e)
         {
             EditorMode = EditMode.MoveMarker;
+            mPictureBox.Focus();
         }
 
         private void OnAddLineClick(object sender, EventArgs e)
         {
             EditorMode = EditMode.AddLine;
+            mPictureBox.Focus();
         }
 
         private void OnRemoveLineClick(object sender, EventArgs e)
         {
             EditorMode = EditMode.RemoveLine;
+            mPictureBox.Focus();
         }
 
         private void OnMoveImageClick(object sender, EventArgs e)
         {
             EditorMode = EditMode.MoveImage;
+            mPictureBox.Focus();
         }
 
         private void OnTransformClick(object sender, EventArgs e)
         {
             EditorMode = EditMode.FreeTransform;
+            mPictureBox.Focus();
         }
 
         private void OnExitClick(object sender, EventArgs e)
@@ -613,6 +644,7 @@ namespace WingSuitJudge
         {
             mPictureBox.ResetImage();
             Project.PhotoName = null;
+            mPictureBox.Focus();
         }
 
         private void OnCenterImageClick(object sender, EventArgs e)
@@ -645,6 +677,7 @@ namespace WingSuitJudge
                 mPictureBox.Origin = new PointF(mPictureBox.Width * 0.5f, mPictureBox.Height * 0.5f);
                 Zoom = 100;
             }
+            mPictureBox.Focus();
         }
 
         private void OnColorPickerClick(object sender, EventArgs e)
@@ -765,6 +798,12 @@ namespace WingSuitJudge
             mPictureBox.Invalidate();
         }
 
+        private void OnShowDotChangedEvent(object sender, EventArgs e)
+        {
+            mDotBox.Visible = mShowDots.Checked;
+            mPictureBox.Invalidate();
+        }
+
         private void OnInvertPhotoClick(object sender, EventArgs e)
         {
             mPictureBox.InvertImage();
@@ -845,21 +884,6 @@ namespace WingSuitJudge
             mPictureBox.Invalidate();
         }
 
-        private void Form1_Shown(object sender, EventArgs e)
-        {
-            if (DateTime.Now > new DateTime(2010, 4, 30))
-            {
-                MessageBox.Show(this, "The application has expired.\nYou may want to contact flylikebrick.com for a newer version.\nThe application will exit now.",
-                    "Expired", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Close();
-            }
-            else
-            {
-                MessageBox.Show(this, "This is a beta release, which will expire on April 30, 2010.\n",
-                    "Beta release", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
         #endregion
 
         private static MenuItem NewMenuItem(string aName, EventHandler aHandler, object aTag, bool aChecked)
@@ -889,6 +913,9 @@ namespace WingSuitJudge
             Project.AngleTolerance = Settings.Default.AngleTolerance;
             Project.DistanceTolerance = Settings.Default.DistanceTolerance;
             Project.Dirty = false;
+
+            mSizeBox.Visible = mShowWingsuits.Checked;
+            mDotBox.Visible = mShowDots.Checked;
         }
 
         private void SaveSettings()
@@ -1004,6 +1031,34 @@ namespace WingSuitJudge
                 }
             }
             return true;
+        }
+
+        private void Form1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            switch (e.KeyChar)
+            {
+                case 'a':
+                    OnAddMarkerClick(sender, e);
+                    break;
+                case 's':
+                    OnRemoveMarkerClick(sender, e);
+                    break;
+                case 'd':
+                    OnMoveMarkerClick(sender, e);
+                    break;
+                case 'z':
+                    OnAddLineClick(sender, e);
+                    break;
+                case 'x':
+                    OnRemoveLineClick(sender, e);
+                    break;
+                case 'c':
+                    OnTransformClick(sender, e);
+                    break;
+                case 'm':
+                    OnMoveImageClick(sender, e);
+                    break;
+            }
         }
     }
 }

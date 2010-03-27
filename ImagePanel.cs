@@ -3,13 +3,13 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 
-namespace WingSuitJudge
+namespace Flock
 {
     public class ImagePanel : UserControl
     {
         private Bitmap mBitmap = null;
         private RectangleF mBitmapRect;
-        private int mZoom = 100;
+        private float mZoom = 100;
         private PointF mOrigin = new PointF(0, 0);
         private Matrix mTransform = new Matrix(1, 0, 0, 1, 0, 0);
         
@@ -83,7 +83,7 @@ namespace WingSuitJudge
             return null;
         }
 
-        public int Zoom
+        public float Zoom
         {
             get { return mZoom; }
             set 

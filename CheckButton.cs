@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace WingSuitJudge
+namespace Flock
 {
     public partial class CheckButton : UserControl
     {

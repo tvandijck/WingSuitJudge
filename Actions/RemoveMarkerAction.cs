@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace WingSuitJudge
+namespace Flock
 {
     public class RemoveMarkerAction : Action
     {

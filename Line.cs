@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace WingSuitJudge
+namespace Flock
 {
     public class Line
     {

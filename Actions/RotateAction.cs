@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace WingSuitJudge
+namespace Flock
 {
     public class RotateAction : Action
     {

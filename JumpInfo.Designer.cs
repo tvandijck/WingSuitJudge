@@ -1,4 +1,4 @@
-﻿namespace WingSuitJudge
+﻿namespace Flock
 {
     partial class JumpInfo
     {

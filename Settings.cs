@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using Microsoft.Win32;
 
-namespace WingSuitJudge
+namespace Flock
 {
     public class Settings
     {

@@ -8,8 +8,8 @@
     <ProjectGuid>{B95AFFF6-750C-4FFA-A048-89BA31FEC236}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WingSuitJudge</RootNamespace>
-    <AssemblyName>WingSuitJudge</AssemblyName>
+    <RootNamespace>Flock</RootNamespace>
+    <AssemblyName>FlockBriefing</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -36,7 +36,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <StartupObject>WingSuitJudge.Program</StartupObject>
+    <StartupObject>Flock.Program</StartupObject>
     <TargetFrameworkSubset>Client</TargetFrameworkSubset>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 using System.Drawing;
 
-namespace WingSuitJudge
+namespace Flock
 {
     public static class CommandSystem
     {

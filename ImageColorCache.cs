@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace WingSuitJudge
+namespace Flock
 {
     internal static class ImageColorCache
     {

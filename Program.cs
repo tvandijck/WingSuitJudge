@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
-namespace WingSuitJudge
+namespace Flock
 {
     static class Program
     {
