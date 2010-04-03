@@ -503,15 +503,77 @@ namespace Flock
 
                 bool baseLine = baseMarker == line.End || baseMarker == line.Start;
                 float length = line.GetLength();
-                float angle = line.GetAngle();
+                float angle = Math2.NormalizeAngle(line.GetAngle());
 
-                bool error = (length < minLength)
-                    || (length > maxLength)
-                    || !IsAngleWithInTolerance(angle, line.End.FlightZoneMode)
-                    || !IsAngleWithInTolerance(angle, line.Start.FlightZoneMode);
+                bool distError = (length < minLength) || (length > maxLength);
+                bool anglError = !IsAngleWithInTolerance(angle, line.End.FlightZoneMode) || !IsAngleWithInTolerance(angle, line.Start.FlightZoneMode);
 
-                line.Draw(aGraphics, i == aSelectedLine, baseLine, error);
+                line.Draw(aGraphics, i == aSelectedLine, baseLine, distError || anglError);
+
+                if (anglError)
+                {
+                    float closest = ClosestAngle(angle, line.Start.FlightZoneMode);
+                    float diff = closest - angle;
+
+                    float x1 = line.Start.Location.X;
+                    float y1 = line.Start.Location.Y;
+                    float x2 = line.End.Location.X;
+                    float y2 = line.End.Location.Y;
+
+                    GraphicsPath path = new GraphicsPath();
+                    path.AddArc(x1 - 10, y1 - 10, 20, 20, angle, diff);
+                    path.AddArc(x1 - minLength, y1 - minLength, minLength * 2, minLength * 2, closest, -diff);
+                    path.CloseFigure();
+
+                    path.AddArc(x2 - 10, y2 - 10, 20, 20, angle + 180, diff);
+                    path.AddArc(x2 - minLength, y2 - minLength, minLength * 2, minLength * 2, closest + 180, -diff);
+                    path.CloseFigure();
+
+                    aGraphics.FillPath(Colors.RedDotBrush, path);
+                }
             }
+        }
+
+        public float ClosestAngle(float aAngle, FlightZone aMode)
+        {
+            float input = Math2.NormalizeAngle(aAngle);
+            float closest = float.MaxValue;
+            FlightZone cirleMode = (aMode == FlightZone.Project) ? mFlightZoneMode : aMode;
+            if ((cirleMode & FlightZone.Deg45) != 0)
+            {
+                float angle;
+                for (int i = 0; i < 4; i++)
+                {
+                    angle = Math2.NormalizeAngle((i * 90 - mAngleTolerance) + 45);
+                    if (Math.Abs(input - angle) < Math.Abs(input - closest))
+                    {
+                        closest = angle;
+                    }
+                    angle = Math2.NormalizeAngle((i * 90 + mAngleTolerance) + 45);
+                    if (Math.Abs(input - angle) < Math.Abs(input - closest))
+                    {
+                        closest = angle;
+                    }
+                }
+            }
+            if ((cirleMode & FlightZone.Deg90) != 0)
+            {
+                float angle;
+                for (int i = 0; i < 4; i++)
+                {
+                    angle = Math2.NormalizeAngle(i * 90 - mAngleTolerance);
+                    if (Math.Abs(input - angle) < Math.Abs(input - closest))
+                    {
+                        closest = angle;
+                    }
+                    angle = Math2.NormalizeAngle(i * 90 + mAngleTolerance);
+                    if (Math.Abs(input - angle) < Math.Abs(input - closest))
+                    {
+                        closest = angle;
+                    }
+                }
+            }
+            return closest;
         }
 
         private GraphicsPath CreatePath(float aMinLength, float aMaxLength, float aAngleOffset)
@@ -831,6 +893,20 @@ namespace Flock
                 {
                     return 0;
                 }
+            }
+        }
+
+        public float BaseLength
+        {
+            get
+            {
+                float baseLength;
+                Marker baseMarker = null;
+                if (HasBaseLength(out baseLength, out baseMarker))
+                {
+                    return baseLength;
+                }
+                return 0;
             }
         }
 

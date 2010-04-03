@@ -195,7 +195,7 @@
             this.saveFormationToolStripMenuItem.Name = "saveFormationToolStripMenuItem";
             this.saveFormationToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.saveFormationToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
-            this.saveFormationToolStripMenuItem.Text = "&Save...";
+            this.saveFormationToolStripMenuItem.Text = "&Save";
             this.saveFormationToolStripMenuItem.Click += new System.EventHandler(this.OnSaveClick);
             // 
             // saveAsToolStripMenuItem
