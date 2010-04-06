@@ -23,10 +23,16 @@ namespace Flock
         private int mBaseMarker = 0;
 
         // project settings.
-        private int mDistanceTolerance = 35;
-        private int mAngleTolerance = 18;
+        private int mDistanceTolerance = Settings.Default.DistanceTolerance;
+        private int mAngleTolerance = Settings.Default.AngleTolerance;
         private Color mBackColor = SystemColors.AppWorkspace;
         private FlightZone mFlightZoneMode = FlightZone.Deg45;
+        private int mWingsuitSize = Settings.Default.WingsuitSize;
+        private int mDotCount = Settings.Default.DotCount;
+        private int mDotSize = Settings.Default.DotSize;
+        private int mDotDistance = Settings.Default.DotDistance;
+        private int mDotStretch = Settings.Default.DotStretch;
+        private int mDotRotate = Settings.Default.DotRotate;
 
         // project info.
         private string mDescription;
@@ -120,6 +126,84 @@ namespace Flock
                 if (value != mAngleTolerance)
                 {
                     mAngleTolerance = value;
+                    Dirty = true;
+                }
+            }
+        }
+
+        public int WingsuitSize 
+        {
+            get { return mWingsuitSize; }
+            set
+            {
+                if (value != mWingsuitSize)
+                {
+                    mWingsuitSize = value;
+                    Dirty = true;
+                }
+            }
+        }
+
+        public int DotCount
+        {
+            get { return mDotCount; }
+            set
+            {
+                if (value != mDotCount)
+                {
+                    mDotCount = value;
+                    Dirty = true;
+                }
+            }
+        }
+
+        public int DotSize
+        {
+            get { return mDotSize; }
+            set
+            {
+                if (value != mDotSize)
+                {
+                    mDotSize = value;
+                    Dirty = true;
+                }
+            }
+        }
+
+        public int DotDistance
+        {
+            get { return mDotDistance; }
+            set
+            {
+                if (value != mDotDistance)
+                {
+                    mDotDistance = value;
+                    Dirty = true;
+                }
+            }
+        }
+
+        public int DotStretch
+        {
+            get { return mDotStretch; }
+            set
+            {
+                if (value != mDotStretch)
+                {
+                    mDotStretch = value;
+                    Dirty = true;
+                }
+            }
+        }
+
+        public int DotRotate
+        {
+            get { return mDotRotate; }
+            set
+            {
+                if (value != mDotRotate)
+                {
+                    mDotRotate = value;
                     Dirty = true;
                 }
             }
@@ -396,24 +480,28 @@ namespace Flock
             }
         }
 
-        public void PaintDots(Graphics aGraphics, int aWidth, float aDotSize, float aDotDistance)
+        public void PaintDots(Graphics aGraphics, int aWidth, float aDotSize, float aDotDistance, float aStretch, float aRotate)
         {
             float baseLength;
             Marker baseMarker;
-            if (!HasBaseLength(out baseLength, out baseMarker))
-            {
-            }
+            HasBaseLength(out baseLength, out baseMarker);
 
             if (baseMarker != null)
             {
+                float sin = (float)Math.Sin(aRotate);
+                float cos = (float)Math.Cos(aRotate);
+
                 float d = aDotSize * 0.5f;
                 for (int y = 0; y < aWidth; y++)
                 {
                     for (int x = 0; x < aWidth; x++)
                     {
-                        float xp = baseMarker.Location.X + (x * aDotDistance) - (y * aDotDistance);
-                        float yp = baseMarker.Location.Y + (y * aDotDistance) + (x * aDotDistance);
+                        float xc = ((x * aDotDistance) - (y * aDotDistance)) * aStretch;
+                        float yc = ((y * aDotDistance) + (x * aDotDistance));
 
+                        float xp = baseMarker.Location.X + (xc * cos) - (yc * sin);
+                        float yp = baseMarker.Location.Y + (xc * sin) + (yc * cos);
+                        
                         float dist;
                         Marker marker;
                         FindClosestMarker(xp, yp, out dist, out marker);
@@ -633,17 +721,16 @@ namespace Flock
             }
         }
 
-        public void PaintMarkers(Graphics aGraphics, int aSelectedMarker)
+        public void PaintMarkers(Graphics aGraphics, int aSelectedMarker, float aScale)
         {
             int numMarkers = mMarkers.Count;
             for (int i = 0; i < numMarkers; i++)
             {
                 Marker marker = mMarkers[i];
-                marker.Draw(aGraphics, i == aSelectedMarker, i == mBaseMarker);
+                marker.Draw(aGraphics, aScale, i == aSelectedMarker, i == mBaseMarker);
             }
         }
-
-
+        
         #endregion
 
         #region -- Save/Load methods ------------------------------------------
@@ -674,12 +761,18 @@ namespace Flock
             using (BinaryWriter writer = new BinaryWriter(aStream))
             {
                 writer.Write((int)0x4b434c46);      // identifier.
-                writer.Write((int)8);               // version number.
+                writer.Write((int)9);               // version number.
                 writer.Write(mBaseMarker);
                 writer.Write(mDistanceTolerance);
                 writer.Write(mAngleTolerance);
                 writer.Write((int)mFlightZoneMode);
                 WriteString(writer, mPhotoName);
+                writer.Write((int)mWingsuitSize);
+                writer.Write((int)mDotCount);
+                writer.Write((int)mDotSize);
+                writer.Write((int)mDotDistance);
+                writer.Write((int)mDotStretch);
+                writer.Write((int)mDotRotate);
 
                 writer.Write(mBackColor.ToArgb());
                 WriteString(writer, mDescription);
@@ -755,6 +848,16 @@ namespace Flock
                     if (version >= 8)
                     {
                         mPhotoName = reader.ReadString();
+                    }
+
+                    if (version >= 9)
+                    {
+                        mWingsuitSize = reader.ReadInt32();
+                        mDotCount = reader.ReadInt32();
+                        mDotSize = reader.ReadInt32();
+                        mDotDistance = reader.ReadInt32();
+                        mDotStretch = reader.ReadInt32();
+                        mDotRotate = reader.ReadInt32();
                     }
 
                     if (version >= 2)

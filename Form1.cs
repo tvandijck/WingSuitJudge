@@ -234,6 +234,8 @@ namespace Flock
             }
         }
 
+        ToolTip mToolTip = new ToolTip();
+
         private void OnPictureBoxMouseMove(object sender, MouseEventArgs e)
         {
             if (mAction == null || mAction.OnMouseMove(mPictureBox, e))
@@ -255,6 +257,18 @@ namespace Flock
                     {
                         mSelectedLine = selected;
                         mPictureBox.Invalidate();
+
+                        if (selected >= 0)
+                        {
+                            Line line = Project.GetLine(selected);
+                            float baseLength = Project.BaseLength;
+                            float length = line.GetLength();
+
+                            int len = (int)((100.0f * length) / baseLength);
+
+                            Point pnt = mPictureBox.ToScreen(new Point(e.X, e.Y));
+                            mToolTip.Show(string.Format("length: {0}%", len), mPictureBox, pnt.X, pnt.Y, 3000);
+                        }
                     }
                 }
             }
@@ -421,7 +435,7 @@ namespace Flock
                 CommandSystem.RemoveLine(Project, line);
                 mPictureBox.Invalidate();
             }
-        } 
+        }
 
         private void OnPictureBoxPaint(object sender, PaintEventArgs e)
         {
@@ -433,7 +447,7 @@ namespace Flock
             }
             if (mShowWingsuits.Checked)
             {
-                Project.PaintWingsuit(e.Graphics, Settings.Default.WingsuitSize * 0.01f);
+                Project.PaintWingsuit(e.Graphics, Project.WingsuitSize * 0.01f);
             }
             if (mShowLines.Checked)
             {
@@ -445,11 +459,13 @@ namespace Flock
             }
             if (mShowDots.Checked)
             {
-                Project.PaintDots(e.Graphics, Settings.Default.DotCount, Settings.Default.DotSize * 1.0f, Settings.Default.DotDistance * 0.5f);
+                Project.PaintDots(e.Graphics, Project.DotCount, Project.DotSize * 1.0f,
+                    Project.DotDistance * 0.5f, Project.DotStretch * 0.01f,
+                    Project.DotRotate * (float)Math.PI / 1800.0f);
             }
             if (mShowMarkers.Checked)
             {
-                Project.PaintMarkers(e.Graphics, mSelectedMarker);
+                Project.PaintMarkers(e.Graphics, mSelectedMarker, Project.WingsuitSize * 0.01f);
             }
             if (mAction != null)
             {
@@ -624,7 +640,7 @@ namespace Flock
                                 }
                                 else
                                 {
-                                    string message = string.Format("The photo [{0}] associated with this project could not be found.", 
+                                    string message = string.Format("The photo [{0}] associated with this project could not be found.",
                                         Path.GetFileName(Project.PhotoName));
                                     MessageBox.Show(this, message, "Error loading associated photo.", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
@@ -719,6 +735,10 @@ namespace Flock
                 Project.DistanceTolerance = dialog.DistanceTolerance;
                 Project.AngleTolerance = dialog.AngleTolerance;
                 Project.FlightZoneMode = dialog.FlightZoneMode;
+
+                // Sync UI.
+                mDistanceTolerance.Value = Project.DistanceTolerance;
+                mAngleTolerance.Value = Project.AngleTolerance;
                 mPictureBox.Invalidate();
             }
         }
@@ -768,7 +788,7 @@ namespace Flock
 
                     if (mShowWingsuits.Checked)
                     {
-                        Project.PaintWingsuit(gfx, Settings.Default.WingsuitSize * 0.01f);
+                        Project.PaintWingsuit(gfx, Project.WingsuitSize * 0.01f);
                     }
                     if (mShowLines.Checked)
                     {
@@ -778,9 +798,15 @@ namespace Flock
                     {
                         Project.PaintFlightZones(gfx);
                     }
+                    if (mShowDots.Checked)
+                    {
+                        Project.PaintDots(gfx, Project.DotCount, Project.DotSize * 1.0f,
+                            Project.DotDistance * 0.5f, Project.DotStretch * 0.01f,
+                            Project.DotRotate * (float)Math.PI / 1800.0f);
+                    }
                     if (mShowMarkers.Checked)
                     {
-                        Project.PaintMarkers(gfx, -1);
+                        Project.PaintMarkers(gfx, -1, Project.WingsuitSize * 0.01f);
                     }
                 }
                 bitmap.Save(dialog.FileName);
@@ -845,15 +871,24 @@ namespace Flock
 
         private void OnWingsuitSizeValueChanged(object sender, EventArgs e)
         {
-            Settings.Default.WingsuitSize = (int)mWingsuitSize.Value;
+            Project.WingsuitSize = (int)mWingsuitSize.Value;
+            mPictureBox.Invalidate();
+        }
+
+        private void OnToleranceChanged(object sender, EventArgs e)
+        {
+            Project.AngleTolerance = (int)mAngleTolerance.Value;
+            Project.DistanceTolerance = (int)mDistanceTolerance.Value;
             mPictureBox.Invalidate();
         }
 
         private void OnDotSettingChanged(object sender, EventArgs e)
         {
-            Settings.Default.DotCount = (int)mDotCount.Value;
-            Settings.Default.DotSize = (int)mDotSize.Value;
-            Settings.Default.DotDistance = (int)mDotDistance.Value;
+            Project.DotCount = (int)mDotCount.Value;
+            Project.DotSize = (int)mDotSize.Value;
+            Project.DotDistance = (int)mDotDistance.Value;
+            Project.DotStretch = (int)mDotStretch.Value;
+            Project.DotRotate = (int)(mDotRotate.Value * 10);
             mPictureBox.Invalidate();
         }
 
@@ -900,22 +935,7 @@ namespace Flock
             Project = new Project();
             ProjectName = null;
             mPictureBox.ResetImage();
-            mShowLines.Checked = Settings.Default.ShowLines;
-            mShowMarkers.Checked = Settings.Default.ShowMarkers;
-            mShowWingsuits.Checked = Settings.Default.ShowWingsuits;
-            mShowPhoto.Checked = Settings.Default.ShowPhoto;
-            mShowFlightZones.Checked = Settings.Default.ShowFlightZones;
-            mShowDots.Checked = Settings.Default.ShowDots;
-            mWingsuitSize.Value = Settings.Default.WingsuitSize;
-            mDotCount.Value = Settings.Default.DotCount;
-            mDotSize.Value = Settings.Default.DotSize;
-            mDotDistance.Value = Settings.Default.DotDistance;
-            Project.AngleTolerance = Settings.Default.AngleTolerance;
-            Project.DistanceTolerance = Settings.Default.DistanceTolerance;
-            Project.Dirty = false;
-
-            mSizeBox.Visible = mShowWingsuits.Checked;
-            mDotBox.Visible = mShowDots.Checked;
+            SyncUI();
         }
 
         private void SaveSettings()
@@ -930,12 +950,36 @@ namespace Flock
                 Settings.Default.ShowDots = mShowDots.Checked;
                 Settings.Default.AngleTolerance = Project.AngleTolerance;
                 Settings.Default.DistanceTolerance = Project.DistanceTolerance;
-                Settings.Default.WingsuitSize = (int)mWingsuitSize.Value;
-                Settings.Default.DotCount = (int)mDotCount.Value;
-                Settings.Default.DotSize = (int)mDotSize.Value;
-                Settings.Default.DotDistance = (int)mDotDistance.Value;
+                Settings.Default.WingsuitSize = Project.WingsuitSize;
+                Settings.Default.DotCount = Project.DotCount;
+                Settings.Default.DotSize = Project.DotSize;
+                Settings.Default.DotDistance = Project.DotDistance;
+                Settings.Default.DotStretch = Project.DotStretch;
+                Settings.Default.DotRotate = Project.DotRotate;
                 Settings.Default.Save();
+                SyncUI();
             }
+        }
+
+        private void SyncUI()
+        {
+            mShowLines.Checked = Settings.Default.ShowLines;
+            mShowMarkers.Checked = Settings.Default.ShowMarkers;
+            mShowWingsuits.Checked = Settings.Default.ShowWingsuits;
+            mShowPhoto.Checked = Settings.Default.ShowPhoto;
+            mShowFlightZones.Checked = Settings.Default.ShowFlightZones;
+            mShowDots.Checked = Settings.Default.ShowDots;
+
+            mWingsuitSize.Value = Project.WingsuitSize;
+            mDotCount.Value = Project.DotCount;
+            mDotSize.Value = Project.DotSize;
+            mDotDistance.Value = Project.DotDistance;
+            mDotStretch.Value = Project.DotStretch;
+            mDotRotate.Value = Convert.ToDecimal(Project.DotRotate * 0.1f);
+            mSizeBox.Visible = mShowWingsuits.Checked;
+            mDotBox.Visible = mShowDots.Checked;
+            mAngleTolerance.Value = Project.AngleTolerance;
+            mDistanceTolerance.Value = Project.DistanceTolerance;
         }
 
         private void printMenuItem_Click(object sender, EventArgs e)
@@ -947,7 +991,7 @@ namespace Flock
 
                 PrintPreviewDialog dialog = new PrintPreviewDialog();
                 dialog.Document = pd;
-                dialog.ShowDialog(this); 
+                dialog.ShowDialog(this);
             }
             catch (Exception ex)
             {
@@ -994,7 +1038,7 @@ namespace Flock
             }
             if (mShowWingsuits.Checked)
             {
-                Project.PaintWingsuit(e.Graphics, Settings.Default.WingsuitSize * 0.01f);
+                Project.PaintWingsuit(e.Graphics, Project.WingsuitSize * 0.01f);
             }
             if (mShowLines.Checked)
             {
@@ -1006,7 +1050,7 @@ namespace Flock
             }
             if (mShowMarkers.Checked)
             {
-                Project.PaintMarkers(e.Graphics, -1);
+                Project.PaintMarkers(e.Graphics, -1, Project.WingsuitSize * 0.01f);
             }
 
             e.HasMorePages = false;

@@ -17,6 +17,8 @@ namespace Flock
         public int DotCount { get; set; }
         public int DotSize { get; set; }
         public int DotDistance { get; set; }
+        public int DotStretch { get; set; }
+        public int DotRotate { get; set; }
         public Color BaseLineColor { get; set; }
 
         private static Settings defaultInstance = new Settings();
@@ -46,6 +48,8 @@ namespace Flock
             Registry.SetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DotCount", DotCount, RegistryValueKind.DWord);
             Registry.SetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DotSize", DotSize, RegistryValueKind.DWord);
             Registry.SetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DotDistance", DotDistance, RegistryValueKind.DWord);
+            Registry.SetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DotStretch", DotStretch, RegistryValueKind.DWord);
+            Registry.SetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DotRotate", DotRotate, RegistryValueKind.DWord);
         }
 
         public void Load()
@@ -63,6 +67,8 @@ namespace Flock
             DotCount = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DotCount", 3);
             DotSize = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DotSize", 80);
             DotDistance = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DotDistance", 250);
+            DotStretch = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DotStretch", 100);
+            DotRotate = GetValue("HKEY_CURRENT_USER\\Software\\WingsuitJudge", "DotRotate", 0);
         }
 
         static bool GetValue(string location, string key, bool def)

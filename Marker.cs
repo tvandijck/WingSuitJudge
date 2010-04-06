@@ -24,7 +24,7 @@ namespace Flock
             mLocation.X = x;
             mLocation.Y = y;
             mNameTag = tag;
-        }  
+        }
 
         public PointF Location
         {
@@ -59,7 +59,7 @@ namespace Flock
         public Color SilhoutteColor
         {
             get { return mSilhoutteColor; }
-            set 
+            set
             {
                 if (mSilhoutteColor != value)
                 {
@@ -72,22 +72,24 @@ namespace Flock
         public void DrawWingsuit(Graphics aGraphics, float aScale)
         {
             aGraphics.InterpolationMode = InterpolationMode.High;
-            aGraphics.DrawImage(mSilhoutte, mLocation.X - (62 * aScale), mLocation.Y - (8 * aScale), 
+            aGraphics.DrawImage(mSilhoutte, mLocation.X - (62 * aScale), mLocation.Y - (8 * aScale),
                 mSilhoutte.Width * 0.5f * aScale, mSilhoutte.Height * 0.5f * aScale);
         }
 
-        public void Draw(Graphics aGraphics, bool aSelected, bool aBase)
+        public void Draw(Graphics aGraphics, float aScale, bool aSelected, bool aBase)
         {
             Pen penColor = aSelected ? Colors.SelectedPen : Colors.BlackPen;
             Brush fillColor = aBase ? Colors.MarkerBase : Colors.MarkerNormal;
+            penColor.Width = 3 * aScale;
 
-            aGraphics.FillEllipse(fillColor, mLocation.X - 8, mLocation.Y - 8, 16, 16);
-            aGraphics.DrawEllipse(penColor, mLocation.X - 8, mLocation.Y - 8, 16, 16);
+            float size = 8 * aScale;
+            aGraphics.FillEllipse(fillColor, mLocation.X - size, mLocation.Y - size, 2 * size, 2 * size);
+            aGraphics.DrawEllipse(penColor, mLocation.X - size, mLocation.Y - size, 2 * size, 2 * size);
 
             if (!string.IsNullOrEmpty(mNameTag))
             {
-                SizeF size = aGraphics.MeasureString(mNameTag, SystemFonts.DefaultFont);
-                aGraphics.DrawString(mNameTag, SystemFonts.DefaultFont, Brushes.White, mLocation.X + 10, mLocation.Y - (size.Height / 2));
+                SizeF fontSize = aGraphics.MeasureString(mNameTag, SystemFonts.DefaultFont);
+                aGraphics.DrawString(mNameTag, SystemFonts.DefaultFont, Brushes.White, mLocation.X + 10, mLocation.Y - (fontSize.Height / 2));
             }
         }
     }

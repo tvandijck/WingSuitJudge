@@ -81,13 +81,6 @@ namespace Flock.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap banner01 {
-            get {
-                object obj = ResourceManager.GetObject("banner01", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap export {
             get {
                 object obj = ResourceManager.GetObject("export", resourceCulture);
