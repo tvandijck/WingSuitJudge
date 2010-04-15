@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using System.Drawing.Printing;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace Flock
 {
@@ -437,6 +438,33 @@ namespace Flock
             }
         }
 
+        private void DrawTextBox(Graphics aGraphics, string[] aStrings, float aX, float aY)
+        {
+            using (Font fnt = new Font(FontFamily.GenericSansSerif, 8, GraphicsUnit.Pixel))
+            {
+                float width = 0;
+                foreach (string str in aStrings)
+                {
+                    SizeF size = aGraphics.MeasureString(str, fnt);
+                    width = Math.Max(width, size.Width);
+                }
+
+                int height = (fnt.Height * aStrings.Length);
+                aGraphics.FillRectangle(Colors.TextBox, aX, aY, width + 10, height + 10);
+                aGraphics.DrawRectangle(Pens.Black, aX, aY, width + 10, height + 10);
+
+                PointF pnt = new PointF(aX, aY);
+                pnt.X += 5;
+                pnt.Y += 5;
+
+                foreach (string str in aStrings)
+                {
+                    aGraphics.DrawString(str, fnt, Brushes.White, pnt);
+                    pnt.Y += fnt.Height;
+                }
+            }
+        }
+
         private void OnPictureBoxPaint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
@@ -786,27 +814,48 @@ namespace Flock
                     gfx.SmoothingMode = SmoothingMode.AntiAlias;
                     gfx.Transform = new Matrix(1, 0, 0, 1, x, y);
 
+                    List<string> strings = new List<string>();
+                    strings.Add(string.Format("Name: {0}", Project.PhotoName));
+
                     if (mShowWingsuits.Checked)
                     {
                         Project.PaintWingsuit(gfx, Project.WingsuitSize * 0.01f);
                     }
+
                     if (mShowLines.Checked)
                     {
                         Project.PaintLines(gfx, -1);
+
+                        int acc = (int)Math.Round(Project.Accuracy * 100);
+                        strings.Add(string.Format("Distance Tol: {0}%, Angle Tol: {1}%, Accuracy: {2}%", 
+                            Project.DistanceTolerance,
+                            Project.AngleTolerance,
+                            acc));
                     }
+
                     if (mShowFlightZones.Checked)
                     {
                         Project.PaintFlightZones(gfx);
                     }
+
                     if (mShowDots.Checked)
                     {
                         Project.PaintDots(gfx, Project.DotCount, Project.DotSize * 1.0f,
                             Project.DotDistance * 0.5f, Project.DotStretch * 0.01f,
                             Project.DotRotate * (float)Math.PI / 1800.0f);
+
+                        strings.Add(string.Format("DotSize: {0}    \tDotDistance: {1}", Project.DotSize, Project.DotDistance));
+                        strings.Add(string.Format("DotStretch: {0} \tDotRotate: {1}", Project.DotStretch, Project.DotRotate));
                     }
+
                     if (mShowMarkers.Checked)
                     {
                         Project.PaintMarkers(gfx, -1, Project.WingsuitSize * 0.01f);
+                    }
+
+                    if (strings.Count > 0)
+                    {
+                        DrawTextBox(gfx, strings.ToArray(), 10 - x, 10 - y);
                     }
                 }
                 bitmap.Save(dialog.FileName);

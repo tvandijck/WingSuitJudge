@@ -756,12 +756,14 @@ namespace Flock
             Dirty = false;
         }
 
+        private const int Version = 9;
+
         public void Serialize(Stream aStream)
         {
-            using (BinaryWriter writer = new BinaryWriter(aStream))
+            using (BinaryWriter writer = new BinaryWriter(aStream, System.Text.Encoding.UTF8))
             {
                 writer.Write((int)0x4b434c46);      // identifier.
-                writer.Write((int)9);               // version number.
+                writer.Write((int)Version);         // version number.
                 writer.Write(mBaseMarker);
                 writer.Write(mDistanceTolerance);
                 writer.Write(mAngleTolerance);
@@ -816,7 +818,7 @@ namespace Flock
 
         public void Deserialize(string aFilename, Stream aStream)
         {
-            using (BinaryReader reader = new BinaryReader(aStream))
+            using (BinaryReader reader = new BinaryReader(aStream, System.Text.Encoding.UTF8))
             {
                 uint id = reader.ReadUInt32();
                 if (id != 0x4b434c46)
@@ -825,7 +827,7 @@ namespace Flock
                 }
 
                 int version = reader.ReadInt32();
-                if (version <= 8)
+                if (version <= Version)
                 {
                     mBaseMarker = reader.ReadInt32();
                     if (version < 6)
@@ -912,7 +914,7 @@ namespace Flock
                 }
                 else
                 {
-                    throw new Exception(string.Format("'{0}' has an unsupported version number.", Path.GetFileName(aFilename)));
+                    throw new Exception(string.Format("'{0}' has an unsupported version number {1}.", Path.GetFileName(aFilename), version));
                 }
             }
         }

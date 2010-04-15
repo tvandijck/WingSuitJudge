@@ -119,6 +119,13 @@ namespace Flock
             }
         }
 
+        public Point ToImage(Point aPoint)
+        {
+            float x = (mBitmapRect.Left + aPoint.X);
+            float y = (mBitmapRect.Top + aPoint.Y);
+            return new Point((int)x, (int)y);
+        }
+
         public PointF ToScreen(PointF aPoint)
         {
             float dz = mZoom * 0.01f;
