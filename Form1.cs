@@ -32,7 +32,7 @@ namespace Flock
         public Form1()
         {
             InitializeComponent();
-            mCopyright.Text = CopyrightNotice;
+            mCopyright.Text = Program.CopyrightNotice;
             mPictureBox.Origin = new PointF(mPictureBox.Width * 0.5f, mPictureBox.Height * 0.5f);
             mPictureBox.MouseWheel += new MouseEventHandler(OnPictureBoxMouseWheel);
             ResetProject();
@@ -76,11 +76,11 @@ namespace Flock
                 mProjectName_ = value;
                 if (string.IsNullOrEmpty(value))
                 {
-                    Text = string.Format("Flock Briefing Tool {0} [beta] - [noname.flock{1}]", Version, dirty);
+                    Text = string.Format("Flock Briefing Tool {0} [beta] - [noname.flock{1}]", Program.Version, dirty);
                 }
                 else
                 {
-                    Text = string.Format("Flock Briefing Tool {0} [beta]  - [{1}{2}]", Version, Path.GetFileName(value), dirty);
+                    Text = string.Format("Flock Briefing Tool {0} [beta]  - [{1}{2}]", Program.Version, Path.GetFileName(value), dirty);
                 }
             }
         }
@@ -137,44 +137,6 @@ namespace Flock
             {
                 mPictureBox.Zoom = value;
                 mZoomText.Text = string.Format("Zoom: {0}%", (int)mPictureBox.Zoom);
-            }
-        }
-
-        private string CopyrightNotice
-        {
-            get
-            {
-                Assembly assembly = Assembly.GetExecutingAssembly();
-
-                AssemblyCopyrightAttribute notice = AssemblyDescriptionAttribute.GetCustomAttribute(
-                        assembly, typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute;
-                if (notice != null)
-                {
-                    return notice.Copyright;
-                }
-                else
-                {
-                    return string.Empty;
-                }
-            }
-        }
-
-
-        private string Version
-        {
-            get
-            {
-                Assembly assembly = Assembly.GetExecutingAssembly();
-                FileVersionInfo info = FileVersionInfo.GetVersionInfo(assembly.Location);
-                if (info != null)
-                {
-                    return string.Format("{0}.{1}.{2}", info.ProductMajorPart,
-                        info.ProductMinorPart, info.ProductBuildPart);
-                }
-                else
-                {
-                    return string.Empty;
-                }
             }
         }
 

@@ -7,6 +7,7 @@ namespace Flock
         public AboutBox()
         {
             InitializeComponent();
+            label1.Text = Program.CopyrightNotice;
         }
     }
 }
