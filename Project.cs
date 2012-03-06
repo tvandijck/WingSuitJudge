@@ -33,6 +33,10 @@ namespace Flock
         private int mDotDistance = Settings.Default.DotDistance;
         private int mDotStretch = Settings.Default.DotStretch;
         private int mDotRotate = Settings.Default.DotRotate;
+        private int mGridCount = Settings.Default.GridCount;
+        private int mGridSize = Settings.Default.GridSize;
+        private float mGridRotate = Settings.Default.GridRotate;
+        private PointF mGridOffset = Point.Empty;
 
         // project info.
         private string mDescription;
@@ -131,7 +135,7 @@ namespace Flock
             }
         }
 
-        public int WingsuitSize 
+        public int WingsuitSize
         {
             get { return mWingsuitSize; }
             set
@@ -204,6 +208,58 @@ namespace Flock
                 if (value != mDotRotate)
                 {
                     mDotRotate = value;
+                    Dirty = true;
+                }
+            }
+        }
+
+        public int GridCount
+        {
+            get { return mGridCount; }
+            set
+            {
+                if (value != mGridCount)
+                {
+                    mGridCount = value;
+                    Dirty = true;
+                }
+            }
+        }
+
+        public int GridSize
+        {
+            get { return mGridSize; }
+            set
+            {
+                if (value != mGridSize)
+                {
+                    mGridSize = value;
+                    Dirty = true;
+                }
+            }
+        }
+
+        public float GridRotate
+        {
+            get { return mGridRotate; }
+            set
+            {
+                if (value != mGridRotate)
+                {
+                    mGridRotate = value;
+                    Dirty = true;
+                }
+            }
+        }
+
+        public PointF GridOffset
+        {
+            get { return mGridOffset; }
+            set
+            {
+                if (value != mGridOffset)
+                {
+                    mGridOffset = value;
                     Dirty = true;
                 }
             }
@@ -480,6 +536,62 @@ namespace Flock
             }
         }
 
+        public void PaintGrid(Graphics aGraphics, PointF aCenter, int aWidth, float aScale, float aOverlap, float aBase, float aRotate)
+        {
+            float sin = (float)Math.Sin(aRotate + (Math.PI * 0.25));
+            float cos = (float)Math.Cos(aRotate + (Math.PI * 0.25));
+
+            float _base = aBase * 0.005f;
+            float center = aScale * 0.5f;
+            float overlap = aScale * (aOverlap / 100.0f);
+
+            Pen redPen = new Pen(Color.DarkRed, 2.0f);
+            Pen blackPen = new Pen(Color.Black, 2.0f);
+
+            for (int y = 0; y < aWidth; y++)
+            {
+                for (int x = 0; x < aWidth; x++)
+                {
+                    float x1 = ((aScale - overlap) * x) - center;
+                    float y1 = ((aScale - overlap) * y) - center;
+                    float x2 = x1 + aScale;
+                    float y2 = y1 + aScale;
+
+                    float xr1 = aCenter.X + (x1 * cos) - (y1 * sin);
+                    float yr1 = aCenter.Y + (x1 * sin) + (y1 * cos);
+
+                    float xr2 = aCenter.X + (x2 * cos) - (y1 * sin);
+                    float yr2 = aCenter.Y + (x2 * sin) + (y1 * cos);
+
+                    float xr3 = aCenter.X + (x2 * cos) - (y2 * sin);
+                    float yr3 = aCenter.Y + (x2 * sin) + (y2 * cos);
+
+                    float xr4 = aCenter.X + (x1 * cos) - (y2 * sin);
+                    float yr4 = aCenter.Y + (x1 * sin) + (y2 * cos);
+
+                    Pen pen = (((x + y) & 1) == 0) ? blackPen : redPen;
+                    aGraphics.DrawLine(pen, xr1, yr1, xr2, yr2);
+                    aGraphics.DrawLine(pen, xr2, yr2, xr3, yr3);
+                    aGraphics.DrawLine(pen, xr3, yr3, xr4, yr4);
+                    aGraphics.DrawLine(pen, xr4, yr4, xr1, yr1);
+
+                    if (x == 0 && y == 0)
+                    {
+                        float xd = (xr2 - xr4) * 0.135f;
+                        float yd = (yr2 - yr4) * 0.135f;
+
+                        float baseX1 = xr1 + ((xr3 - xr1) * (0.5f - _base));
+                        float baseY1 = yr1 + ((yr3 - yr1) * (0.5f - _base));
+                        float baseX2 = xr1 + ((xr3 - xr1) * (0.5f + _base));
+                        float baseY2 = yr1 + ((yr3 - yr1) * (0.5f + _base));
+
+                        aGraphics.DrawLine(pen, baseX1 - xd, baseY1 - yd, baseX1 + xd, baseY1 + yd);
+                        aGraphics.DrawLine(pen, baseX2 - xd, baseY2 - yd, baseX2 + xd, baseY2 + yd);
+                    }
+                }
+            }
+        }
+
         public void PaintDots(Graphics aGraphics, int aWidth, float aDotSize, float aDotDistance, float aStretch, float aRotate)
         {
             float baseLength;
@@ -501,7 +613,7 @@ namespace Flock
 
                         float xp = baseMarker.Location.X + (xc * cos) - (yc * sin);
                         float yp = baseMarker.Location.Y + (xc * sin) + (yc * cos);
-                        
+
                         float dist;
                         Marker marker;
                         FindClosestMarker(xp, yp, out dist, out marker);
@@ -730,7 +842,7 @@ namespace Flock
                 marker.Draw(aGraphics, aScale, i == aSelectedMarker, i == mBaseMarker);
             }
         }
-        
+
         #endregion
 
         #region -- Save/Load methods ------------------------------------------
@@ -756,7 +868,7 @@ namespace Flock
             Dirty = false;
         }
 
-        private const int Version = 9;
+        private const int Version = 10;
 
         public void Serialize(Stream aStream)
         {
@@ -775,6 +887,11 @@ namespace Flock
                 writer.Write((int)mDotDistance);
                 writer.Write((int)mDotStretch);
                 writer.Write((int)mDotRotate);
+                writer.Write((int)mGridCount);
+                writer.Write((int)mGridSize);
+                writer.Write((float)mGridRotate);
+                writer.Write((float)mGridOffset.X);
+                writer.Write((float)mGridOffset.Y);
 
                 writer.Write(mBackColor.ToArgb());
                 WriteString(writer, mDescription);
@@ -860,6 +977,15 @@ namespace Flock
                         mDotDistance = reader.ReadInt32();
                         mDotStretch = reader.ReadInt32();
                         mDotRotate = reader.ReadInt32();
+                    }
+
+                    if (version >= 10)
+                    {
+                        mGridCount = reader.ReadInt32();
+                        mGridSize = reader.ReadInt32();
+                        mGridRotate = reader.ReadSingle();
+                        mGridOffset.X = reader.ReadSingle();
+                        mGridOffset.Y = reader.ReadSingle();
                     }
 
                     if (version >= 2)
@@ -1073,6 +1199,25 @@ namespace Flock
                     float y = marker.Location.Y - cy;
                     marker.Location = new PointF(x * c + y * s + cx, x * -s + y * c + cy);
                 }
+                Dirty = true;
+            }
+        }
+
+        public void MoveGrid(float dx, float dy)
+        {
+            if (dx != 0 || dy != 0)
+            {
+                mGridOffset.X += dx;
+                mGridOffset.Y += dy;
+                Dirty = true;
+            }
+        }
+
+        public void RotateGrid(float dx)
+        {
+            if (dx != 0)
+            {
+                mGridRotate -= dx;
                 Dirty = true;
             }
         }

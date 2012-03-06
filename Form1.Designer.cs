@@ -61,6 +61,7 @@
             this.mShowPhoto = new System.Windows.Forms.ToolStripMenuItem();
             this.mShowFlightZones = new System.Windows.Forms.ToolStripMenuItem();
             this.mShowDots = new System.Windows.Forms.ToolStripMenuItem();
+            this.mShowGrid = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripSeparator();
             this.mBackgroundColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mLineColorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -70,7 +71,13 @@
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mMenuPanel = new System.Windows.Forms.Panel();
+            this.mGridBox = new System.Windows.Forms.GroupBox();
+            this.mBtnTransformGrid = new Flock.CheckButton();
+            this.label14 = new System.Windows.Forms.Label();
+            this.mGridCount = new System.Windows.Forms.NumericUpDown();
             this.mDotBox = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.mDotRotate = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
             this.mDotStretch = new System.Windows.Forms.NumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
@@ -88,26 +95,27 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.mDistanceTolerance = new System.Windows.Forms.NumericUpDown();
-            this.mImageTools = new System.Windows.Forms.GroupBox();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.label9 = new System.Windows.Forms.Label();
-            this.mDotRotate = new System.Windows.Forms.NumericUpDown();
-            this.mPictureBox = new Flock.ImagePanel();
             this.mBtnFreeTransform = new Flock.CheckButton();
             this.mBtnRemoveLine = new Flock.CheckButton();
             this.mBtnAddLine = new Flock.CheckButton();
             this.mBtnMoveMarker = new Flock.CheckButton();
             this.mBtnRemoveMarker = new Flock.CheckButton();
             this.mBtnAddMarker = new Flock.CheckButton();
+            this.mImageTools = new System.Windows.Forms.GroupBox();
             this.mBtnInvertPhoto = new Flock.CheckButton();
             this.mBtnCenterImage = new Flock.CheckButton();
             this.mBtnMoveImage = new Flock.CheckButton();
             this.mBtnZoomOut = new Flock.CheckButton();
             this.mBtnZoomIn = new Flock.CheckButton();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.mPictureBox = new Flock.ImagePanel();
             this.mStatusBar.SuspendLayout();
             this.mMainMenu.SuspendLayout();
             this.mMenuPanel.SuspendLayout();
+            this.mGridBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.mGridCount)).BeginInit();
             this.mDotBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.mDotRotate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mDotStretch)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mDotDistance)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mDotSize)).BeginInit();
@@ -118,7 +126,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.mAngleTolerance)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mDistanceTolerance)).BeginInit();
             this.mImageTools.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.mDotRotate)).BeginInit();
             this.SuspendLayout();
             // 
             // mStatusBar
@@ -339,6 +346,7 @@
             this.mShowPhoto,
             this.mShowFlightZones,
             this.mShowDots,
+            this.mShowGrid,
             this.toolStripMenuItem8,
             this.mBackgroundColorToolStripMenuItem,
             this.mLineColorMenuItem,
@@ -403,6 +411,14 @@
             this.mShowDots.Text = "Dots";
             this.mShowDots.CheckedChanged += new System.EventHandler(this.OnShowDotChangedEvent);
             // 
+            // mShowGrid
+            // 
+            this.mShowGrid.CheckOnClick = true;
+            this.mShowGrid.Name = "mShowGrid";
+            this.mShowGrid.Size = new System.Drawing.Size(212, 22);
+            this.mShowGrid.Text = "Grid";
+            this.mShowGrid.CheckedChanged += new System.EventHandler(this.OnShowGridCheckedChanged);
+            // 
             // toolStripMenuItem8
             // 
             this.toolStripMenuItem8.Name = "toolStripMenuItem8";
@@ -461,6 +477,7 @@
             // 
             // mMenuPanel
             // 
+            this.mMenuPanel.Controls.Add(this.mGridBox);
             this.mMenuPanel.Controls.Add(this.mDotBox);
             this.mMenuPanel.Controls.Add(this.mSizeBox);
             this.mMenuPanel.Controls.Add(this.mFormationTools);
@@ -471,6 +488,64 @@
             this.mMenuPanel.Padding = new System.Windows.Forms.Padding(3);
             this.mMenuPanel.Size = new System.Drawing.Size(116, 684);
             this.mMenuPanel.TabIndex = 6;
+            // 
+            // mGridBox
+            // 
+            this.mGridBox.Controls.Add(this.mBtnTransformGrid);
+            this.mGridBox.Controls.Add(this.label14);
+            this.mGridBox.Controls.Add(this.mGridCount);
+            this.mGridBox.Dock = System.Windows.Forms.DockStyle.Top;
+            this.mGridBox.Location = new System.Drawing.Point(3, 476);
+            this.mGridBox.Name = "mGridBox";
+            this.mGridBox.Size = new System.Drawing.Size(110, 88);
+            this.mGridBox.TabIndex = 12;
+            this.mGridBox.TabStop = false;
+            this.mGridBox.Text = "USPA Grid";
+            // 
+            // mBtnTransformGrid
+            // 
+            this.mBtnTransformGrid.Checked = false;
+            this.mBtnTransformGrid.Image = global::Flock.Properties.Resources.move_formation;
+            this.mBtnTransformGrid.Location = new System.Drawing.Point(39, 49);
+            this.mBtnTransformGrid.Name = "mBtnTransformGrid";
+            this.mBtnTransformGrid.Size = new System.Drawing.Size(33, 33);
+            this.mBtnTransformGrid.TabIndex = 17;
+            this.mBtnTransformGrid.Tooltip = "Free transform formation grid [g]";
+            this.mBtnTransformGrid.Click += new System.EventHandler(this.OnTransformGridClick);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(18, 21);
+            this.label14.Name = "label14";
+            this.label14.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.label14.Size = new System.Drawing.Size(38, 13);
+            this.label14.TabIndex = 16;
+            this.label14.Text = ":Count";
+            // 
+            // mGridCount
+            // 
+            this.mGridCount.Location = new System.Drawing.Point(58, 19);
+            this.mGridCount.Maximum = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
+            this.mGridCount.Minimum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.mGridCount.Name = "mGridCount";
+            this.mGridCount.Size = new System.Drawing.Size(45, 20);
+            this.mGridCount.TabIndex = 1;
+            this.mGridCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.mGridCount.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+            this.mGridCount.ValueChanged += new System.EventHandler(this.OnGridSettingsChanged);
             // 
             // mDotBox
             // 
@@ -491,6 +566,41 @@
             this.mDotBox.TabIndex = 11;
             this.mDotBox.TabStop = false;
             this.mDotBox.Text = "Dotting";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(14, 125);
+            this.label9.Name = "label9";
+            this.label9.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.label9.Size = new System.Drawing.Size(42, 13);
+            this.label9.TabIndex = 24;
+            this.label9.Text = ":Rotate";
+            // 
+            // mDotRotate
+            // 
+            this.mDotRotate.DecimalPlaces = 1;
+            this.mDotRotate.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.mDotRotate.Location = new System.Drawing.Point(58, 123);
+            this.mDotRotate.Maximum = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
+            this.mDotRotate.Minimum = new decimal(new int[] {
+            20,
+            0,
+            0,
+            -2147483648});
+            this.mDotRotate.Name = "mDotRotate";
+            this.mDotRotate.Size = new System.Drawing.Size(45, 20);
+            this.mDotRotate.TabIndex = 23;
+            this.mDotRotate.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.mDotRotate.ValueChanged += new System.EventHandler(this.OnDotSettingChanged);
             // 
             // label8
             // 
@@ -760,81 +870,6 @@
             0});
             this.mDistanceTolerance.ValueChanged += new System.EventHandler(this.OnToleranceChanged);
             // 
-            // mImageTools
-            // 
-            this.mImageTools.Controls.Add(this.mBtnInvertPhoto);
-            this.mImageTools.Controls.Add(this.mBtnCenterImage);
-            this.mImageTools.Controls.Add(this.mBtnMoveImage);
-            this.mImageTools.Controls.Add(this.mBtnZoomOut);
-            this.mImageTools.Controls.Add(this.mBtnZoomIn);
-            this.mImageTools.Dock = System.Windows.Forms.DockStyle.Top;
-            this.mImageTools.Location = new System.Drawing.Point(3, 3);
-            this.mImageTools.Name = "mImageTools";
-            this.mImageTools.Size = new System.Drawing.Size(110, 94);
-            this.mImageTools.TabIndex = 6;
-            this.mImageTools.TabStop = false;
-            this.mImageTools.Text = "Image Tools";
-            // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
-            this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(14, 125);
-            this.label9.Name = "label9";
-            this.label9.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.label9.Size = new System.Drawing.Size(42, 13);
-            this.label9.TabIndex = 24;
-            this.label9.Text = ":Rotate";
-            // 
-            // mDotRotate
-            // 
-            this.mDotRotate.DecimalPlaces = 1;
-            this.mDotRotate.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            65536});
-            this.mDotRotate.Location = new System.Drawing.Point(58, 123);
-            this.mDotRotate.Maximum = new decimal(new int[] {
-            20,
-            0,
-            0,
-            0});
-            this.mDotRotate.Minimum = new decimal(new int[] {
-            20,
-            0,
-            0,
-            -2147483648});
-            this.mDotRotate.Name = "mDotRotate";
-            this.mDotRotate.Size = new System.Drawing.Size(45, 20);
-            this.mDotRotate.TabIndex = 23;
-            this.mDotRotate.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.mDotRotate.ValueChanged += new System.EventHandler(this.OnDotSettingChanged);
-            // 
-            // mPictureBox
-            // 
-            this.mPictureBox.BackColor = System.Drawing.SystemColors.AppWorkspace;
-            this.mPictureBox.Cursor = System.Windows.Forms.Cursors.Default;
-            this.mPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mPictureBox.Location = new System.Drawing.Point(116, 24);
-            this.mPictureBox.MoveMode = false;
-            this.mPictureBox.Name = "mPictureBox";
-            this.mPictureBox.Origin = ((System.Drawing.PointF)(resources.GetObject("mPictureBox.Origin")));
-            this.mPictureBox.Size = new System.Drawing.Size(892, 684);
-            this.mPictureBox.TabIndex = 7;
-            this.mPictureBox.Zoom = 100F;
-            this.mPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.OnPictureBoxPaint);
-            this.mPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseMove);
-            this.mPictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseClick);
-            this.mPictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseDown);
-            this.mPictureBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
-            this.mPictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseUp);
-            // 
             // mBtnFreeTransform
             // 
             this.mBtnFreeTransform.Checked = false;
@@ -901,6 +936,21 @@
             this.mBtnAddMarker.Tooltip = "Add marker [a]";
             this.mBtnAddMarker.Click += new System.EventHandler(this.OnAddMarkerClick);
             // 
+            // mImageTools
+            // 
+            this.mImageTools.Controls.Add(this.mBtnInvertPhoto);
+            this.mImageTools.Controls.Add(this.mBtnCenterImage);
+            this.mImageTools.Controls.Add(this.mBtnMoveImage);
+            this.mImageTools.Controls.Add(this.mBtnZoomOut);
+            this.mImageTools.Controls.Add(this.mBtnZoomIn);
+            this.mImageTools.Dock = System.Windows.Forms.DockStyle.Top;
+            this.mImageTools.Location = new System.Drawing.Point(3, 3);
+            this.mImageTools.Name = "mImageTools";
+            this.mImageTools.Size = new System.Drawing.Size(110, 94);
+            this.mImageTools.TabIndex = 6;
+            this.mImageTools.TabStop = false;
+            this.mImageTools.Text = "Image Tools";
+            // 
             // mBtnInvertPhoto
             // 
             this.mBtnInvertPhoto.Checked = false;
@@ -943,8 +993,8 @@
             this.mBtnZoomOut.Size = new System.Drawing.Size(33, 33);
             this.mBtnZoomOut.TabIndex = 4;
             this.mBtnZoomOut.Tooltip = "Zoom out";
-            this.mBtnZoomOut.DoubleClick += new System.EventHandler(this.OnZoomOutClick);
             this.mBtnZoomOut.Click += new System.EventHandler(this.OnZoomOutClick);
+            this.mBtnZoomOut.DoubleClick += new System.EventHandler(this.OnZoomOutClick);
             // 
             // mBtnZoomIn
             // 
@@ -955,8 +1005,33 @@
             this.mBtnZoomIn.Size = new System.Drawing.Size(33, 33);
             this.mBtnZoomIn.TabIndex = 3;
             this.mBtnZoomIn.Tooltip = "Zoom in";
-            this.mBtnZoomIn.DoubleClick += new System.EventHandler(this.OnZoomInClick);
             this.mBtnZoomIn.Click += new System.EventHandler(this.OnZoomInClick);
+            this.mBtnZoomIn.DoubleClick += new System.EventHandler(this.OnZoomInClick);
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
+            this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
+            // 
+            // mPictureBox
+            // 
+            this.mPictureBox.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.mPictureBox.Cursor = System.Windows.Forms.Cursors.Default;
+            this.mPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mPictureBox.Location = new System.Drawing.Point(116, 24);
+            this.mPictureBox.MoveMode = false;
+            this.mPictureBox.Name = "mPictureBox";
+            this.mPictureBox.Origin = ((System.Drawing.PointF)(resources.GetObject("mPictureBox.Origin")));
+            this.mPictureBox.Size = new System.Drawing.Size(892, 684);
+            this.mPictureBox.TabIndex = 7;
+            this.mPictureBox.Zoom = 100F;
+            this.mPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.OnPictureBoxPaint);
+            this.mPictureBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
+            this.mPictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseClick);
+            this.mPictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseDown);
+            this.mPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseMove);
+            this.mPictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnPictureBoxMouseUp);
             // 
             // Form1
             // 
@@ -970,16 +1045,20 @@
             this.MainMenuStrip = this.mMainMenu;
             this.MinimumSize = new System.Drawing.Size(260, 768);
             this.Name = "Form1";
-            this.Text = "Flock Briefing Tool";
-            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
+            this.Text = "Flock Judging Tool";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnFormClosing);
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
             this.mStatusBar.ResumeLayout(false);
             this.mStatusBar.PerformLayout();
             this.mMainMenu.ResumeLayout(false);
             this.mMainMenu.PerformLayout();
             this.mMenuPanel.ResumeLayout(false);
+            this.mGridBox.ResumeLayout(false);
+            this.mGridBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.mGridCount)).EndInit();
             this.mDotBox.ResumeLayout(false);
             this.mDotBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.mDotRotate)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.mDotStretch)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.mDotDistance)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.mDotSize)).EndInit();
@@ -991,7 +1070,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.mAngleTolerance)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.mDistanceTolerance)).EndInit();
             this.mImageTools.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.mDotRotate)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1074,6 +1152,11 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.NumericUpDown mDotRotate;
+        private System.Windows.Forms.ToolStripMenuItem mShowGrid;
+        private System.Windows.Forms.GroupBox mGridBox;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.NumericUpDown mGridCount;
+        private CheckButton mBtnTransformGrid;
     }
 }
 

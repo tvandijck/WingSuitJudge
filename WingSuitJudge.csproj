@@ -87,6 +87,7 @@
     <Compile Include="Actions\RemoveLineAction.cs" />
     <Compile Include="Actions\RemoveMarkerAction.cs" />
     <Compile Include="Actions\RotateAction.cs" />
+    <Compile Include="Actions\TransformGridAction.cs" />
     <Compile Include="Bound.cs" />
     <Compile Include="CheckButton.cs">
       <SubType>UserControl</SubType>
@@ -96,6 +97,7 @@
     </Compile>
     <Compile Include="Colors.cs" />
     <Compile Include="CommandSystem.cs" />
+    <Compile Include="GridBound.cs" />
     <Compile Include="ImageColorCache.cs" />
     <Compile Include="ImagePanel.cs">
       <SubType>UserControl</SubType>

@@ -22,7 +22,8 @@ namespace Flock
             MoveMarker,
             AddLine,
             RemoveLine,
-            FreeTransform
+            FreeTransform,
+            GridTransform
         }
 
         private Action mAction = null;
@@ -99,6 +100,7 @@ namespace Flock
                 mBtnAddLine.Checked = mEditMode_ == EditMode.AddLine;
                 mBtnRemoveLine.Checked = mEditMode_ == EditMode.RemoveLine;
                 mBtnFreeTransform.Checked = mEditMode_ == EditMode.FreeTransform;
+                mBtnTransformGrid.Checked = mEditMode_ == EditMode.GridTransform;
                 mPictureBox.MoveMode = mEditMode_ == EditMode.MoveImage;
 
                 switch (mEditMode_)
@@ -120,6 +122,9 @@ namespace Flock
                         break;
                     case EditMode.FreeTransform:
                         mAction = new RotateAction(Project);
+                        break;
+                    case EditMode.GridTransform:
+                        mAction = new TransformGridAction(Project);
                         break;
                     default:
                         mAction = null;
@@ -452,6 +457,12 @@ namespace Flock
                 Project.PaintDots(e.Graphics, Project.DotCount, Project.DotSize * 1.0f,
                     Project.DotDistance * 0.5f, Project.DotStretch * 0.01f,
                     Project.DotRotate * (float)Math.PI / 1800.0f);
+            }
+            if (mShowGrid.Checked)
+            {
+                Project.PaintGrid(e.Graphics, Project.GridOffset,
+                    Project.GridCount, Project.GridSize, 13.5f, 27.0f, 
+                    Project.GridRotate);
             }
             if (mShowMarkers.Checked)
             {
@@ -841,6 +852,12 @@ namespace Flock
             mPictureBox.Invalidate();
         }
 
+        private void OnShowGridCheckedChanged(object sender, EventArgs e)
+        {
+            mGridBox.Visible = mShowGrid.Checked;
+            mPictureBox.Invalidate();
+        }
+
         private void OnInvertPhotoClick(object sender, EventArgs e)
         {
             mPictureBox.InvertImage();
@@ -903,6 +920,12 @@ namespace Flock
             mPictureBox.Invalidate();
         }
 
+        private void OnGridSettingsChanged(object sender, EventArgs e)
+        {
+            Project.GridCount = (int)mGridCount.Value;
+            mPictureBox.Invalidate();
+        }
+
         private void OnFormClosing(object sender, FormClosingEventArgs e)
         {
             SaveSettings();
@@ -959,6 +982,7 @@ namespace Flock
                 Settings.Default.ShowPhoto = mShowPhoto.Checked;
                 Settings.Default.ShowFlightZones = mShowFlightZones.Checked;
                 Settings.Default.ShowDots = mShowDots.Checked;
+                Settings.Default.ShowGrid = mShowGrid.Checked;
                 Settings.Default.AngleTolerance = Project.AngleTolerance;
                 Settings.Default.DistanceTolerance = Project.DistanceTolerance;
                 Settings.Default.WingsuitSize = Project.WingsuitSize;
@@ -967,6 +991,9 @@ namespace Flock
                 Settings.Default.DotDistance = Project.DotDistance;
                 Settings.Default.DotStretch = Project.DotStretch;
                 Settings.Default.DotRotate = Project.DotRotate;
+                Settings.Default.GridCount = Project.GridCount;
+                Settings.Default.GridSize = Project.GridSize;
+                Settings.Default.GridRotate = Project.GridRotate;
                 Settings.Default.Save();
                 SyncUI();
             }
@@ -980,6 +1007,7 @@ namespace Flock
             mShowPhoto.Checked = Settings.Default.ShowPhoto;
             mShowFlightZones.Checked = Settings.Default.ShowFlightZones;
             mShowDots.Checked = Settings.Default.ShowDots;
+            mShowGrid.Checked = Settings.Default.ShowGrid;
 
             mWingsuitSize.Value = Project.WingsuitSize;
             mDotCount.Value = Project.DotCount;
@@ -987,8 +1015,10 @@ namespace Flock
             mDotDistance.Value = Project.DotDistance;
             mDotStretch.Value = Project.DotStretch;
             mDotRotate.Value = Convert.ToDecimal(Project.DotRotate * 0.1f);
+            mGridCount.Value = Project.GridCount;
             mSizeBox.Visible = mShowWingsuits.Checked;
             mDotBox.Visible = mShowDots.Checked;
+            mGridBox.Visible = mShowGrid.Checked;
             mAngleTolerance.Value = Project.AngleTolerance;
             mDistanceTolerance.Value = Project.DistanceTolerance;
         }
@@ -1113,7 +1143,16 @@ namespace Flock
                 case 'm':
                     OnMoveImageClick(sender, e);
                     break;
+                case 'g':
+                    OnTransformGridClick(sender, e);
+                    break;
             }
+        }
+
+        private void OnTransformGridClick(object sender, EventArgs e)
+        {
+            EditorMode = EditMode.GridTransform;
+            mPictureBox.Focus();
         }
     }
 }
