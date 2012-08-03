@@ -5,6 +5,11 @@ I started this little project based on ideas from Jarno Cordia and Wingsuit Zach
 
 So to all wingsuiting engineers out there, fork it, improve it, whatever... 
 
+Binaries
+=====
+Binaries can still be found here:
+	http://www.tomvandijck.com/flock/
+
 
 LICENSE
 =====
